@@ -772,3 +772,16 @@ model ProcessingJob {
   @@index([jobType])
   @@index([assessmentId])
 }
+
+// ============================================================
+// STORED UPLOADS
+// ============================================================
+// Scan photos and satellite overlays, kept in the database because some hosts (Render free plan) wipe the disk on restart.
+model StoredFile {
+  id          Int               @id @default(autoincrement())
+  key         String            @unique
+  contentType String
+  base64      String
+
+  createdAt   TimestamptzString @default(now())
+}

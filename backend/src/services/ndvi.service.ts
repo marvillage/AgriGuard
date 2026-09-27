@@ -1,17 +1,12 @@
 import { randomUUID } from "node:crypto";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
 import db from "../config/database.js";
 import { parsePolygon, squareMetresPerAcre, type LatLng } from "../lib/geo.js";
 import { computeFieldNdvi } from "../lib/ndvi.js";
+import { saveUpload } from "../lib/uploads.js";
 import { AppError } from "../utils/AppError.js";
 import type { AuthUser } from "../utils/auth.types.js";
 import { fieldAccess } from "./access.service.js";
 import { analyzeField } from "./engine.service.js";
-import { uploadsRoot } from "./scan.service.js";
-
-const ndviDir = resolve(uploadsRoot, "ndvi");
-mkdirSync(ndviDir, { recursive: true });
 
 export function fieldPolygon(field: { boundary: string | null; latitude: number | null; longitude: number | null; area: number }, farm: { latitude: number | null; longitude: number | null }) {
   const drawn = parsePolygon(field.boundary);
@@ -43,7 +38,7 @@ export async function refreshNdvi(user: AuthUser, fieldId: number, options: { un
 
   const existing = await db.orm.public.NdviSnapshot.where({ fieldId, sceneId: result.sceneId }).first();
   const imagePath = existing?.imagePath ?? `ndvi/${randomUUID()}.png`;
-  writeFileSync(resolve(uploadsRoot, imagePath), result.png);
+  await saveUpload(imagePath, result.png, "image/png");
 
   const values = {
     fieldId,

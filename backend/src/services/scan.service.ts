@@ -1,6 +1,4 @@
 import { randomUUID } from "node:crypto";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
 import sharp from "sharp";
 import db from "../config/database.js";
 import { diseaseKnowledge, diseaseText, getDiseaseInfo, type DiseaseInfo } from "../data/disease-knowledge.js";
@@ -14,11 +12,7 @@ import { AppError } from "../utils/AppError.js";
 import type { AuthUser } from "../utils/auth.types.js";
 import { accessibleFieldIds, farmMemberIds, fieldAccess } from "./access.service.js";
 import { upsertRecommendation } from "./recommendation.service.js";
-import { fromRoot } from "../config/paths.js";
-
-export const uploadsRoot = fromRoot("uploads");
-const scanDir = resolve(uploadsRoot, "scans");
-mkdirSync(scanDir, { recursive: true });
+import { saveUpload } from "../lib/uploads.js";
 
 const scanQuery = () =>
   db.orm.public.AIAssessment
@@ -59,7 +53,7 @@ export async function createScan(
 
   const normalized = await sharp(upload.buffer).rotate().resize(1280, 1280, { fit: "inside", withoutEnlargement: true }).jpeg({ quality: 85 }).toBuffer();
   const storageKey = `scans/${randomUUID()}.jpg`;
-  writeFileSync(resolve(uploadsRoot, storageKey), normalized);
+  await saveUpload(storageKey, normalized, "image/jpeg");
 
   const pixels = await analyzeLeafPixels(normalized);
   let ranked: Array<{ label: string; score: number }> = [];

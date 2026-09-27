@@ -2,6 +2,7 @@ import db from "../config/database.js";
 import { isForeignKeyError, whileDeleting } from "../lib/field-lock.js";
 import { getCrop } from "../data/crops.js";
 import { acresFromPolygon, polygonCentroid, type LatLng } from "../lib/geo.js";
+import { deleteUploads } from "../lib/uploads.js";
 import { AppError } from "../utils/AppError.js";
 import type { AuthUser } from "../utils/auth.types.js";
 import {
@@ -140,6 +141,9 @@ export async function deleteFieldCascade(fieldId: number) {
 async function deleteFieldChildren(fieldId: number) {
   const assessments = await db.orm.public.AIAssessment.where({ fieldId }).select("id").all();
   const assessmentIds = assessments.map((a) => a.id);
+  const images = assessmentIds.length ? await db.orm.public.CropImage.where((r) => r.assessmentId.in(assessmentIds)).select("storageKey").all() : [];
+  const overlays = await db.orm.public.NdviSnapshot.where({ fieldId }).select("imagePath").all();
+  await deleteUploads([...images.map((image) => image.storageKey), ...overlays.map((overlay) => overlay.imagePath)]);
 
   await db.orm.public.Recommendation.where({ fieldId }).deleteAndCount();
   if (assessmentIds.length) {

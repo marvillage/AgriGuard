@@ -92,6 +92,10 @@
       "model": "Recommendation",
       "namespace": "public"
     },
+    "storedFile": {
+      "model": "StoredFile",
+      "namespace": "public"
+    },
     "sustainabilityRecord": {
       "model": "SustainabilityRecord",
       "namespace": "public"
@@ -4235,6 +4239,67 @@
               "table": "recommendation"
             }
           },
+          "StoredFile": {
+            "fields": {
+              "base64": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "contentType": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "key": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "base64": {
+                  "column": "base64"
+                },
+                "contentType": {
+                  "column": "contentType"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "key": {
+                  "column": "key"
+                }
+              },
+              "namespaceId": "public",
+              "table": "storedFile"
+            }
+          },
           "SustainabilityRecord": {
             "fields": {
               "assessmentId": {
@@ -7896,6 +7961,57 @@
                 }
               ]
             },
+            "storedFile": {
+              "columns": {
+                "base64": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "contentType": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "key": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "key"
+                  ]
+                }
+              ]
+            },
             "sustainabilityRecord": {
               "columns": {
                 "assessmentId": {
@@ -8526,7 +8642,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "27a882ee9a2f279665b25c2bd7bdd91be03e79549b4acb13ae6f3f68dfd8c0b2"
+    "storageHash": "c84c9e272f92cb8a14410df6c58a6d0892cb696d221d390477f223b5fd7f92d8"
   },
   "execution": {
     "executionHash": "95ed4f25b3fb902ca6a27b0c5b163ede4802f5c67761bbe65c7f41fe4a164b15",

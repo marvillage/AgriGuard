@@ -10,7 +10,7 @@ import farmRoutes from "./routes/farm.routes.js";
 import fieldOpsRoutes from "./routes/field-ops.routes.js";
 import platformRoutes from "./routes/platform.routes.js";
 import { devicesRouter, telemetryRouter } from "./routes/device.routes.js";
-import { uploadsRoot } from "./services/scan.service.js";
+import { serveStoredUpload, uploadsRoot } from "./lib/uploads.js";
 
 const app = express();
 
@@ -56,7 +56,7 @@ app.get("/", (_req, res) => {
   });
 });
 
-app.use("/uploads", express.static(uploadsRoot, { maxAge: "7d", fallthrough: false }));
+app.use("/uploads", express.static(uploadsRoot, { maxAge: "7d" }), serveStoredUpload);
 
 // Only credential attempts get the strict limit; /me runs on every page load.
 app.use(["/api/auth/login", "/api/auth/register"], limiter(100));
