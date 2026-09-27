@@ -285,6 +285,10 @@ export const api = {
 
   dashboard: () => request<Dashboard>("/api/dashboard"),
 
+  weatherRelayRequests: () => request<{ items: Array<{ id: string; url: string }> }>("/api/weather/relay"),
+
+  weatherRelay: (items: Array<{ id: string; body: unknown }>) => request<{ stored: number }>("/api/weather/relay", json("POST", { items })),
+
   recommendations: (filters: { status?: string; type?: string; fieldId?: number; limit?: number } = {}) => {
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => value !== undefined && params.set(key, String(value)));

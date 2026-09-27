@@ -6,6 +6,7 @@ const geocodeUrl = "https://geocoding-api.open-meteo.com/v1/search";
 const cacheTtlMs = 30 * 60 * 1000;
 const savedForecastMs = 24 * 3600 * 1000;
 const retryMs = 5 * 60 * 1000;
+let pausedUntil = 0;
 
 const hourlyVars = [
   "temperature_2m",
@@ -65,25 +66,9 @@ export interface Forecast {
 
 const cache = new Map<string, { at: number; value: Forecast }>();
 
-export async function getForecast(latitude: number, longitude: number, pastDays = 2): Promise<Forecast> {
-  const key = `${latitude.toFixed(2)},${longitude.toFixed(2)},${pastDays}`;
-  const hit = cache.get(key);
-  if (hit && Date.now() - hit.at < cacheTtlMs) return hit.value;
-  try {
-    const value = await fetchForecast(latitude, longitude, pastDays);
-    cache.set(key, { at: Date.now(), value });
-    await saveForecast(key, value).catch(() => undefined);
-    return value;
-  } catch (error) {
-    // Open-Meteo sometimes refuses shared cloud servers, so the last good forecast from under a day ago stands in.
-    const saved = await savedForecast(key);
-    if (!saved) throw error;
-    cache.set(key, { at: Date.now() - cacheTtlMs + retryMs, value: saved });
-    return saved;
-  }
-}
+export const forecastKey = (latitude: number, longitude: number, pastDays = 2) => `${latitude.toFixed(2)},${longitude.toFixed(2)},${pastDays}`;
 
-async function fetchForecast(latitude: number, longitude: number, pastDays: number): Promise<Forecast> {
+export function forecastRequestUrl(latitude: number, longitude: number, pastDays = 2) {
   const params = new URLSearchParams({
     latitude: latitude.toFixed(4),
     longitude: longitude.toFixed(4),
@@ -94,16 +79,38 @@ async function fetchForecast(latitude: number, longitude: number, pastDays: numb
     past_days: String(pastDays),
     timeformat: "unixtime",
   });
+  return `${forecastUrl}?${params}`;
+}
 
-  const response = await fetchWithTimeout(`${forecastUrl}?${params}`);
-  if (!response.ok) throw await serviceError(response);
-  const body = (await response.json()) as {
-    timezone: string;
-    utc_offset_seconds: number;
-    hourly: Record<string, number[]>;
-    daily: Record<string, number[]>;
-  };
+export async function getForecast(latitude: number, longitude: number, pastDays = 2): Promise<Forecast> {
+  const key = forecastKey(latitude, longitude, pastDays);
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.at < cacheTtlMs) return hit.value;
+  try {
+    const response = await fetchWithTimeout(forecastRequestUrl(latitude, longitude, pastDays));
+    if (!response.ok) throw await serviceError(response);
+    const value = parseForecast((await response.json()) as ForecastBody, latitude, longitude);
+    await storeForecast(key, value);
+    return value;
+  } catch (error) {
+    // Open-Meteo sometimes refuses shared cloud servers, so the last good forecast from under a day ago stands in.
+    const saved = await readSavedForecast(key);
+    if (!saved || Date.now() - Date.parse(saved.fetchedAt) > savedForecastMs) throw error;
+    cache.set(key, { at: Date.now() - cacheTtlMs + retryMs, value: saved });
+    return saved;
+  }
+}
 
+export interface ForecastBody {
+  latitude?: number;
+  longitude?: number;
+  timezone: string;
+  utc_offset_seconds: number;
+  hourly: Record<string, number[]>;
+  daily: Record<string, number[]>;
+}
+
+export function parseForecast(body: ForecastBody, latitude: number, longitude: number): Forecast {
   const hourlyTime = body.hourly.time ?? [];
   const hourly = hourlyTime.map((unix, index) => ({
     time: new Date(unix * 1000).toISOString(),
@@ -141,6 +148,17 @@ async function fetchForecast(latitude: number, longitude: number, pastDays: numb
   };
 }
 
+export async function storeForecast(key: string, value: Forecast) {
+  cache.set(key, { at: Date.now(), value });
+  await saveForecast(key, value).catch(() => undefined);
+}
+
+// Age of the newest forecast held for a key, in memory or in the database; null when there is none.
+export async function forecastAgeMs(key: string) {
+  const value = cache.get(key)?.value ?? (await readSavedForecast(key));
+  return value ? Date.now() - Date.parse(value.fetchedAt) : null;
+}
+
 const savedKey = (key: string) => `cache/weather/${key}.json`;
 
 async function saveForecast(key: string, value: Forecast) {
@@ -150,17 +168,21 @@ async function saveForecast(key: string, value: Forecast) {
   else await db.orm.public.StoredFile.create({ key: savedKey(key), contentType: "application/json", base64 });
 }
 
-async function savedForecast(key: string) {
+async function readSavedForecast(key: string) {
   const stored = await db.orm.public.StoredFile.where({ key: savedKey(key) }).first().catch(() => null);
-  if (!stored) return null;
-  const value = JSON.parse(Buffer.from(stored.base64, "base64").toString("utf8")) as Forecast;
-  return Date.now() - Date.parse(value.fetchedAt) < savedForecastMs ? value : null;
+  return stored ? (JSON.parse(Buffer.from(stored.base64, "base64").toString("utf8")) as Forecast) : null;
 }
 
-// Open-Meteo says why it refused (for example which request limit was hit) in its JSON body.
+// Open-Meteo says why it refused (for example which request limit was hit) in its JSON body. After a refusal
+// the server waits before asking again, since browsers of signed-in users can relay the data meanwhile.
 async function serviceError(response: Response) {
   const body = (await response.json().catch(() => null)) as { reason?: string } | null;
-  return new AppError(`Weather service error (${response.status})${body?.reason ? `: ${body.reason}` : ""}`, 502);
+  const reason = body?.reason ?? "";
+  if (response.status === 429) {
+    const waitMinutes = /daily/i.test(reason) ? 60 : /hourly/i.test(reason) ? 10 : /minutely/i.test(reason) ? 1 : 5;
+    pausedUntil = Date.now() + waitMinutes * 60000;
+  }
+  return new AppError(`Weather service error (${response.status})${reason ? `: ${reason}` : ""}`, 502);
 }
 
 export function summarizeForecast(forecast: Forecast, now = new Date()) {
@@ -254,9 +276,7 @@ export interface SoilPoint {
   rainMm: number | null;
 }
 
-// Modelled soil state for a location from the Open-Meteo forecast API (best-match model).
-// Soil moisture is the 9-27 cm root-zone layer converted from m3/m3 to % by volume; only completed hours are returned.
-export async function getSoilHistory(latitude: number, longitude: number, pastDays: number): Promise<SoilPoint[]> {
+export function soilRequestUrl(latitude: number, longitude: number, pastDays: number) {
   const params = new URLSearchParams({
     latitude: latitude.toFixed(4),
     longitude: longitude.toFixed(4),
@@ -266,9 +286,24 @@ export async function getSoilHistory(latitude: number, longitude: number, pastDa
     timezone: "auto",
     timeformat: "unixtime",
   });
-  const response = await fetchWithTimeout(`${forecastUrl}?${params}`);
+  return `${forecastUrl}?${params}`;
+}
+
+// Modelled soil state for a location from the Open-Meteo forecast API (best-match model).
+export async function getSoilHistory(latitude: number, longitude: number, pastDays: number): Promise<SoilPoint[]> {
+  const response = await fetchWithTimeout(soilRequestUrl(latitude, longitude, pastDays));
   if (!response.ok) throw await serviceError(response);
-  const body = (await response.json()) as { hourly: Record<string, Array<number | null>> };
+  return parseSoil((await response.json()) as SoilBody);
+}
+
+export interface SoilBody {
+  latitude?: number;
+  longitude?: number;
+  hourly: Record<string, Array<number | null>>;
+}
+
+// Soil moisture is the 9-27 cm root-zone layer converted from m3/m3 to % by volume; only completed hours are returned.
+export function parseSoil(body: SoilBody): SoilPoint[] {
   const value = (name: string, index: number, scale = 1) => {
     const raw = body.hourly[name]?.[index];
     return raw === null || raw === undefined ? null : Math.round(raw * scale * 10) / 10;
@@ -287,6 +322,7 @@ export async function getSoilHistory(latitude: number, longitude: number, pastDa
 }
 
 async function fetchWithTimeout(url: string, ms = 15000) {
+  if (Date.now() < pausedUntil) throw new AppError(`Weather service refused this server; asking again after ${new Date(pausedUntil).toISOString().slice(11, 16)} UTC`, 502);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
   try {

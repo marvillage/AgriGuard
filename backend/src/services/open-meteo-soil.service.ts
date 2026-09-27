@@ -2,11 +2,11 @@ import db from "../config/database.js";
 import { publish } from "../lib/events.js";
 import { parseTimestamp } from "../lib/time.js";
 import { farmMemberIds } from "./access.service.js";
-import { getSoilHistory } from "./weather.service.js";
+import { getSoilHistory, type SoilPoint } from "./weather.service.js";
 
 // A field without its own node gets Open-Meteo's modelled soil readings for its location, stored hourly
 // with source OPEN_METEO so the app never presents them as field measurements.
-export async function syncOpenMeteoReadings(fieldId: number, pastDays = 2) {
+export async function syncOpenMeteoReadings(fieldId: number, pastDays = 2, relayed?: { points: SoilPoint[]; notes: string }) {
   const field = await db.orm.public.Field.first({ id: fieldId });
   if (!field) return 0;
   // A phone controller has no soil sensor, so only a sensor box replaces the model readings.
@@ -22,7 +22,7 @@ export async function syncOpenMeteoReadings(fieldId: number, pastDays = 2) {
     .orderBy((o) => o.observedAt.desc())
     .first();
   const after = parseTimestamp(last?.observedAt ?? null)?.getTime() ?? 0;
-  const points = await getSoilHistory(latitude, longitude, pastDays);
+  const points = relayed?.points ?? (await getSoilHistory(latitude, longitude, pastDays));
 
   let added = 0;
   for (const point of points) {
@@ -35,6 +35,7 @@ export async function syncOpenMeteoReadings(fieldId: number, pastDays = 2) {
       temperature: point.temperature,
       humidity: point.humidity,
       rainfall: point.rainMm && point.rainMm > 0 ? point.rainMm : null,
+      notes: relayed?.notes ?? null,
       observedAt: point.time,
     });
     added += 1;

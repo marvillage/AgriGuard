@@ -25,11 +25,12 @@ import * as notifications from "../services/notification.service.js";
 import { listRecommendations, setRecommendationStatus } from "../services/recommendation.service.js";
 import { createScan, getScan, listScans, scanCrops } from "../services/scan.service.js";
 import * as trials from "../services/trial.service.js";
+import { acceptRelay, relayRequests } from "../services/weather-relay.service.js";
 import { geocode, getForecast, summarizeForecast, solarWindow } from "../services/weather.service.js";
 import { AppError } from "../utils/AppError.js";
 import { sendSuccess } from "../utils/response.js";
 import { currentUser, idParam, languageOf, optionalNumber } from "../utils/request.js";
-import { chatSchema, trialSchema, trialUpdateSchema } from "../utils/validation.schemas.js";
+import { chatSchema, relaySchema, trialSchema, trialUpdateSchema } from "../utils/validation.schemas.js";
 import type { Request } from "express";
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 12 * 1024 * 1024 } });
@@ -83,6 +84,14 @@ router.get("/validation", (_req, res) => {
 });
 
 router.use(authMiddleware);
+
+router.get("/weather/relay", async (req, res) => {
+  sendSuccess(res, { items: await relayRequests(currentUser(req)) });
+});
+
+router.post("/weather/relay", validateBody(relaySchema), async (req, res) => {
+  sendSuccess(res, await acceptRelay(currentUser(req), req.body.items), "Weather received");
+});
 
 router.get("/dashboard", async (req, res) => {
   sendSuccess(res, await dashboard(currentUser(req), await language(req)));

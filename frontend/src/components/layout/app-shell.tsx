@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { LogoMark } from "@/components/brand/logo";
+import { WeatherRelay } from "@/components/pwa/weather-relay";
 import { BottomNav } from "./bottom-nav";
 import { Sidebar } from "./sidebar";
 import { TopBar } from "./top-bar";
@@ -75,6 +76,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <BottomNav onMore={() => setMenuOpen(true)} />
+      <WeatherRelay />
     </div>
   );
 }

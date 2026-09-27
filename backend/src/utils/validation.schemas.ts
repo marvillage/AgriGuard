@@ -161,6 +161,10 @@ export const telemetrySchema = z.object({
   rainfall: z.number().min(0).max(1000).optional(),
 });
 
+export const relaySchema = z.object({
+  items: z.array(z.object({ id: z.string().min(3).max(80), body: z.unknown() })).max(40),
+});
+
 export const flowTestSchema = z.object({
   bucketLitres: z.number().positive().max(1000),
   seconds: z.array(z.number().min(1).max(3600)).min(1).max(5),
