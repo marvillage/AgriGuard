@@ -131,10 +131,16 @@ export async function sendBriefings() {
   }
 }
 
+// A refused request is often short-lived, so failed fields are tried again after 5 minutes instead of 30.
+async function syncSoil() {
+  const failed = await syncOpenMeteoAllFields();
+  if (failed) setTimeout(() => guarded("open-meteo-retry", async () => void (await syncOpenMeteoAllFields())), 5 * minute);
+}
+
 export function startJobs() {
   if (!env.enableJobs) return;
-  setTimeout(() => guarded("open-meteo", syncOpenMeteoAllFields), 10 * 1000);
-  setInterval(() => guarded("open-meteo", syncOpenMeteoAllFields), 30 * minute);
+  setTimeout(() => guarded("open-meteo", syncSoil), 10 * 1000);
+  setInterval(() => guarded("open-meteo", syncSoil), 30 * minute);
   setTimeout(() => guarded("analyze", analyzeAllFields), 20 * 1000);
   setInterval(() => guarded("analyze", analyzeAllFields), 15 * minute);
   setInterval(() => guarded("devices", checkDevices), 5 * minute);

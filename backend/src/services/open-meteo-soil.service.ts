@@ -9,7 +9,8 @@ import { getSoilHistory } from "./weather.service.js";
 export async function syncOpenMeteoReadings(fieldId: number, pastDays = 2) {
   const field = await db.orm.public.Field.first({ id: fieldId });
   if (!field) return 0;
-  const node = await db.orm.public.Device.where({ fieldId }).first();
+  // A phone controller has no soil sensor, so only a sensor box replaces the model readings.
+  const node = await db.orm.public.Device.where({ fieldId, kind: "NODE" }).first();
   if (node) return 0;
   const farm = (await db.orm.public.Farm.first({ id: field.farmId }))!;
   const latitude = field.latitude ?? farm.latitude;
@@ -44,7 +45,12 @@ export async function syncOpenMeteoReadings(fieldId: number, pastDays = 2) {
 
 export async function syncOpenMeteoAllFields() {
   const fields = await db.orm.public.Field.select("id").all();
+  let failed = 0;
   for (const field of fields) {
-    await syncOpenMeteoReadings(field.id).catch((error) => console.error(`Open-Meteo soil sync for field ${field.id} failed`, error));
+    await syncOpenMeteoReadings(field.id).catch((error) => {
+      failed += 1;
+      console.error(`Open-Meteo soil sync for field ${field.id} failed`, error);
+    });
   }
+  return failed;
 }

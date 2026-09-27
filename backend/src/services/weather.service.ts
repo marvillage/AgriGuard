@@ -1,8 +1,11 @@
+import db from "../config/database.js";
 import { AppError } from "../utils/AppError.js";
 
 const forecastUrl = "https://api.open-meteo.com/v1/forecast";
 const geocodeUrl = "https://geocoding-api.open-meteo.com/v1/search";
 const cacheTtlMs = 30 * 60 * 1000;
+const savedForecastMs = 24 * 3600 * 1000;
+const retryMs = 5 * 60 * 1000;
 
 const hourlyVars = [
   "temperature_2m",
@@ -66,7 +69,21 @@ export async function getForecast(latitude: number, longitude: number, pastDays 
   const key = `${latitude.toFixed(2)},${longitude.toFixed(2)},${pastDays}`;
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < cacheTtlMs) return hit.value;
+  try {
+    const value = await fetchForecast(latitude, longitude, pastDays);
+    cache.set(key, { at: Date.now(), value });
+    await saveForecast(key, value).catch(() => undefined);
+    return value;
+  } catch (error) {
+    // Open-Meteo sometimes refuses shared cloud servers, so the last good forecast from under a day ago stands in.
+    const saved = await savedForecast(key);
+    if (!saved) throw error;
+    cache.set(key, { at: Date.now() - cacheTtlMs + retryMs, value: saved });
+    return saved;
+  }
+}
 
+async function fetchForecast(latitude: number, longitude: number, pastDays: number): Promise<Forecast> {
   const params = new URLSearchParams({
     latitude: latitude.toFixed(4),
     longitude: longitude.toFixed(4),
@@ -79,7 +96,7 @@ export async function getForecast(latitude: number, longitude: number, pastDays 
   });
 
   const response = await fetchWithTimeout(`${forecastUrl}?${params}`);
-  if (!response.ok) throw new AppError(`Weather service error (${response.status})`, 502);
+  if (!response.ok) throw await serviceError(response);
   const body = (await response.json()) as {
     timezone: string;
     utc_offset_seconds: number;
@@ -113,7 +130,7 @@ export async function getForecast(latitude: number, longitude: number, pastDays 
     sunset: new Date((body.daily.sunset?.[index] ?? 0) * 1000).toISOString(),
   }));
 
-  const value: Forecast = {
+  return {
     latitude,
     longitude,
     timezone: body.timezone,
@@ -122,8 +139,28 @@ export async function getForecast(latitude: number, longitude: number, pastDays 
     hourly,
     daily,
   };
-  cache.set(key, { at: Date.now(), value });
-  return value;
+}
+
+const savedKey = (key: string) => `cache/weather/${key}.json`;
+
+async function saveForecast(key: string, value: Forecast) {
+  const base64 = Buffer.from(JSON.stringify(value)).toString("base64");
+  const existing = await db.orm.public.StoredFile.where({ key: savedKey(key) }).first();
+  if (existing) await db.orm.public.StoredFile.where({ key: savedKey(key) }).updateAndCount({ base64 });
+  else await db.orm.public.StoredFile.create({ key: savedKey(key), contentType: "application/json", base64 });
+}
+
+async function savedForecast(key: string) {
+  const stored = await db.orm.public.StoredFile.where({ key: savedKey(key) }).first().catch(() => null);
+  if (!stored) return null;
+  const value = JSON.parse(Buffer.from(stored.base64, "base64").toString("utf8")) as Forecast;
+  return Date.now() - Date.parse(value.fetchedAt) < savedForecastMs ? value : null;
+}
+
+// Open-Meteo says why it refused (for example which request limit was hit) in its JSON body.
+async function serviceError(response: Response) {
+  const body = (await response.json().catch(() => null)) as { reason?: string } | null;
+  return new AppError(`Weather service error (${response.status})${body?.reason ? `: ${body.reason}` : ""}`, 502);
 }
 
 export function summarizeForecast(forecast: Forecast, now = new Date()) {
@@ -230,7 +267,7 @@ export async function getSoilHistory(latitude: number, longitude: number, pastDa
     timeformat: "unixtime",
   });
   const response = await fetchWithTimeout(`${forecastUrl}?${params}`);
-  if (!response.ok) throw new AppError(`Weather service error (${response.status})`, 502);
+  if (!response.ok) throw await serviceError(response);
   const body = (await response.json()) as { hourly: Record<string, Array<number | null>> };
   const value = (name: string, index: number, scale = 1) => {
     const raw = body.hourly[name]?.[index];
