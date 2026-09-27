@@ -1,0 +1,31 @@
+import type { PartialMessages } from "..";
+
+const nav: NonNullable<PartialMessages["nav"]> = {
+  overview: "एक नज़र में",
+  intelligence: "स्मार्ट जानकारी",
+  impact: "असर",
+  advisorGroup: "सलाहकार",
+  account: "खाता",
+  dashboard: "डैशबोर्ड",
+  farms: "फ़ार्म और खेत",
+  scan: "फसल स्कैन",
+  risk: "खतरा केंद्र",
+  recommendations: "सलाह",
+  copilot: "AI सहायक",
+  sustainability: "टिकाऊ खेती",
+  trials: "खेत परीक्षण",
+  advisor: "कृषि विशेषज्ञ डेस्क",
+  settings: "सेटिंग्स",
+  precisionFarming: "सटीक खेती",
+  notifications: "सूचनाएँ",
+  noNotifications: "कोई नई सूचना नहीं।",
+  markAllRead: "सब पढ़ा हुआ मार्क करें",
+  openNavigation: "मेन्यू खोलें",
+  nodesOnline: "{total} में से {online} फील्ड डिवाइस ऑनलाइन",
+  noNodes: "अभी कोई फील्ड डिवाइस नहीं",
+  role_FARMER: "किसान",
+  role_AGRONOMIST: "कृषि विशेषज्ञ",
+  role_ADMIN: "एडमिन",
+};
+
+export default nav;

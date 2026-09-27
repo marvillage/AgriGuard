@@ -1,0 +1,774 @@
+// use prisma-8
+
+// ============================================================
+// ENUMS
+// ============================================================
+enum UserRole {
+  FARMER
+  AGRONOMIST
+  ADMIN
+}
+
+enum AssessmentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum RecommendationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RecommendationType {
+  IRRIGATION
+  FERTILIZER
+  DISEASE
+  WEATHER
+  GENERAL
+}
+
+enum RecommendationStatus {
+  OPEN
+  DONE
+  DISMISSED
+}
+
+enum JobStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum PumpMode {
+  AUTO
+  MANUAL_ON
+  MANUAL_OFF
+}
+
+enum IrrigationSource {
+  AUTO
+  MANUAL
+  SCHEDULE
+}
+
+enum ObservationSource {
+  DEVICE
+  MANUAL
+  SIMULATOR
+  OPEN_METEO
+}
+
+enum CropStatus {
+  ACTIVE
+  HARVESTED
+}
+
+enum TrialStatus {
+  ACTIVE
+  COMPLETED
+}
+
+// ============================================================
+// USER & RBAC
+// ============================================================
+model User {
+  id                      Int                        @id @default(autoincrement())
+  email                   String                     @unique
+  passwordHash            String
+  name                    String
+  role                    UserRole                   @default(FARMER)
+
+  phone                   String?
+  language                String                     @default("en")
+  smsAlerts               Boolean                    @default(false)
+  whatsappAlerts          Boolean                    @default(false)
+  pushAlerts              Boolean                    @default(true)
+  dailyBriefing           Boolean                    @default(false)
+
+  farms                   Farm[]
+  advisorLinks            FarmAdvisor[]
+  notifications           Notification[]
+  pushSubscriptions       PushSubscription[]
+  chatMessages            ChatMessage[]
+  authoredRecommendations Recommendation[]
+
+  createdAt               TimestamptzString          @default(now())
+  updatedAt               temporal.updatedAtString()
+}
+
+// ============================================================
+// FARM
+// ============================================================
+model Farm {
+  id                   Int                        @id @default(autoincrement())
+  name                 String
+  location             String?
+  description          String?
+
+  latitude             Float?
+  longitude            Float?
+  shareCode            String?                    @unique
+  irrigationMethod     String                     @default("flood")
+  baselineDepthMm      Float?
+  baselineIntervalDays Float?
+  electricityRate      Float                      @default(7)
+  solarCapacityKw      Float?
+
+  owner                User                       @relation(fields:[ownerId], references:[id])
+  ownerId              Int
+
+  fields               Field[]
+  advisors             FarmAdvisor[]
+  trials               Trial[]
+
+  createdAt            TimestamptzString          @default(now())
+  updatedAt            temporal.updatedAtString()
+
+  @@index([ownerId])
+}
+
+model FarmAdvisor {
+  id        Int               @id @default(autoincrement())
+
+  farm      Farm              @relation(fields:[farmId], references:[id], onDelete: Cascade)
+  farmId    Int
+
+  advisor   User              @relation(fields:[advisorId], references:[id], onDelete: Cascade)
+  advisorId Int
+
+  createdAt TimestamptzString @default(now())
+
+  @@unique([farmId, advisorId])
+  @@index([advisorId])
+}
+
+// ============================================================
+// FIELD
+// ============================================================
+model Field {
+  id                    Int                        @id @default(autoincrement())
+  name                  String
+  area                  Float
+  location              String?
+  soilType              String?
+
+  latitude              Float?
+  longitude             Float?
+  boundary              String?
+  irrigationMethod      String?
+  pumpFlowLpm           Float?
+  pumpPowerKw           Float?
+  refillPoint           Float?
+  fieldCapacity         Float?
+  solarPreferred        Boolean                    @default(true)
+
+  farm                  Farm                       @relation(fields:[farmId], references:[id])
+  farmId                Int
+
+  crops                 Crop[]
+  observations          FieldObservation[]
+  assessments           AIAssessment[]
+  devices               Device[]
+  irrigationEvents      IrrigationEvent[]
+  decisions             IrrigationDecision[]
+  recommendations       Recommendation[]
+  schedules             PumpSchedule[]
+  fertilizerPlans       FertilizerPlan[]
+  ndviSnapshots         NdviSnapshot[]
+
+  sustainabilityRecords SustainabilityRecord[]
+
+  createdAt             TimestamptzString          @default(now())
+  updatedAt             temporal.updatedAtString()
+
+  @@index([farmId])
+}
+
+// ============================================================
+// CROP
+// ============================================================
+model Crop {
+  id           Int                        @id @default(autoincrement())
+  name         String
+  variety      String?
+  season       String?
+  plantingDate TimestamptzString?
+  harvestDate  TimestamptzString?
+
+  cropType     String?
+  status       CropStatus                 @default(ACTIVE)
+  yieldKg      Float?
+  notes        String?
+
+  field        Field                      @relation(fields:[fieldId], references:[id])
+  fieldId      Int
+
+  assessments  AIAssessment[]
+
+  createdAt    TimestamptzString          @default(now())
+  updatedAt    temporal.updatedAtString()
+
+  @@index([fieldId])
+}
+
+// ============================================================
+// IOT DEVICE (field node / pump controller)
+// ============================================================
+model Device {
+  id                 Int                        @id @default(autoincrement())
+  name               String
+  deviceKey          String                     @unique
+
+  field              Field                      @relation(fields:[fieldId], references:[id], onDelete: Cascade)
+  fieldId            Int
+
+  firmware           String?
+  lastSeenAt         TimestamptzString?
+  batteryPct         Float?
+  rssi               Int?
+
+  pumpMode           PumpMode                   @default(AUTO)
+  pumpOn             Boolean                    @default(false)
+  manualUntil        TimestamptzString?
+  commandPump        String?
+  commandUntil       TimestamptzString?
+
+  hasFlowMeter       Boolean                    @default(false)
+  hasEnergyMeter     Boolean                    @default(false)
+  hasTankSensor      Boolean                    @default(false)
+  hasSolar           Boolean                    @default(false)
+  tankHeightCm       Float?
+  tankCapacityL      Float?
+  dryRunLevelPct     Float                      @default(15)
+  lastFlowTotalL     Float?
+  lastEnergyTotalKwh Float?
+  simulated          Boolean                    @default(false)
+
+  observations       FieldObservation[]
+  irrigationEvents   IrrigationEvent[]
+
+  createdAt          TimestamptzString          @default(now())
+  updatedAt          temporal.updatedAtString()
+
+  @@index([fieldId])
+}
+
+// ============================================================
+// FIELD OBSERVATION
+// ============================================================
+model FieldObservation {
+  id              Int               @id @default(autoincrement())
+
+  soilMoisture    Float?
+  temperature     Float?
+  humidity        Float?
+  rainfall        Float?
+
+  nitrogen        Float?
+  phosphorus      Float?
+  potassium       Float?
+
+  soilTemperature Float?
+  flowTotalL      Float?
+  flowRateLpm     Float?
+  energyTotalKwh  Float?
+  powerW          Float?
+  tankDistanceCm  Float?
+  tankLevel       Float?
+  solarW          Float?
+  batteryPct      Float?
+  rssi            Int?
+  pumpOn          Boolean?
+  source          ObservationSource @default(MANUAL)
+
+  notes           String?
+
+  field           Field             @relation(fields:[fieldId], references:[id])
+  fieldId         Int
+
+  device          Device?           @relation(fields:[deviceId], references:[id], onDelete: SetNull)
+  deviceId        Int?
+
+  observedAt      TimestamptzString @default(now())
+  createdAt       TimestamptzString @default(now())
+
+  @@index([fieldId])
+  @@index([observedAt])
+  @@index([deviceId])
+}
+
+// ============================================================
+// IRRIGATION EVENTS & DECISIONS
+// ============================================================
+model IrrigationEvent {
+  id                  Int               @id @default(autoincrement())
+
+  field               Field             @relation(fields:[fieldId], references:[id], onDelete: Cascade)
+  fieldId             Int
+
+  device              Device?           @relation(fields:[deviceId], references:[id], onDelete: SetNull)
+  deviceId            Int?
+
+  source              IrrigationSource  @default(AUTO)
+  startedAt           TimestamptzString @default(now())
+  endedAt             TimestamptzString?
+  plannedLitres       Float?
+  litres              Float?
+  kwh                 Float?
+  solarKwh            Float?
+  measured            Boolean           @default(false)
+  reason              String?
+  startFlowTotalL     Float?
+  startEnergyTotalKwh Float?
+
+  @@index([fieldId])
+  @@index([startedAt])
+}
+
+model IrrigationDecision {
+  id                Int               @id @default(autoincrement())
+
+  field             Field             @relation(fields:[fieldId], references:[id], onDelete: Cascade)
+  fieldId           Int
+
+  action            String
+  reason            String
+  soilMoisture      Float?
+  refillPoint       Float?
+  depletionMm       Float?
+  rainNext24Mm      Float?
+  rainProbability   Float?
+  et0               Float?
+  etc               Float?
+  recommendedLitres Float?
+  runMinutes        Float?
+
+  decidedAt         TimestamptzString @default(now())
+
+  @@index([fieldId])
+  @@index([decidedAt])
+}
+
+model PumpSchedule {
+  id              Int               @id @default(autoincrement())
+
+  field           Field             @relation(fields:[fieldId], references:[id], onDelete: Cascade)
+  fieldId         Int
+
+  startTime       String
+  durationMinutes Int
+  days            String            @default("1234567")
+  mode            String            @default("SMART")
+  enabled         Boolean           @default(true)
+
+  createdAt       TimestamptzString @default(now())
+
+  @@index([fieldId])
+}
+
+// ============================================================
+// AI ASSESSMENT
+// ============================================================
+model AIAssessment {
+  id                    Int                        @id @default(autoincrement())
+  status                AssessmentStatus           @default(PENDING)
+
+  kind                  String                     @default("RISK")
+  summary               String?
+  ndvi                  Float?
+
+  cropHealthScore       Float?
+  diseaseRisk           Float?
+  waterStress           Float?
+  nutrientStress        Float?
+  weatherRisk           Float?
+
+  field                 Field                      @relation(fields:[fieldId], references:[id])
+  fieldId               Int
+
+  crop                  Crop?                      @relation(fields:[cropId], references:[id])
+  cropId                Int?
+
+  diseasePredictions    DiseasePrediction[]
+  images                CropImage[]
+  irrigationPrediction  IrrigationPrediction?
+  nutrientPrediction    NutrientPrediction?
+  weatherPrediction     WeatherPrediction?
+  recommendations       Recommendation[]
+  sustainabilityRecords SustainabilityRecord[]
+  processingJobs        ProcessingJob[]
+
+  createdAt             TimestamptzString          @default(now())
+  updatedAt             temporal.updatedAtString()
+  completedAt           TimestamptzString?
+
+  @@index([fieldId])
+  @@index([cropId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ============================================================
+// CROP IMAGE
+// ============================================================
+model CropImage {
+  id           Int               @id @default(autoincrement())
+
+  storageKey   String
+  originalName String
+  contentType  String
+  url          String?
+
+  assessment   AIAssessment?     @relation(fields:[assessmentId], references:[id])
+  assessmentId Int?
+
+  uploadedAt   TimestamptzString @default(now())
+
+  @@index([assessmentId])
+}
+
+// ============================================================
+// DISEASE PREDICTION
+// ============================================================
+model DiseasePrediction {
+  id           Int               @id @default(autoincrement())
+
+  diseaseName  String
+  confidence   Float
+  severity     Float?
+  symptoms     String?
+  treatment    String?
+
+  label        String?
+  source       String?
+  rank         Int?
+
+  assessment   AIAssessment      @relation(fields:[assessmentId], references:[id])
+  assessmentId Int
+
+  createdAt    TimestamptzString @default(now())
+
+  @@index([assessmentId])
+}
+
+// ============================================================
+// IRRIGATION PREDICTION
+// ============================================================
+model IrrigationPrediction {
+  id                Int               @id @default(autoincrement())
+
+  waterStressLevel  String
+  recommendedAction String
+  recommendedAmount Float?
+  confidence        Float?
+  reasoning         String?
+
+  assessment        AIAssessment      @relation(fields:[assessmentId], references:[id])
+  assessmentId      Int               @unique
+
+  createdAt         TimestamptzString @default(now())
+
+  @@index([assessmentId])
+}
+
+// ============================================================
+// NUTRIENT PREDICTION
+// ============================================================
+model NutrientPrediction {
+  id                Int               @id @default(autoincrement())
+
+  nitrogenStatus    String?
+  phosphorusStatus  String?
+  potassiumStatus   String?
+
+  recommendedAction String?
+  fertilizerType    String?
+  recommendedAmount Float?
+  confidence        Float?
+  reasoning         String?
+
+  assessment        AIAssessment      @relation(fields:[assessmentId], references:[id])
+  assessmentId      Int               @unique
+
+  createdAt         TimestamptzString @default(now())
+
+  @@index([assessmentId])
+}
+
+// ============================================================
+// WEATHER PREDICTION
+// ============================================================
+model WeatherPrediction {
+  id                  Int               @id @default(autoincrement())
+
+  rainfallProbability Float?
+  temperature         Float?
+  humidity            Float?
+  weatherRiskLevel    String?
+  riskDescription     String?
+  recommendedAction   String?
+
+  assessment          AIAssessment      @relation(fields:[assessmentId], references:[id])
+  assessmentId        Int               @unique
+
+  createdAt           TimestamptzString @default(now())
+
+  @@index([assessmentId])
+}
+
+// ============================================================
+// RECOMMENDATION
+// ============================================================
+model Recommendation {
+  id                Int                    @id @default(autoincrement())
+
+  type              RecommendationType
+  priority          RecommendationPriority @default(MEDIUM)
+
+  title             String
+  message           String
+
+  supportingFactors String?
+  expectedImpact    String?
+
+  status            RecommendationStatus   @default(OPEN)
+  code              String?
+  params            String?
+  dedupeKey         String?                @unique
+  resolvedAt        TimestamptzString?
+
+  assessment        AIAssessment?          @relation(fields:[assessmentId], references:[id])
+  assessmentId      Int?
+
+  field             Field?                 @relation(fields:[fieldId], references:[id], onDelete: Cascade)
+  fieldId           Int?
+
+  author            User?                  @relation(fields:[authorId], references:[id], onDelete: SetNull)
+  authorId          Int?
+
+  createdAt         TimestamptzString      @default(now())
+
+  @@index([assessmentId])
+  @@index([priority])
+  @@index([type])
+  @@index([fieldId])
+  @@index([status])
+}
+
+// ============================================================
+// SUSTAINABILITY RECORD (hash-chained savings ledger)
+// ============================================================
+model SustainabilityRecord {
+  id                Int               @id @default(autoincrement())
+
+  waterSaved        Float?
+  fertilizerReduced Float?
+  estimatedImpact   String?
+
+  kind              String?
+  method            String?
+  periodStart       TimestamptzString?
+  periodEnd         TimestamptzString?
+  waterUsed         Float?
+  baselineWater     Float?
+  kwhSaved          Float?
+  co2Kg             Float?
+  rupeesSaved       Float?
+  sourceRef         String?
+  entryKey          String?           @unique
+  prevHash          String?
+  hash              String?           @unique
+
+  field             Field             @relation(fields:[fieldId], references:[id])
+  fieldId           Int
+
+  assessment        AIAssessment?     @relation(fields:[assessmentId], references:[id])
+  assessmentId      Int?
+
+  recordedAt        TimestamptzString @default(now())
+
+  @@index([fieldId])
+  @@index([assessmentId])
+}
+
+// ============================================================
+// FERTILIZER PLAN (soil-test based)
+// ============================================================
+model FertilizerPlan {
+  id                Int               @id @default(autoincrement())
+
+  field             Field             @relation(fields:[fieldId], references:[id], onDelete: Cascade)
+  fieldId           Int
+
+  cropType          String
+  source            String
+  soilN             Float
+  soilP             Float
+  soilK             Float
+  soilPh            Float?
+  organicCarbon     Float?
+  nStatus           String
+  pStatus           String
+  kStatus           String
+  requiredN         Float
+  requiredP         Float
+  requiredK         Float
+  ureaKg            Float
+  dapKg             Float
+  mopKg             Float
+  blanketUreaKg     Float
+  blanketDapKg      Float
+  blanketMopKg      Float
+  costRupees        Float
+  blanketCostRupees Float
+  schedule          String
+  applied           Boolean           @default(false)
+  appliedAt         TimestamptzString?
+
+  createdAt         TimestamptzString @default(now())
+
+  @@index([fieldId])
+}
+
+// ============================================================
+// SATELLITE NDVI SNAPSHOT
+// ============================================================
+model NdviSnapshot {
+  id              Int               @id @default(autoincrement())
+
+  field           Field             @relation(fields:[fieldId], references:[id], onDelete: Cascade)
+  fieldId         Int
+
+  sceneId         String
+  sceneDate       TimestamptzString
+  cloudCover      Float
+  meanNdvi        Float
+  minNdvi         Float
+  maxNdvi         Float
+  validPixelRatio Float
+  zones           String
+  bounds          String
+  imagePath       String
+
+  createdAt       TimestamptzString @default(now())
+
+  @@index([fieldId])
+}
+
+// ============================================================
+// FIELD TRIAL (AgriGuard plot vs control plot)
+// ============================================================
+model Trial {
+  id               Int               @id @default(autoincrement())
+
+  farm             Farm              @relation(fields:[farmId], references:[id], onDelete: Cascade)
+  farmId           Int
+
+  name             String
+  treatmentFieldId Int
+  controlFieldId   Int
+  startDate        TimestamptzString
+  endDate          TimestamptzString?
+  status           TrialStatus       @default(ACTIVE)
+  treatmentYieldKg Float?
+  controlYieldKg   Float?
+  notes            String?
+
+  createdAt        TimestamptzString @default(now())
+
+  @@index([farmId])
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+model Notification {
+  id        Int               @id @default(autoincrement())
+
+  user      User              @relation(fields:[userId], references:[id], onDelete: Cascade)
+  userId    Int
+
+  title     String
+  body      String
+  severity  String            @default("info")
+  link      String?
+  fieldId   Int?
+  channels  String?
+  readAt    TimestamptzString?
+
+  createdAt TimestamptzString @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model PushSubscription {
+  id        Int               @id @default(autoincrement())
+
+  user      User              @relation(fields:[userId], references:[id], onDelete: Cascade)
+  userId    Int
+
+  endpoint  String            @unique
+  p256dh    String
+  auth      String
+
+  createdAt TimestamptzString @default(now())
+
+  @@index([userId])
+}
+
+// ============================================================
+// AI COPILOT & CACHE
+// ============================================================
+model ChatMessage {
+  id        Int               @id @default(autoincrement())
+
+  user      User              @relation(fields:[userId], references:[id], onDelete: Cascade)
+  userId    Int
+
+  role      String
+  content   String
+  provider  String?
+
+  createdAt TimestamptzString @default(now())
+
+  @@index([userId])
+}
+
+model AiCache {
+  id        Int               @id @default(autoincrement())
+  cacheKey  String            @unique
+  value     String
+  provider  String?
+
+  createdAt TimestamptzString @default(now())
+}
+
+// ============================================================
+// ASYNC PROCESSING JOB
+// ============================================================
+model ProcessingJob {
+  id           Int                @id @default(autoincrement())
+
+  jobType      String
+  status       JobStatus          @default(QUEUED)
+
+  attempts     Int                @default(0)
+  errorMessage String?
+
+  assessment   AIAssessment?      @relation(fields:[assessmentId], references:[id])
+  assessmentId Int?
+
+  createdAt    TimestamptzString  @default(now())
+  startedAt    TimestamptzString?
+  completedAt  TimestamptzString?
+
+  @@index([status])
+  @@index([jobType])
+  @@index([assessmentId])
+}

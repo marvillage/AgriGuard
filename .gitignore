@@ -1,0 +1,5 @@
+# Full-size ChatGPT exports; the site uses the resized copies in frontend/public/images
+ChatGPT Image*.png
+.DS_Store
+Thumbs.db
+*.log

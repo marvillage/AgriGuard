@@ -1,0 +1,2221 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.aIAssessment",
+    "label": "Create table \"aIAssessment\"",
+    "summary": "Creates table \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"aIAssessment\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"aIAssessment\"",
+        "sql": "CREATE TABLE \"public\".\"aIAssessment\" (\n  \"completedAt\" timestamptz,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"cropHealthScore\" float8,\n  \"cropId\" int4,\n  \"diseaseRisk\" float8,\n  \"fieldId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"nutrientStress\" float8,\n  \"status\" text DEFAULT 'PENDING' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"waterStress\" float8,\n  \"weatherRisk\" float8,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"aIAssessment_status_check_48358bb5\" CHECK (\"status\" IN ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"aIAssessment\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.crop",
+    "label": "Create table \"crop\"",
+    "summary": "Creates table \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"crop\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crop\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"crop\"",
+        "sql": "CREATE TABLE \"public\".\"crop\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fieldId\" int4 NOT NULL,\n  \"harvestDate\" timestamptz,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"plantingDate\" timestamptz,\n  \"season\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"variety\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"crop\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crop\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.cropImage",
+    "label": "Create table \"cropImage\"",
+    "summary": "Creates table \"cropImage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "cropImage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"cropImage\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cropImage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"cropImage\"",
+        "sql": "CREATE TABLE \"public\".\"cropImage\" (\n  \"assessmentId\" int4,\n  \"contentType\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"originalName\" text NOT NULL,\n  \"storageKey\" text NOT NULL,\n  \"uploadedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"url\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"cropImage\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cropImage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.diseasePrediction",
+    "label": "Create table \"diseasePrediction\"",
+    "summary": "Creates table \"diseasePrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "diseasePrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"diseasePrediction\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"diseasePrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"diseasePrediction\"",
+        "sql": "CREATE TABLE \"public\".\"diseasePrediction\" (\n  \"assessmentId\" int4 NOT NULL,\n  \"confidence\" float8 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"diseaseName\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"severity\" float8,\n  \"symptoms\" text,\n  \"treatment\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"diseasePrediction\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"diseasePrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.farm",
+    "label": "Create table \"farm\"",
+    "summary": "Creates table \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"farm\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farm\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"farm\"",
+        "sql": "CREATE TABLE \"public\".\"farm\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" SERIAL NOT NULL,\n  \"location\" text,\n  \"name\" text NOT NULL,\n  \"ownerId\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"farm\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farm\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.field",
+    "label": "Create table \"field\"",
+    "summary": "Creates table \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"field\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"field\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"field\"",
+        "sql": "CREATE TABLE \"public\".\"field\" (\n  \"area\" float8 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"farmId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"location\" text,\n  \"name\" text NOT NULL,\n  \"soilType\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"field\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"field\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.fieldObservation",
+    "label": "Create table \"fieldObservation\"",
+    "summary": "Creates table \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"fieldObservation\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"fieldObservation\"",
+        "sql": "CREATE TABLE \"public\".\"fieldObservation\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fieldId\" int4 NOT NULL,\n  \"humidity\" float8,\n  \"id\" SERIAL NOT NULL,\n  \"nitrogen\" float8,\n  \"notes\" text,\n  \"observedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"phosphorus\" float8,\n  \"potassium\" float8,\n  \"rainfall\" float8,\n  \"soilMoisture\" float8,\n  \"temperature\" float8,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"fieldObservation\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.irrigationPrediction",
+    "label": "Create table \"irrigationPrediction\"",
+    "summary": "Creates table \"irrigationPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "irrigationPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"irrigationPrediction\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"irrigationPrediction\"",
+        "sql": "CREATE TABLE \"public\".\"irrigationPrediction\" (\n  \"assessmentId\" int4 NOT NULL,\n  \"confidence\" float8,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"reasoning\" text,\n  \"recommendedAction\" text NOT NULL,\n  \"recommendedAmount\" float8,\n  \"waterStressLevel\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"irrigationPrediction\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.nutrientPrediction",
+    "label": "Create table \"nutrientPrediction\"",
+    "summary": "Creates table \"nutrientPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "nutrientPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"nutrientPrediction\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"nutrientPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"nutrientPrediction\"",
+        "sql": "CREATE TABLE \"public\".\"nutrientPrediction\" (\n  \"assessmentId\" int4 NOT NULL,\n  \"confidence\" float8,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fertilizerType\" text,\n  \"id\" SERIAL NOT NULL,\n  \"nitrogenStatus\" text,\n  \"phosphorusStatus\" text,\n  \"potassiumStatus\" text,\n  \"reasoning\" text,\n  \"recommendedAction\" text,\n  \"recommendedAmount\" float8,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"nutrientPrediction\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"nutrientPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.processingJob",
+    "label": "Create table \"processingJob\"",
+    "summary": "Creates table \"processingJob\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "processingJob"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"processingJob\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"processingJob\"",
+        "sql": "CREATE TABLE \"public\".\"processingJob\" (\n  \"assessmentId\" int4,\n  \"attempts\" int4 DEFAULT 0 NOT NULL,\n  \"completedAt\" timestamptz,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"errorMessage\" text,\n  \"id\" SERIAL NOT NULL,\n  \"jobType\" text NOT NULL,\n  \"startedAt\" timestamptz,\n  \"status\" text DEFAULT 'QUEUED' NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"processingJob_status_check_221b8aea\" CHECK (\"status\" IN ('QUEUED', 'PROCESSING', 'COMPLETED', 'FAILED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"processingJob\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.recommendation",
+    "label": "Create table \"recommendation\"",
+    "summary": "Creates table \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"recommendation\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"recommendation\"",
+        "sql": "CREATE TABLE \"public\".\"recommendation\" (\n  \"assessmentId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"expectedImpact\" text,\n  \"id\" SERIAL NOT NULL,\n  \"message\" text NOT NULL,\n  \"priority\" text DEFAULT 'MEDIUM' NOT NULL,\n  \"supportingFactors\" text,\n  \"title\" text NOT NULL,\n  \"type\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"recommendation_priority_check_0838e5f0\" CHECK (\"priority\" IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')),\n  CONSTRAINT \"recommendation_type_check_79da7040\" CHECK (\"type\" IN ('IRRIGATION', 'FERTILIZER', 'DISEASE', 'WEATHER', 'GENERAL'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"recommendation\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.sustainabilityRecord",
+    "label": "Create table \"sustainabilityRecord\"",
+    "summary": "Creates table \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"sustainabilityRecord\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"sustainabilityRecord\"",
+        "sql": "CREATE TABLE \"public\".\"sustainabilityRecord\" (\n  \"assessmentId\" int4,\n  \"estimatedImpact\" text,\n  \"fertilizerReduced\" float8,\n  \"fieldId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"recordedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"waterSaved\" float8,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"sustainabilityRecord\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.user",
+    "label": "Create table \"user\"",
+    "summary": "Creates table \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"user\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"user\"",
+        "sql": "CREATE TABLE \"public\".\"user\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"passwordHash\" text NOT NULL,\n  \"role\" text DEFAULT 'FARMER' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"user_role_check_52066950\" CHECK (\"role\" IN ('FARMER', 'AGRONOMIST', 'ADMIN'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"user\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.weatherPrediction",
+    "label": "Create table \"weatherPrediction\"",
+    "summary": "Creates table \"weatherPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "weatherPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"weatherPrediction\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"weatherPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"weatherPrediction\"",
+        "sql": "CREATE TABLE \"public\".\"weatherPrediction\" (\n  \"assessmentId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"humidity\" float8,\n  \"id\" SERIAL NOT NULL,\n  \"rainfallProbability\" float8,\n  \"recommendedAction\" text,\n  \"riskDescription\" text,\n  \"temperature\" float8,\n  \"weatherRiskLevel\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"weatherPrediction\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"weatherPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.irrigationPrediction.irrigationPrediction_assessmentId_key",
+    "label": "Add unique constraint on \"irrigationPrediction\" (assessmentId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "irrigationPrediction_assessmentId_key",
+        "table": "irrigationPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"irrigationPrediction_assessmentId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationPrediction_assessmentId_key",
+          "public",
+          "\"public\".\"irrigationPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"irrigationPrediction_assessmentId_key\"",
+        "sql": "ALTER TABLE \"public\".\"irrigationPrediction\" ADD CONSTRAINT \"irrigationPrediction_assessmentId_key\" UNIQUE (\"assessmentId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"irrigationPrediction_assessmentId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationPrediction_assessmentId_key",
+          "public",
+          "\"public\".\"irrigationPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.nutrientPrediction.nutrientPrediction_assessmentId_key",
+    "label": "Add unique constraint on \"nutrientPrediction\" (assessmentId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "nutrientPrediction_assessmentId_key",
+        "table": "nutrientPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"nutrientPrediction_assessmentId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "nutrientPrediction_assessmentId_key",
+          "public",
+          "\"public\".\"nutrientPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"nutrientPrediction_assessmentId_key\"",
+        "sql": "ALTER TABLE \"public\".\"nutrientPrediction\" ADD CONSTRAINT \"nutrientPrediction_assessmentId_key\" UNIQUE (\"assessmentId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"nutrientPrediction_assessmentId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "nutrientPrediction_assessmentId_key",
+          "public",
+          "\"public\".\"nutrientPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.user.user_email_key",
+    "label": "Add unique constraint on \"user\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "user_email_key",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"user_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_email_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"user_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD CONSTRAINT \"user_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"user_email_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_email_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.weatherPrediction.weatherPrediction_assessmentId_key",
+    "label": "Add unique constraint on \"weatherPrediction\" (assessmentId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "weatherPrediction_assessmentId_key",
+        "table": "weatherPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"weatherPrediction_assessmentId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "weatherPrediction_assessmentId_key",
+          "public",
+          "\"public\".\"weatherPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"weatherPrediction_assessmentId_key\"",
+        "sql": "ALTER TABLE \"public\".\"weatherPrediction\" ADD CONSTRAINT \"weatherPrediction_assessmentId_key\" UNIQUE (\"assessmentId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"weatherPrediction_assessmentId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "weatherPrediction_assessmentId_key",
+          "public",
+          "\"public\".\"weatherPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aIAssessment.aIAssessment_createdAt_idx_9575dbd7",
+    "label": "Create index \"aIAssessment_createdAt_idx_9575dbd7\" on \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aIAssessment_createdAt_idx_9575dbd7",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aIAssessment_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aIAssessment_createdAt_idx_9575dbd7\"",
+        "sql": "CREATE INDEX \"aIAssessment_createdAt_idx_9575dbd7\" ON \"public\".\"aIAssessment\" (\"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aIAssessment_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aIAssessment.aIAssessment_cropId_idx_879e8d63",
+    "label": "Create index \"aIAssessment_cropId_idx_879e8d63\" on \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aIAssessment_cropId_idx_879e8d63",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aIAssessment_cropId_idx_879e8d63\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_cropId_idx_879e8d63\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aIAssessment_cropId_idx_879e8d63\"",
+        "sql": "CREATE INDEX \"aIAssessment_cropId_idx_879e8d63\" ON \"public\".\"aIAssessment\" (\"cropId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aIAssessment_cropId_idx_879e8d63\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_cropId_idx_879e8d63\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aIAssessment.aIAssessment_fieldId_idx_44d815d7",
+    "label": "Create index \"aIAssessment_fieldId_idx_44d815d7\" on \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aIAssessment_fieldId_idx_44d815d7",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aIAssessment_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aIAssessment_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"aIAssessment_fieldId_idx_44d815d7\" ON \"public\".\"aIAssessment\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aIAssessment_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aIAssessment.aIAssessment_status_idx_e98638ab",
+    "label": "Create index \"aIAssessment_status_idx_e98638ab\" on \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aIAssessment_status_idx_e98638ab",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aIAssessment_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aIAssessment_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"aIAssessment_status_idx_e98638ab\" ON \"public\".\"aIAssessment\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aIAssessment_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aIAssessment_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.crop.crop_fieldId_idx_44d815d7",
+    "label": "Create index \"crop_fieldId_idx_44d815d7\" on \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "crop_fieldId_idx_44d815d7",
+        "table": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"crop_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crop_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"crop_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"crop_fieldId_idx_44d815d7\" ON \"public\".\"crop\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"crop_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crop_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.cropImage.cropImage_assessmentId_idx_1fe05216",
+    "label": "Create index \"cropImage_assessmentId_idx_1fe05216\" on \"cropImage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "cropImage_assessmentId_idx_1fe05216",
+        "table": "cropImage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"cropImage_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cropImage_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"cropImage_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"cropImage_assessmentId_idx_1fe05216\" ON \"public\".\"cropImage\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"cropImage_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cropImage_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.diseasePrediction.diseasePrediction_assessmentId_idx_1fe05216",
+    "label": "Create index \"diseasePrediction_assessmentId_idx_1fe05216\" on \"diseasePrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "diseasePrediction_assessmentId_idx_1fe05216",
+        "table": "diseasePrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"diseasePrediction_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"diseasePrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"diseasePrediction_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"diseasePrediction_assessmentId_idx_1fe05216\" ON \"public\".\"diseasePrediction\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"diseasePrediction_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"diseasePrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.farm.farm_ownerId_idx_e2d0c1ef",
+    "label": "Create index \"farm_ownerId_idx_e2d0c1ef\" on \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "farm_ownerId_idx_e2d0c1ef",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"farm_ownerId_idx_e2d0c1ef\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farm_ownerId_idx_e2d0c1ef\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"farm_ownerId_idx_e2d0c1ef\"",
+        "sql": "CREATE INDEX \"farm_ownerId_idx_e2d0c1ef\" ON \"public\".\"farm\" (\"ownerId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"farm_ownerId_idx_e2d0c1ef\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farm_ownerId_idx_e2d0c1ef\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.field.field_farmId_idx_786bd89b",
+    "label": "Create index \"field_farmId_idx_786bd89b\" on \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "field_farmId_idx_786bd89b",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"field_farmId_idx_786bd89b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"field_farmId_idx_786bd89b\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"field_farmId_idx_786bd89b\"",
+        "sql": "CREATE INDEX \"field_farmId_idx_786bd89b\" ON \"public\".\"field\" (\"farmId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"field_farmId_idx_786bd89b\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"field_farmId_idx_786bd89b\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.fieldObservation.fieldObservation_fieldId_idx_44d815d7",
+    "label": "Create index \"fieldObservation_fieldId_idx_44d815d7\" on \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "fieldObservation_fieldId_idx_44d815d7",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"fieldObservation_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"fieldObservation_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"fieldObservation_fieldId_idx_44d815d7\" ON \"public\".\"fieldObservation\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"fieldObservation_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.fieldObservation.fieldObservation_observedAt_idx_980e226e",
+    "label": "Create index \"fieldObservation_observedAt_idx_980e226e\" on \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "fieldObservation_observedAt_idx_980e226e",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"fieldObservation_observedAt_idx_980e226e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation_observedAt_idx_980e226e\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"fieldObservation_observedAt_idx_980e226e\"",
+        "sql": "CREATE INDEX \"fieldObservation_observedAt_idx_980e226e\" ON \"public\".\"fieldObservation\" (\"observedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"fieldObservation_observedAt_idx_980e226e\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation_observedAt_idx_980e226e\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.irrigationPrediction.irrigationPrediction_assessmentId_idx_1fe05216",
+    "label": "Create index \"irrigationPrediction_assessmentId_idx_1fe05216\" on \"irrigationPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "irrigationPrediction_assessmentId_idx_1fe05216",
+        "table": "irrigationPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"irrigationPrediction_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationPrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"irrigationPrediction_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"irrigationPrediction_assessmentId_idx_1fe05216\" ON \"public\".\"irrigationPrediction\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"irrigationPrediction_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationPrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.nutrientPrediction.nutrientPrediction_assessmentId_idx_1fe05216",
+    "label": "Create index \"nutrientPrediction_assessmentId_idx_1fe05216\" on \"nutrientPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "nutrientPrediction_assessmentId_idx_1fe05216",
+        "table": "nutrientPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"nutrientPrediction_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"nutrientPrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"nutrientPrediction_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"nutrientPrediction_assessmentId_idx_1fe05216\" ON \"public\".\"nutrientPrediction\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"nutrientPrediction_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"nutrientPrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.processingJob.processingJob_assessmentId_idx_1fe05216",
+    "label": "Create index \"processingJob_assessmentId_idx_1fe05216\" on \"processingJob\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "processingJob_assessmentId_idx_1fe05216",
+        "table": "processingJob"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"processingJob_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"processingJob_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"processingJob_assessmentId_idx_1fe05216\" ON \"public\".\"processingJob\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"processingJob_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.processingJob.processingJob_jobType_idx_65878b3e",
+    "label": "Create index \"processingJob_jobType_idx_65878b3e\" on \"processingJob\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "processingJob_jobType_idx_65878b3e",
+        "table": "processingJob"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"processingJob_jobType_idx_65878b3e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob_jobType_idx_65878b3e\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"processingJob_jobType_idx_65878b3e\"",
+        "sql": "CREATE INDEX \"processingJob_jobType_idx_65878b3e\" ON \"public\".\"processingJob\" (\"jobType\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"processingJob_jobType_idx_65878b3e\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob_jobType_idx_65878b3e\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.processingJob.processingJob_status_idx_e98638ab",
+    "label": "Create index \"processingJob_status_idx_e98638ab\" on \"processingJob\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "processingJob_status_idx_e98638ab",
+        "table": "processingJob"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"processingJob_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"processingJob_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"processingJob_status_idx_e98638ab\" ON \"public\".\"processingJob\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"processingJob_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"processingJob_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.recommendation.recommendation_assessmentId_idx_1fe05216",
+    "label": "Create index \"recommendation_assessmentId_idx_1fe05216\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "recommendation_assessmentId_idx_1fe05216",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"recommendation_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"recommendation_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"recommendation_assessmentId_idx_1fe05216\" ON \"public\".\"recommendation\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"recommendation_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.recommendation.recommendation_priority_idx_745dc344",
+    "label": "Create index \"recommendation_priority_idx_745dc344\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "recommendation_priority_idx_745dc344",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"recommendation_priority_idx_745dc344\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_priority_idx_745dc344\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"recommendation_priority_idx_745dc344\"",
+        "sql": "CREATE INDEX \"recommendation_priority_idx_745dc344\" ON \"public\".\"recommendation\" (\"priority\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"recommendation_priority_idx_745dc344\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_priority_idx_745dc344\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.recommendation.recommendation_type_idx_b6b604ea",
+    "label": "Create index \"recommendation_type_idx_b6b604ea\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "recommendation_type_idx_b6b604ea",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"recommendation_type_idx_b6b604ea\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_type_idx_b6b604ea\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"recommendation_type_idx_b6b604ea\"",
+        "sql": "CREATE INDEX \"recommendation_type_idx_b6b604ea\" ON \"public\".\"recommendation\" (\"type\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"recommendation_type_idx_b6b604ea\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_type_idx_b6b604ea\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.sustainabilityRecord.sustainabilityRecord_assessmentId_idx_1fe05216",
+    "label": "Create index \"sustainabilityRecord_assessmentId_idx_1fe05216\" on \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "sustainabilityRecord_assessmentId_idx_1fe05216",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"sustainabilityRecord_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sustainabilityRecord_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"sustainabilityRecord_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"sustainabilityRecord_assessmentId_idx_1fe05216\" ON \"public\".\"sustainabilityRecord\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"sustainabilityRecord_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sustainabilityRecord_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.sustainabilityRecord.sustainabilityRecord_fieldId_idx_44d815d7",
+    "label": "Create index \"sustainabilityRecord_fieldId_idx_44d815d7\" on \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "sustainabilityRecord_fieldId_idx_44d815d7",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"sustainabilityRecord_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sustainabilityRecord_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"sustainabilityRecord_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"sustainabilityRecord_fieldId_idx_44d815d7\" ON \"public\".\"sustainabilityRecord\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"sustainabilityRecord_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sustainabilityRecord_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.weatherPrediction.weatherPrediction_assessmentId_idx_1fe05216",
+    "label": "Create index \"weatherPrediction_assessmentId_idx_1fe05216\" on \"weatherPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "weatherPrediction_assessmentId_idx_1fe05216",
+        "table": "weatherPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"weatherPrediction_assessmentId_idx_1fe05216\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"weatherPrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"weatherPrediction_assessmentId_idx_1fe05216\"",
+        "sql": "CREATE INDEX \"weatherPrediction_assessmentId_idx_1fe05216\" ON \"public\".\"weatherPrediction\" (\"assessmentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"weatherPrediction_assessmentId_idx_1fe05216\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"weatherPrediction_assessmentId_idx_1fe05216\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aIAssessment.aIAssessment_fieldId_fkey",
+    "label": "Add foreign key \"aIAssessment_fieldId_fkey\" on \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aIAssessment_fieldId_fkey",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aIAssessment_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aIAssessment_fieldId_fkey",
+          "public",
+          "\"public\".\"aIAssessment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aIAssessment_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aIAssessment\"\nADD CONSTRAINT \"aIAssessment_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aIAssessment_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aIAssessment_fieldId_fkey",
+          "public",
+          "\"public\".\"aIAssessment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aIAssessment.aIAssessment_cropId_fkey",
+    "label": "Add foreign key \"aIAssessment_cropId_fkey\" on \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aIAssessment_cropId_fkey",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aIAssessment_cropId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aIAssessment_cropId_fkey",
+          "public",
+          "\"public\".\"aIAssessment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aIAssessment_cropId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aIAssessment\"\nADD CONSTRAINT \"aIAssessment_cropId_fkey\"\nFOREIGN KEY (\"cropId\")\nREFERENCES \"public\".\"crop\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aIAssessment_cropId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aIAssessment_cropId_fkey",
+          "public",
+          "\"public\".\"aIAssessment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.crop.crop_fieldId_fkey",
+    "label": "Add foreign key \"crop_fieldId_fkey\" on \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "crop_fieldId_fkey",
+        "table": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"crop_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "crop_fieldId_fkey",
+          "public",
+          "\"public\".\"crop\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"crop_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"crop\"\nADD CONSTRAINT \"crop_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"crop_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "crop_fieldId_fkey",
+          "public",
+          "\"public\".\"crop\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.cropImage.cropImage_assessmentId_fkey",
+    "label": "Add foreign key \"cropImage_assessmentId_fkey\" on \"cropImage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "cropImage_assessmentId_fkey",
+        "table": "cropImage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"cropImage_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cropImage_assessmentId_fkey",
+          "public",
+          "\"public\".\"cropImage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"cropImage_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"cropImage\"\nADD CONSTRAINT \"cropImage_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"cropImage_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cropImage_assessmentId_fkey",
+          "public",
+          "\"public\".\"cropImage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.diseasePrediction.diseasePrediction_assessmentId_fkey",
+    "label": "Add foreign key \"diseasePrediction_assessmentId_fkey\" on \"diseasePrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "diseasePrediction_assessmentId_fkey",
+        "table": "diseasePrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"diseasePrediction_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "diseasePrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"diseasePrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"diseasePrediction_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"diseasePrediction\"\nADD CONSTRAINT \"diseasePrediction_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"diseasePrediction_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "diseasePrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"diseasePrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.farm.farm_ownerId_fkey",
+    "label": "Add foreign key \"farm_ownerId_fkey\" on \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "farm_ownerId_fkey",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"farm_ownerId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farm_ownerId_fkey",
+          "public",
+          "\"public\".\"farm\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"farm_ownerId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"farm\"\nADD CONSTRAINT \"farm_ownerId_fkey\"\nFOREIGN KEY (\"ownerId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"farm_ownerId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farm_ownerId_fkey",
+          "public",
+          "\"public\".\"farm\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.field.field_farmId_fkey",
+    "label": "Add foreign key \"field_farmId_fkey\" on \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "field_farmId_fkey",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"field_farmId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "field_farmId_fkey",
+          "public",
+          "\"public\".\"field\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"field_farmId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"field\"\nADD CONSTRAINT \"field_farmId_fkey\"\nFOREIGN KEY (\"farmId\")\nREFERENCES \"public\".\"farm\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"field_farmId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "field_farmId_fkey",
+          "public",
+          "\"public\".\"field\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.fieldObservation.fieldObservation_fieldId_fkey",
+    "label": "Add foreign key \"fieldObservation_fieldId_fkey\" on \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "fieldObservation_fieldId_fkey",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"fieldObservation_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_fieldId_fkey",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"fieldObservation_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\"\nADD CONSTRAINT \"fieldObservation_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"fieldObservation_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_fieldId_fkey",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.irrigationPrediction.irrigationPrediction_assessmentId_fkey",
+    "label": "Add foreign key \"irrigationPrediction_assessmentId_fkey\" on \"irrigationPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "irrigationPrediction_assessmentId_fkey",
+        "table": "irrigationPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"irrigationPrediction_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationPrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"irrigationPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"irrigationPrediction_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"irrigationPrediction\"\nADD CONSTRAINT \"irrigationPrediction_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"irrigationPrediction_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationPrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"irrigationPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.nutrientPrediction.nutrientPrediction_assessmentId_fkey",
+    "label": "Add foreign key \"nutrientPrediction_assessmentId_fkey\" on \"nutrientPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "nutrientPrediction_assessmentId_fkey",
+        "table": "nutrientPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"nutrientPrediction_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "nutrientPrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"nutrientPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"nutrientPrediction_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"nutrientPrediction\"\nADD CONSTRAINT \"nutrientPrediction_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"nutrientPrediction_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "nutrientPrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"nutrientPrediction\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.processingJob.processingJob_assessmentId_fkey",
+    "label": "Add foreign key \"processingJob_assessmentId_fkey\" on \"processingJob\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "processingJob_assessmentId_fkey",
+        "table": "processingJob"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"processingJob_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "processingJob_assessmentId_fkey",
+          "public",
+          "\"public\".\"processingJob\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"processingJob_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"processingJob\"\nADD CONSTRAINT \"processingJob_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"processingJob_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "processingJob_assessmentId_fkey",
+          "public",
+          "\"public\".\"processingJob\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.recommendation.recommendation_assessmentId_fkey",
+    "label": "Add foreign key \"recommendation_assessmentId_fkey\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "recommendation_assessmentId_fkey",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"recommendation_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_assessmentId_fkey",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"recommendation_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\"\nADD CONSTRAINT \"recommendation_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"recommendation_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_assessmentId_fkey",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.sustainabilityRecord.sustainabilityRecord_fieldId_fkey",
+    "label": "Add foreign key \"sustainabilityRecord_fieldId_fkey\" on \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "sustainabilityRecord_fieldId_fkey",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"sustainabilityRecord_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_fieldId_fkey",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"sustainabilityRecord_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\"\nADD CONSTRAINT \"sustainabilityRecord_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"sustainabilityRecord_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_fieldId_fkey",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.sustainabilityRecord.sustainabilityRecord_assessmentId_fkey",
+    "label": "Add foreign key \"sustainabilityRecord_assessmentId_fkey\" on \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "sustainabilityRecord_assessmentId_fkey",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"sustainabilityRecord_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_assessmentId_fkey",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"sustainabilityRecord_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\"\nADD CONSTRAINT \"sustainabilityRecord_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"sustainabilityRecord_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_assessmentId_fkey",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.weatherPrediction.weatherPrediction_assessmentId_fkey",
+    "label": "Add foreign key \"weatherPrediction_assessmentId_fkey\" on \"weatherPrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "weatherPrediction_assessmentId_fkey",
+        "table": "weatherPrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"weatherPrediction_assessmentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "weatherPrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"weatherPrediction\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"weatherPrediction_assessmentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"weatherPrediction\"\nADD CONSTRAINT \"weatherPrediction_assessmentId_fkey\"\nFOREIGN KEY (\"assessmentId\")\nREFERENCES \"public\".\"aIAssessment\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"weatherPrediction_assessmentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "weatherPrediction_assessmentId_fkey",
+          "public",
+          "\"public\".\"weatherPrediction\""
+        ]
+      }
+    ]
+  }
+]

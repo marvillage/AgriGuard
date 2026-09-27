@@ -1,0 +1,5199 @@
+[
+  {
+    "id": "table.aiCache",
+    "label": "Create table \"aiCache\"",
+    "summary": "Creates table \"aiCache\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "aiCache"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"aiCache\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiCache\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"aiCache\"",
+        "sql": "CREATE TABLE \"public\".\"aiCache\" (\n  \"cacheKey\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"provider\" text,\n  \"value\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"aiCache\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiCache\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.chatMessage",
+    "label": "Create table \"chatMessage\"",
+    "summary": "Creates table \"chatMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "chatMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"chatMessage\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"chatMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"chatMessage\"",
+        "sql": "CREATE TABLE \"public\".\"chatMessage\" (\n  \"content\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"provider\" text,\n  \"role\" text NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"chatMessage\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"chatMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.device",
+    "label": "Create table \"device\"",
+    "summary": "Creates table \"device\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "device"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"device\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"device\"",
+        "sql": "CREATE TABLE \"public\".\"device\" (\n  \"batteryPct\" float8,\n  \"commandPump\" text,\n  \"commandUntil\" timestamptz,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"deviceKey\" text NOT NULL,\n  \"dryRunLevelPct\" float8 DEFAULT 15 NOT NULL,\n  \"fieldId\" int4 NOT NULL,\n  \"firmware\" text,\n  \"hasEnergyMeter\" bool DEFAULT false NOT NULL,\n  \"hasFlowMeter\" bool DEFAULT false NOT NULL,\n  \"hasSolar\" bool DEFAULT false NOT NULL,\n  \"hasTankSensor\" bool DEFAULT false NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"lastEnergyTotalKwh\" float8,\n  \"lastFlowTotalL\" float8,\n  \"lastSeenAt\" timestamptz,\n  \"manualUntil\" timestamptz,\n  \"name\" text NOT NULL,\n  \"pumpMode\" text DEFAULT 'AUTO' NOT NULL,\n  \"pumpOn\" bool DEFAULT false NOT NULL,\n  \"rssi\" int4,\n  \"simulated\" bool DEFAULT false NOT NULL,\n  \"tankCapacityL\" float8,\n  \"tankHeightCm\" float8,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"device_pumpMode_check_d076a960\" CHECK (\"pumpMode\" IN ('AUTO', 'MANUAL_ON', 'MANUAL_OFF'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"device\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.farmAdvisor",
+    "label": "Create table \"farmAdvisor\"",
+    "summary": "Creates table \"farmAdvisor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "farmAdvisor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"farmAdvisor\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"farmAdvisor\"",
+        "sql": "CREATE TABLE \"public\".\"farmAdvisor\" (\n  \"advisorId\" int4 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"farmId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"farmAdvisor\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.fertilizerPlan",
+    "label": "Create table \"fertilizerPlan\"",
+    "summary": "Creates table \"fertilizerPlan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "fertilizerPlan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"fertilizerPlan\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fertilizerPlan\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"fertilizerPlan\"",
+        "sql": "CREATE TABLE \"public\".\"fertilizerPlan\" (\n  \"applied\" bool DEFAULT false NOT NULL,\n  \"appliedAt\" timestamptz,\n  \"blanketCostRupees\" float8 NOT NULL,\n  \"blanketDapKg\" float8 NOT NULL,\n  \"blanketMopKg\" float8 NOT NULL,\n  \"blanketUreaKg\" float8 NOT NULL,\n  \"costRupees\" float8 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"cropType\" text NOT NULL,\n  \"dapKg\" float8 NOT NULL,\n  \"fieldId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"kStatus\" text NOT NULL,\n  \"mopKg\" float8 NOT NULL,\n  \"nStatus\" text NOT NULL,\n  \"organicCarbon\" float8,\n  \"pStatus\" text NOT NULL,\n  \"requiredK\" float8 NOT NULL,\n  \"requiredN\" float8 NOT NULL,\n  \"requiredP\" float8 NOT NULL,\n  \"schedule\" text NOT NULL,\n  \"soilK\" float8 NOT NULL,\n  \"soilN\" float8 NOT NULL,\n  \"soilP\" float8 NOT NULL,\n  \"soilPh\" float8,\n  \"source\" text NOT NULL,\n  \"ureaKg\" float8 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"fertilizerPlan\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fertilizerPlan\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.irrigationDecision",
+    "label": "Create table \"irrigationDecision\"",
+    "summary": "Creates table \"irrigationDecision\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "irrigationDecision"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"irrigationDecision\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationDecision\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"irrigationDecision\"",
+        "sql": "CREATE TABLE \"public\".\"irrigationDecision\" (\n  \"action\" text NOT NULL,\n  \"decidedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"depletionMm\" float8,\n  \"et0\" float8,\n  \"etc\" float8,\n  \"fieldId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"rainNext24Mm\" float8,\n  \"rainProbability\" float8,\n  \"reason\" text NOT NULL,\n  \"recommendedLitres\" float8,\n  \"refillPoint\" float8,\n  \"runMinutes\" float8,\n  \"soilMoisture\" float8,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"irrigationDecision\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationDecision\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.irrigationEvent",
+    "label": "Create table \"irrigationEvent\"",
+    "summary": "Creates table \"irrigationEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "irrigationEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"irrigationEvent\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"irrigationEvent\"",
+        "sql": "CREATE TABLE \"public\".\"irrigationEvent\" (\n  \"deviceId\" int4,\n  \"endedAt\" timestamptz,\n  \"fieldId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"kwh\" float8,\n  \"litres\" float8,\n  \"measured\" bool DEFAULT false NOT NULL,\n  \"plannedLitres\" float8,\n  \"reason\" text,\n  \"solarKwh\" float8,\n  \"source\" text DEFAULT 'AUTO' NOT NULL,\n  \"startEnergyTotalKwh\" float8,\n  \"startFlowTotalL\" float8,\n  \"startedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"irrigationEvent_source_check_8561a36b\" CHECK (\"source\" IN ('AUTO', 'MANUAL', 'SCHEDULE'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"irrigationEvent\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ndviSnapshot",
+    "label": "Create table \"ndviSnapshot\"",
+    "summary": "Creates table \"ndviSnapshot\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ndviSnapshot"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ndviSnapshot\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ndviSnapshot\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ndviSnapshot\"",
+        "sql": "CREATE TABLE \"public\".\"ndviSnapshot\" (\n  \"bounds\" text NOT NULL,\n  \"cloudCover\" float8 NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fieldId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"imagePath\" text NOT NULL,\n  \"maxNdvi\" float8 NOT NULL,\n  \"meanNdvi\" float8 NOT NULL,\n  \"minNdvi\" float8 NOT NULL,\n  \"sceneDate\" timestamptz NOT NULL,\n  \"sceneId\" text NOT NULL,\n  \"validPixelRatio\" float8 NOT NULL,\n  \"zones\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ndviSnapshot\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ndviSnapshot\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.notification",
+    "label": "Create table \"notification\"",
+    "summary": "Creates table \"notification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "notification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"notification\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notification\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"notification\"",
+        "sql": "CREATE TABLE \"public\".\"notification\" (\n  \"body\" text NOT NULL,\n  \"channels\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fieldId\" int4,\n  \"id\" SERIAL NOT NULL,\n  \"link\" text,\n  \"readAt\" timestamptz,\n  \"severity\" text DEFAULT 'info' NOT NULL,\n  \"title\" text NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"notification\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notification\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.pumpSchedule",
+    "label": "Create table \"pumpSchedule\"",
+    "summary": "Creates table \"pumpSchedule\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "pumpSchedule"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"pumpSchedule\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pumpSchedule\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"pumpSchedule\"",
+        "sql": "CREATE TABLE \"public\".\"pumpSchedule\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"days\" text DEFAULT '1234567' NOT NULL,\n  \"durationMinutes\" int4 NOT NULL,\n  \"enabled\" bool DEFAULT true NOT NULL,\n  \"fieldId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"mode\" text DEFAULT 'SMART' NOT NULL,\n  \"startTime\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"pumpSchedule\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pumpSchedule\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.pushSubscription",
+    "label": "Create table \"pushSubscription\"",
+    "summary": "Creates table \"pushSubscription\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "pushSubscription"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"pushSubscription\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pushSubscription\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"pushSubscription\"",
+        "sql": "CREATE TABLE \"public\".\"pushSubscription\" (\n  \"auth\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"endpoint\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"p256dh\" text NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"pushSubscription\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pushSubscription\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.trial",
+    "label": "Create table \"trial\"",
+    "summary": "Creates table \"trial\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "trial"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"trial\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"trial\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"trial\"",
+        "sql": "CREATE TABLE \"public\".\"trial\" (\n  \"controlFieldId\" int4 NOT NULL,\n  \"controlYieldKg\" float8,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"endDate\" timestamptz,\n  \"farmId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"notes\" text,\n  \"startDate\" timestamptz NOT NULL,\n  \"status\" text DEFAULT 'ACTIVE' NOT NULL,\n  \"treatmentFieldId\" int4 NOT NULL,\n  \"treatmentYieldKg\" float8,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"trial_status_check_0a2783e1\" CHECK (\"status\" IN ('ACTIVE', 'COMPLETED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"trial\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"trial\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.aIAssessment.kind",
+    "label": "Add column \"kind\" to \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "kind",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"kind\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "aIAssessment",
+          "kind"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"kind\"",
+        "sql": "ALTER TABLE \"public\".\"aIAssessment\" ADD COLUMN \"kind\" text DEFAULT 'RISK' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"kind\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "aIAssessment",
+          "kind"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.aIAssessment.ndvi",
+    "label": "Add column \"ndvi\" to \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "ndvi",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"ndvi\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "aIAssessment",
+          "ndvi"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"ndvi\"",
+        "sql": "ALTER TABLE \"public\".\"aIAssessment\" ADD COLUMN \"ndvi\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"ndvi\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "aIAssessment",
+          "ndvi"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.aIAssessment.summary",
+    "label": "Add column \"summary\" to \"aIAssessment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "summary",
+        "table": "aIAssessment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"summary\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "aIAssessment",
+          "summary"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"summary\"",
+        "sql": "ALTER TABLE \"public\".\"aIAssessment\" ADD COLUMN \"summary\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"summary\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "aIAssessment",
+          "summary"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.crop.cropType",
+    "label": "Add column \"cropType\" to \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "cropType",
+        "table": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"cropType\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "cropType"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"cropType\"",
+        "sql": "ALTER TABLE \"public\".\"crop\" ADD COLUMN \"cropType\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"cropType\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "cropType"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.crop.notes",
+    "label": "Add column \"notes\" to \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "notes",
+        "table": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"notes\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "notes"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"notes\"",
+        "sql": "ALTER TABLE \"public\".\"crop\" ADD COLUMN \"notes\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"notes\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "notes"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.crop.status",
+    "label": "Add column \"status\" to \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"crop\" ADD COLUMN \"status\" text DEFAULT 'ACTIVE' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.crop.yieldKg",
+    "label": "Add column \"yieldKg\" to \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "yieldKg",
+        "table": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"yieldKg\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "yieldKg"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"yieldKg\"",
+        "sql": "ALTER TABLE \"public\".\"crop\" ADD COLUMN \"yieldKg\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"yieldKg\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "crop",
+          "yieldKg"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.diseasePrediction.label",
+    "label": "Add column \"label\" to \"diseasePrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "label",
+        "table": "diseasePrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"label\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "diseasePrediction",
+          "label"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"label\"",
+        "sql": "ALTER TABLE \"public\".\"diseasePrediction\" ADD COLUMN \"label\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"label\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "diseasePrediction",
+          "label"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.diseasePrediction.rank",
+    "label": "Add column \"rank\" to \"diseasePrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "rank",
+        "table": "diseasePrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"rank\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "diseasePrediction",
+          "rank"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"rank\"",
+        "sql": "ALTER TABLE \"public\".\"diseasePrediction\" ADD COLUMN \"rank\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"rank\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "diseasePrediction",
+          "rank"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.diseasePrediction.source",
+    "label": "Add column \"source\" to \"diseasePrediction\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "source",
+        "table": "diseasePrediction"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"source\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "diseasePrediction",
+          "source"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"source\"",
+        "sql": "ALTER TABLE \"public\".\"diseasePrediction\" ADD COLUMN \"source\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"source\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "diseasePrediction",
+          "source"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.baselineDepthMm",
+    "label": "Add column \"baselineDepthMm\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "baselineDepthMm",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"baselineDepthMm\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "baselineDepthMm"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"baselineDepthMm\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"baselineDepthMm\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"baselineDepthMm\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "baselineDepthMm"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.baselineIntervalDays",
+    "label": "Add column \"baselineIntervalDays\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "baselineIntervalDays",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"baselineIntervalDays\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "baselineIntervalDays"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"baselineIntervalDays\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"baselineIntervalDays\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"baselineIntervalDays\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "baselineIntervalDays"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.electricityRate",
+    "label": "Add column \"electricityRate\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "electricityRate",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"electricityRate\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "electricityRate"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"electricityRate\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"electricityRate\" float8 DEFAULT 7 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"electricityRate\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "electricityRate"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.irrigationMethod",
+    "label": "Add column \"irrigationMethod\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "irrigationMethod",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"irrigationMethod\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "irrigationMethod"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"irrigationMethod\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"irrigationMethod\" text DEFAULT 'flood' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"irrigationMethod\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "irrigationMethod"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.latitude",
+    "label": "Add column \"latitude\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "latitude",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"latitude\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "latitude"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"latitude\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"latitude\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"latitude\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "latitude"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.longitude",
+    "label": "Add column \"longitude\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "longitude",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"longitude\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "longitude"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"longitude\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"longitude\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"longitude\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "longitude"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.shareCode",
+    "label": "Add column \"shareCode\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "shareCode",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"shareCode\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "shareCode"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"shareCode\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"shareCode\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"shareCode\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "shareCode"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.farm.solarCapacityKw",
+    "label": "Add column \"solarCapacityKw\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "solarCapacityKw",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"solarCapacityKw\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "solarCapacityKw"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"solarCapacityKw\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"solarCapacityKw\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"solarCapacityKw\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "solarCapacityKw"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.boundary",
+    "label": "Add column \"boundary\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "boundary",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"boundary\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "boundary"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"boundary\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"boundary\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"boundary\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "boundary"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.fieldCapacity",
+    "label": "Add column \"fieldCapacity\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "fieldCapacity",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fieldCapacity\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "fieldCapacity"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"fieldCapacity\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"fieldCapacity\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fieldCapacity\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "fieldCapacity"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.irrigationMethod",
+    "label": "Add column \"irrigationMethod\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "irrigationMethod",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"irrigationMethod\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "irrigationMethod"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"irrigationMethod\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"irrigationMethod\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"irrigationMethod\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "irrigationMethod"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.latitude",
+    "label": "Add column \"latitude\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "latitude",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"latitude\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "latitude"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"latitude\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"latitude\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"latitude\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "latitude"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.longitude",
+    "label": "Add column \"longitude\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "longitude",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"longitude\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "longitude"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"longitude\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"longitude\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"longitude\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "longitude"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.pumpFlowLpm",
+    "label": "Add column \"pumpFlowLpm\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pumpFlowLpm",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pumpFlowLpm\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "pumpFlowLpm"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pumpFlowLpm\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"pumpFlowLpm\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pumpFlowLpm\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "pumpFlowLpm"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.pumpPowerKw",
+    "label": "Add column \"pumpPowerKw\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pumpPowerKw",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pumpPowerKw\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "pumpPowerKw"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pumpPowerKw\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"pumpPowerKw\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pumpPowerKw\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "pumpPowerKw"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.refillPoint",
+    "label": "Add column \"refillPoint\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "refillPoint",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"refillPoint\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "refillPoint"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"refillPoint\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"refillPoint\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"refillPoint\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "refillPoint"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.solarPreferred",
+    "label": "Add column \"solarPreferred\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "solarPreferred",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"solarPreferred\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "solarPreferred"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"solarPreferred\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"solarPreferred\" bool DEFAULT true NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"solarPreferred\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "solarPreferred"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.batteryPct",
+    "label": "Add column \"batteryPct\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "batteryPct",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"batteryPct\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "batteryPct"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"batteryPct\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"batteryPct\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"batteryPct\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "batteryPct"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.deviceId",
+    "label": "Add column \"deviceId\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "deviceId",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"deviceId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "deviceId"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"deviceId\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"deviceId\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"deviceId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "deviceId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.energyTotalKwh",
+    "label": "Add column \"energyTotalKwh\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "energyTotalKwh",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"energyTotalKwh\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "energyTotalKwh"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"energyTotalKwh\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"energyTotalKwh\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"energyTotalKwh\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "energyTotalKwh"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.flowRateLpm",
+    "label": "Add column \"flowRateLpm\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "flowRateLpm",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"flowRateLpm\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "flowRateLpm"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"flowRateLpm\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"flowRateLpm\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"flowRateLpm\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "flowRateLpm"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.flowTotalL",
+    "label": "Add column \"flowTotalL\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "flowTotalL",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"flowTotalL\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "flowTotalL"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"flowTotalL\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"flowTotalL\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"flowTotalL\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "flowTotalL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.powerW",
+    "label": "Add column \"powerW\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "powerW",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"powerW\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "powerW"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"powerW\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"powerW\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"powerW\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "powerW"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.pumpOn",
+    "label": "Add column \"pumpOn\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pumpOn",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pumpOn\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "pumpOn"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pumpOn\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"pumpOn\" bool"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pumpOn\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "pumpOn"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.rssi",
+    "label": "Add column \"rssi\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "rssi",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"rssi\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "rssi"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"rssi\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"rssi\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"rssi\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "rssi"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.soilTemperature",
+    "label": "Add column \"soilTemperature\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "soilTemperature",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"soilTemperature\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "soilTemperature"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"soilTemperature\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"soilTemperature\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"soilTemperature\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "soilTemperature"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.solarW",
+    "label": "Add column \"solarW\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "solarW",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"solarW\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "solarW"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"solarW\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"solarW\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"solarW\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "solarW"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.source",
+    "label": "Add column \"source\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "source",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"source\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "source"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"source\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"source\" text DEFAULT 'MANUAL' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"source\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "source"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.tankDistanceCm",
+    "label": "Add column \"tankDistanceCm\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "tankDistanceCm",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"tankDistanceCm\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "tankDistanceCm"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"tankDistanceCm\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"tankDistanceCm\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"tankDistanceCm\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "tankDistanceCm"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.fieldObservation.tankLevel",
+    "label": "Add column \"tankLevel\" to \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "tankLevel",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"tankLevel\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "tankLevel"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"tankLevel\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD COLUMN \"tankLevel\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"tankLevel\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "fieldObservation",
+          "tankLevel"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.recommendation.authorId",
+    "label": "Add column \"authorId\" to \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "authorId",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"authorId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "authorId"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"authorId\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD COLUMN \"authorId\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"authorId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "authorId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.recommendation.code",
+    "label": "Add column \"code\" to \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "code",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"code\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "code"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"code\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD COLUMN \"code\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"code\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "code"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.recommendation.dedupeKey",
+    "label": "Add column \"dedupeKey\" to \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "dedupeKey",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"dedupeKey\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "dedupeKey"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"dedupeKey\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD COLUMN \"dedupeKey\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"dedupeKey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "dedupeKey"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.recommendation.fieldId",
+    "label": "Add column \"fieldId\" to \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "fieldId",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fieldId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "fieldId"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"fieldId\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD COLUMN \"fieldId\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fieldId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "fieldId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.recommendation.params",
+    "label": "Add column \"params\" to \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "params",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"params\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "params"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"params\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD COLUMN \"params\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"params\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "params"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.recommendation.resolvedAt",
+    "label": "Add column \"resolvedAt\" to \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "resolvedAt",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"resolvedAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "resolvedAt"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"resolvedAt\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD COLUMN \"resolvedAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"resolvedAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "resolvedAt"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.recommendation.status",
+    "label": "Add column \"status\" to \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD COLUMN \"status\" text DEFAULT 'OPEN' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.baselineWater",
+    "label": "Add column \"baselineWater\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "baselineWater",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"baselineWater\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "baselineWater"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"baselineWater\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"baselineWater\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"baselineWater\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "baselineWater"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.co2Kg",
+    "label": "Add column \"co2Kg\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "co2Kg",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"co2Kg\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "co2Kg"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"co2Kg\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"co2Kg\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"co2Kg\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "co2Kg"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.entryKey",
+    "label": "Add column \"entryKey\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "entryKey",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"entryKey\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "entryKey"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"entryKey\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"entryKey\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"entryKey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "entryKey"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.hash",
+    "label": "Add column \"hash\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "hash",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"hash\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "hash"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"hash\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"hash\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"hash\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "hash"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.kind",
+    "label": "Add column \"kind\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "kind",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"kind\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "kind"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"kind\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"kind\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"kind\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "kind"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.kwhSaved",
+    "label": "Add column \"kwhSaved\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "kwhSaved",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"kwhSaved\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "kwhSaved"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"kwhSaved\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"kwhSaved\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"kwhSaved\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "kwhSaved"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.method",
+    "label": "Add column \"method\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "method",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"method\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "method"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"method\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"method\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"method\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "method"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.periodEnd",
+    "label": "Add column \"periodEnd\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "periodEnd",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"periodEnd\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "periodEnd"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"periodEnd\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"periodEnd\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"periodEnd\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "periodEnd"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.periodStart",
+    "label": "Add column \"periodStart\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "periodStart",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"periodStart\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "periodStart"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"periodStart\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"periodStart\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"periodStart\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "periodStart"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.prevHash",
+    "label": "Add column \"prevHash\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "prevHash",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"prevHash\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "prevHash"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"prevHash\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"prevHash\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"prevHash\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "prevHash"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.rupeesSaved",
+    "label": "Add column \"rupeesSaved\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "rupeesSaved",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"rupeesSaved\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "rupeesSaved"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"rupeesSaved\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"rupeesSaved\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"rupeesSaved\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "rupeesSaved"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.sourceRef",
+    "label": "Add column \"sourceRef\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "sourceRef",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sourceRef\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "sourceRef"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"sourceRef\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"sourceRef\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sourceRef\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "sourceRef"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.sustainabilityRecord.waterUsed",
+    "label": "Add column \"waterUsed\" to \"sustainabilityRecord\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "waterUsed",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"waterUsed\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "waterUsed"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"waterUsed\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD COLUMN \"waterUsed\" float8"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"waterUsed\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "sustainabilityRecord",
+          "waterUsed"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.user.dailyBriefing",
+    "label": "Add column \"dailyBriefing\" to \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "dailyBriefing",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"dailyBriefing\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "dailyBriefing"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"dailyBriefing\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD COLUMN \"dailyBriefing\" bool DEFAULT false NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"dailyBriefing\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "dailyBriefing"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.user.language",
+    "label": "Add column \"language\" to \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "language",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"language\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "language"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"language\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD COLUMN \"language\" text DEFAULT 'en' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"language\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "language"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.user.phone",
+    "label": "Add column \"phone\" to \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "phone",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"phone\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "phone"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"phone\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD COLUMN \"phone\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"phone\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "phone"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.user.pushAlerts",
+    "label": "Add column \"pushAlerts\" to \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pushAlerts",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pushAlerts\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "pushAlerts"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pushAlerts\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD COLUMN \"pushAlerts\" bool DEFAULT true NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pushAlerts\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "pushAlerts"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.user.smsAlerts",
+    "label": "Add column \"smsAlerts\" to \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "smsAlerts",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"smsAlerts\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "smsAlerts"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"smsAlerts\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD COLUMN \"smsAlerts\" bool DEFAULT false NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"smsAlerts\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "smsAlerts"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.user.whatsappAlerts",
+    "label": "Add column \"whatsappAlerts\" to \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "whatsappAlerts",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"whatsappAlerts\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "whatsappAlerts"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"whatsappAlerts\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD COLUMN \"whatsappAlerts\" bool DEFAULT false NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"whatsappAlerts\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "whatsappAlerts"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.dropNotNull.recommendation.assessmentId",
+    "label": "Drop NOT NULL on \"recommendation\".\"assessmentId\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "assessmentId",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"assessmentId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "assessmentId"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop NOT NULL on \"assessmentId\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ALTER COLUMN \"assessmentId\" DROP NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"assessmentId\" is nullable",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "recommendation",
+          "assessmentId",
+          "YES"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aiCache.aiCache_cacheKey_key",
+    "label": "Add unique constraint on \"aiCache\" (cacheKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aiCache_cacheKey_key",
+        "table": "aiCache"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aiCache_cacheKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiCache_cacheKey_key",
+          "public",
+          "\"public\".\"aiCache\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aiCache_cacheKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"aiCache\" ADD CONSTRAINT \"aiCache_cacheKey_key\" UNIQUE (\"cacheKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aiCache_cacheKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiCache_cacheKey_key",
+          "public",
+          "\"public\".\"aiCache\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.crop.crop_status_check_15cca86a",
+    "label": "Add check constraint \"crop_status_check_15cca86a\" on \"crop\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "crop_status_check_15cca86a",
+        "table": "crop"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"crop_status_check_15cca86a\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "crop_status_check_15cca86a",
+          "public",
+          "\"public\".\"crop\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"crop_status_check_15cca86a\"",
+        "sql": "ALTER TABLE \"public\".\"crop\" ADD CONSTRAINT \"crop_status_check_15cca86a\" CHECK (\"status\" IN ('ACTIVE', 'HARVESTED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"crop_status_check_15cca86a\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "crop_status_check_15cca86a",
+          "public",
+          "\"public\".\"crop\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.device.device_deviceKey_key",
+    "label": "Add unique constraint on \"device\" (deviceKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "device_deviceKey_key",
+        "table": "device"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"device_deviceKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_deviceKey_key",
+          "public",
+          "\"public\".\"device\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"device_deviceKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"device\" ADD CONSTRAINT \"device_deviceKey_key\" UNIQUE (\"deviceKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"device_deviceKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_deviceKey_key",
+          "public",
+          "\"public\".\"device\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.farm.farm_shareCode_key",
+    "label": "Add unique constraint on \"farm\" (shareCode)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "farm_shareCode_key",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"farm_shareCode_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farm_shareCode_key",
+          "public",
+          "\"public\".\"farm\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"farm_shareCode_key\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD CONSTRAINT \"farm_shareCode_key\" UNIQUE (\"shareCode\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"farm_shareCode_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farm_shareCode_key",
+          "public",
+          "\"public\".\"farm\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.farmAdvisor.farmAdvisor_farmId_advisorId_key",
+    "label": "Add unique constraint on \"farmAdvisor\" (farmId, advisorId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "farmAdvisor_farmId_advisorId_key",
+        "table": "farmAdvisor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"farmAdvisor_farmId_advisorId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farmAdvisor_farmId_advisorId_key",
+          "public",
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"farmAdvisor_farmId_advisorId_key\"",
+        "sql": "ALTER TABLE \"public\".\"farmAdvisor\" ADD CONSTRAINT \"farmAdvisor_farmId_advisorId_key\" UNIQUE (\"farmId\", \"advisorId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"farmAdvisor_farmId_advisorId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farmAdvisor_farmId_advisorId_key",
+          "public",
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.fieldObservation.fieldObservation_source_check_329757c6",
+    "label": "Add check constraint \"fieldObservation_source_check_329757c6\" on \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "fieldObservation_source_check_329757c6",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"fieldObservation_source_check_329757c6\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_source_check_329757c6",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"fieldObservation_source_check_329757c6\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD CONSTRAINT \"fieldObservation_source_check_329757c6\" CHECK (\"source\" IN ('DEVICE', 'MANUAL', 'SIMULATOR'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"fieldObservation_source_check_329757c6\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_source_check_329757c6",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.pushSubscription.pushSubscription_endpoint_key",
+    "label": "Add unique constraint on \"pushSubscription\" (endpoint)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "pushSubscription_endpoint_key",
+        "table": "pushSubscription"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"pushSubscription_endpoint_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "pushSubscription_endpoint_key",
+          "public",
+          "\"public\".\"pushSubscription\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"pushSubscription_endpoint_key\"",
+        "sql": "ALTER TABLE \"public\".\"pushSubscription\" ADD CONSTRAINT \"pushSubscription_endpoint_key\" UNIQUE (\"endpoint\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"pushSubscription_endpoint_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "pushSubscription_endpoint_key",
+          "public",
+          "\"public\".\"pushSubscription\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.recommendation.recommendation_status_check_716a5eee",
+    "label": "Add check constraint \"recommendation_status_check_716a5eee\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "recommendation_status_check_716a5eee",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"recommendation_status_check_716a5eee\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_status_check_716a5eee",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"recommendation_status_check_716a5eee\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD CONSTRAINT \"recommendation_status_check_716a5eee\" CHECK (\"status\" IN ('OPEN', 'DONE', 'DISMISSED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"recommendation_status_check_716a5eee\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_status_check_716a5eee",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.recommendation.recommendation_dedupeKey_key",
+    "label": "Add unique constraint on \"recommendation\" (dedupeKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "recommendation_dedupeKey_key",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"recommendation_dedupeKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_dedupeKey_key",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"recommendation_dedupeKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\" ADD CONSTRAINT \"recommendation_dedupeKey_key\" UNIQUE (\"dedupeKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"recommendation_dedupeKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_dedupeKey_key",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.sustainabilityRecord.sustainabilityRecord_entryKey_key",
+    "label": "Add unique constraint on \"sustainabilityRecord\" (entryKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "sustainabilityRecord_entryKey_key",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"sustainabilityRecord_entryKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_entryKey_key",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"sustainabilityRecord_entryKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD CONSTRAINT \"sustainabilityRecord_entryKey_key\" UNIQUE (\"entryKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"sustainabilityRecord_entryKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_entryKey_key",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.sustainabilityRecord.sustainabilityRecord_hash_key",
+    "label": "Add unique constraint on \"sustainabilityRecord\" (hash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "sustainabilityRecord_hash_key",
+        "table": "sustainabilityRecord"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"sustainabilityRecord_hash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_hash_key",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"sustainabilityRecord_hash_key\"",
+        "sql": "ALTER TABLE \"public\".\"sustainabilityRecord\" ADD CONSTRAINT \"sustainabilityRecord_hash_key\" UNIQUE (\"hash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"sustainabilityRecord_hash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sustainabilityRecord_hash_key",
+          "public",
+          "\"public\".\"sustainabilityRecord\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.chatMessage.chatMessage_userId_idx_a489d58a",
+    "label": "Create index \"chatMessage_userId_idx_a489d58a\" on \"chatMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "chatMessage_userId_idx_a489d58a",
+        "table": "chatMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"chatMessage_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"chatMessage_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"chatMessage_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"chatMessage_userId_idx_a489d58a\" ON \"public\".\"chatMessage\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"chatMessage_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"chatMessage_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.device.device_fieldId_idx_44d815d7",
+    "label": "Create index \"device_fieldId_idx_44d815d7\" on \"device\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "device_fieldId_idx_44d815d7",
+        "table": "device"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"device_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"device_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"device_fieldId_idx_44d815d7\" ON \"public\".\"device\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"device_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.farmAdvisor.farmAdvisor_advisorId_idx_ab57953b",
+    "label": "Create index \"farmAdvisor_advisorId_idx_ab57953b\" on \"farmAdvisor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "farmAdvisor_advisorId_idx_ab57953b",
+        "table": "farmAdvisor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"farmAdvisor_advisorId_idx_ab57953b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farmAdvisor_advisorId_idx_ab57953b\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"farmAdvisor_advisorId_idx_ab57953b\"",
+        "sql": "CREATE INDEX \"farmAdvisor_advisorId_idx_ab57953b\" ON \"public\".\"farmAdvisor\" (\"advisorId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"farmAdvisor_advisorId_idx_ab57953b\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farmAdvisor_advisorId_idx_ab57953b\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.farmAdvisor.farmAdvisor_farmId_idx_786bd89b",
+    "label": "Create index \"farmAdvisor_farmId_idx_786bd89b\" on \"farmAdvisor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "farmAdvisor_farmId_idx_786bd89b",
+        "table": "farmAdvisor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"farmAdvisor_farmId_idx_786bd89b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farmAdvisor_farmId_idx_786bd89b\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"farmAdvisor_farmId_idx_786bd89b\"",
+        "sql": "CREATE INDEX \"farmAdvisor_farmId_idx_786bd89b\" ON \"public\".\"farmAdvisor\" (\"farmId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"farmAdvisor_farmId_idx_786bd89b\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"farmAdvisor_farmId_idx_786bd89b\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.fertilizerPlan.fertilizerPlan_fieldId_idx_44d815d7",
+    "label": "Create index \"fertilizerPlan_fieldId_idx_44d815d7\" on \"fertilizerPlan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "fertilizerPlan_fieldId_idx_44d815d7",
+        "table": "fertilizerPlan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"fertilizerPlan_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fertilizerPlan_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"fertilizerPlan_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"fertilizerPlan_fieldId_idx_44d815d7\" ON \"public\".\"fertilizerPlan\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"fertilizerPlan_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fertilizerPlan_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.fieldObservation.fieldObservation_deviceId_idx_a7d461e8",
+    "label": "Create index \"fieldObservation_deviceId_idx_a7d461e8\" on \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "fieldObservation_deviceId_idx_a7d461e8",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"fieldObservation_deviceId_idx_a7d461e8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation_deviceId_idx_a7d461e8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"fieldObservation_deviceId_idx_a7d461e8\"",
+        "sql": "CREATE INDEX \"fieldObservation_deviceId_idx_a7d461e8\" ON \"public\".\"fieldObservation\" (\"deviceId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"fieldObservation_deviceId_idx_a7d461e8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fieldObservation_deviceId_idx_a7d461e8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.irrigationDecision.irrigationDecision_decidedAt_idx_311b0e6f",
+    "label": "Create index \"irrigationDecision_decidedAt_idx_311b0e6f\" on \"irrigationDecision\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "irrigationDecision_decidedAt_idx_311b0e6f",
+        "table": "irrigationDecision"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"irrigationDecision_decidedAt_idx_311b0e6f\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationDecision_decidedAt_idx_311b0e6f\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"irrigationDecision_decidedAt_idx_311b0e6f\"",
+        "sql": "CREATE INDEX \"irrigationDecision_decidedAt_idx_311b0e6f\" ON \"public\".\"irrigationDecision\" (\"decidedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"irrigationDecision_decidedAt_idx_311b0e6f\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationDecision_decidedAt_idx_311b0e6f\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.irrigationDecision.irrigationDecision_fieldId_idx_44d815d7",
+    "label": "Create index \"irrigationDecision_fieldId_idx_44d815d7\" on \"irrigationDecision\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "irrigationDecision_fieldId_idx_44d815d7",
+        "table": "irrigationDecision"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"irrigationDecision_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationDecision_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"irrigationDecision_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"irrigationDecision_fieldId_idx_44d815d7\" ON \"public\".\"irrigationDecision\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"irrigationDecision_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationDecision_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.irrigationEvent.irrigationEvent_deviceId_idx_a7d461e8",
+    "label": "Create index \"irrigationEvent_deviceId_idx_a7d461e8\" on \"irrigationEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "irrigationEvent_deviceId_idx_a7d461e8",
+        "table": "irrigationEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"irrigationEvent_deviceId_idx_a7d461e8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent_deviceId_idx_a7d461e8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"irrigationEvent_deviceId_idx_a7d461e8\"",
+        "sql": "CREATE INDEX \"irrigationEvent_deviceId_idx_a7d461e8\" ON \"public\".\"irrigationEvent\" (\"deviceId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"irrigationEvent_deviceId_idx_a7d461e8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent_deviceId_idx_a7d461e8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.irrigationEvent.irrigationEvent_fieldId_idx_44d815d7",
+    "label": "Create index \"irrigationEvent_fieldId_idx_44d815d7\" on \"irrigationEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "irrigationEvent_fieldId_idx_44d815d7",
+        "table": "irrigationEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"irrigationEvent_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"irrigationEvent_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"irrigationEvent_fieldId_idx_44d815d7\" ON \"public\".\"irrigationEvent\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"irrigationEvent_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.irrigationEvent.irrigationEvent_startedAt_idx_cac56236",
+    "label": "Create index \"irrigationEvent_startedAt_idx_cac56236\" on \"irrigationEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "irrigationEvent_startedAt_idx_cac56236",
+        "table": "irrigationEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"irrigationEvent_startedAt_idx_cac56236\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent_startedAt_idx_cac56236\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"irrigationEvent_startedAt_idx_cac56236\"",
+        "sql": "CREATE INDEX \"irrigationEvent_startedAt_idx_cac56236\" ON \"public\".\"irrigationEvent\" (\"startedAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"irrigationEvent_startedAt_idx_cac56236\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"irrigationEvent_startedAt_idx_cac56236\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ndviSnapshot.ndviSnapshot_fieldId_idx_44d815d7",
+    "label": "Create index \"ndviSnapshot_fieldId_idx_44d815d7\" on \"ndviSnapshot\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ndviSnapshot_fieldId_idx_44d815d7",
+        "table": "ndviSnapshot"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ndviSnapshot_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ndviSnapshot_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ndviSnapshot_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"ndviSnapshot_fieldId_idx_44d815d7\" ON \"public\".\"ndviSnapshot\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ndviSnapshot_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ndviSnapshot_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.notification.notification_createdAt_idx_9575dbd7",
+    "label": "Create index \"notification_createdAt_idx_9575dbd7\" on \"notification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "notification_createdAt_idx_9575dbd7",
+        "table": "notification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"notification_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notification_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"notification_createdAt_idx_9575dbd7\"",
+        "sql": "CREATE INDEX \"notification_createdAt_idx_9575dbd7\" ON \"public\".\"notification\" (\"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"notification_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notification_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.notification.notification_userId_idx_a489d58a",
+    "label": "Create index \"notification_userId_idx_a489d58a\" on \"notification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "notification_userId_idx_a489d58a",
+        "table": "notification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"notification_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notification_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"notification_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"notification_userId_idx_a489d58a\" ON \"public\".\"notification\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"notification_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"notification_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.pumpSchedule.pumpSchedule_fieldId_idx_44d815d7",
+    "label": "Create index \"pumpSchedule_fieldId_idx_44d815d7\" on \"pumpSchedule\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "pumpSchedule_fieldId_idx_44d815d7",
+        "table": "pumpSchedule"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"pumpSchedule_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pumpSchedule_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"pumpSchedule_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"pumpSchedule_fieldId_idx_44d815d7\" ON \"public\".\"pumpSchedule\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"pumpSchedule_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pumpSchedule_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.pushSubscription.pushSubscription_userId_idx_a489d58a",
+    "label": "Create index \"pushSubscription_userId_idx_a489d58a\" on \"pushSubscription\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "pushSubscription_userId_idx_a489d58a",
+        "table": "pushSubscription"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"pushSubscription_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pushSubscription_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"pushSubscription_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"pushSubscription_userId_idx_a489d58a\" ON \"public\".\"pushSubscription\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"pushSubscription_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"pushSubscription_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.recommendation.recommendation_authorId_idx_e47547ed",
+    "label": "Create index \"recommendation_authorId_idx_e47547ed\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "recommendation_authorId_idx_e47547ed",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"recommendation_authorId_idx_e47547ed\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_authorId_idx_e47547ed\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"recommendation_authorId_idx_e47547ed\"",
+        "sql": "CREATE INDEX \"recommendation_authorId_idx_e47547ed\" ON \"public\".\"recommendation\" (\"authorId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"recommendation_authorId_idx_e47547ed\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_authorId_idx_e47547ed\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.recommendation.recommendation_fieldId_idx_44d815d7",
+    "label": "Create index \"recommendation_fieldId_idx_44d815d7\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "recommendation_fieldId_idx_44d815d7",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"recommendation_fieldId_idx_44d815d7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_fieldId_idx_44d815d7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"recommendation_fieldId_idx_44d815d7\"",
+        "sql": "CREATE INDEX \"recommendation_fieldId_idx_44d815d7\" ON \"public\".\"recommendation\" (\"fieldId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"recommendation_fieldId_idx_44d815d7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_fieldId_idx_44d815d7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.recommendation.recommendation_status_idx_e98638ab",
+    "label": "Create index \"recommendation_status_idx_e98638ab\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "recommendation_status_idx_e98638ab",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"recommendation_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"recommendation_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"recommendation_status_idx_e98638ab\" ON \"public\".\"recommendation\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"recommendation_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"recommendation_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.trial.trial_farmId_idx_786bd89b",
+    "label": "Create index \"trial_farmId_idx_786bd89b\" on \"trial\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "trial_farmId_idx_786bd89b",
+        "table": "trial"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"trial_farmId_idx_786bd89b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"trial_farmId_idx_786bd89b\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"trial_farmId_idx_786bd89b\"",
+        "sql": "CREATE INDEX \"trial_farmId_idx_786bd89b\" ON \"public\".\"trial\" (\"farmId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"trial_farmId_idx_786bd89b\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"trial_farmId_idx_786bd89b\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.chatMessage.chatMessage_userId_fkey",
+    "label": "Add foreign key \"chatMessage_userId_fkey\" on \"chatMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "chatMessage_userId_fkey",
+        "table": "chatMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"chatMessage_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "chatMessage_userId_fkey",
+          "public",
+          "\"public\".\"chatMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"chatMessage_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"chatMessage\"\nADD CONSTRAINT \"chatMessage_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"chatMessage_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "chatMessage_userId_fkey",
+          "public",
+          "\"public\".\"chatMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.device.device_fieldId_fkey",
+    "label": "Add foreign key \"device_fieldId_fkey\" on \"device\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "device_fieldId_fkey",
+        "table": "device"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"device_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_fieldId_fkey",
+          "public",
+          "\"public\".\"device\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"device_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"device\"\nADD CONSTRAINT \"device_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"device_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_fieldId_fkey",
+          "public",
+          "\"public\".\"device\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.farmAdvisor.farmAdvisor_farmId_fkey",
+    "label": "Add foreign key \"farmAdvisor_farmId_fkey\" on \"farmAdvisor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "farmAdvisor_farmId_fkey",
+        "table": "farmAdvisor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"farmAdvisor_farmId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farmAdvisor_farmId_fkey",
+          "public",
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"farmAdvisor_farmId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"farmAdvisor\"\nADD CONSTRAINT \"farmAdvisor_farmId_fkey\"\nFOREIGN KEY (\"farmId\")\nREFERENCES \"public\".\"farm\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"farmAdvisor_farmId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farmAdvisor_farmId_fkey",
+          "public",
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.farmAdvisor.farmAdvisor_advisorId_fkey",
+    "label": "Add foreign key \"farmAdvisor_advisorId_fkey\" on \"farmAdvisor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "farmAdvisor_advisorId_fkey",
+        "table": "farmAdvisor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"farmAdvisor_advisorId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farmAdvisor_advisorId_fkey",
+          "public",
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"farmAdvisor_advisorId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"farmAdvisor\"\nADD CONSTRAINT \"farmAdvisor_advisorId_fkey\"\nFOREIGN KEY (\"advisorId\")\nREFERENCES \"public\".\"user\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"farmAdvisor_advisorId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "farmAdvisor_advisorId_fkey",
+          "public",
+          "\"public\".\"farmAdvisor\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.fertilizerPlan.fertilizerPlan_fieldId_fkey",
+    "label": "Add foreign key \"fertilizerPlan_fieldId_fkey\" on \"fertilizerPlan\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "fertilizerPlan_fieldId_fkey",
+        "table": "fertilizerPlan"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"fertilizerPlan_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fertilizerPlan_fieldId_fkey",
+          "public",
+          "\"public\".\"fertilizerPlan\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"fertilizerPlan_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"fertilizerPlan\"\nADD CONSTRAINT \"fertilizerPlan_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"fertilizerPlan_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fertilizerPlan_fieldId_fkey",
+          "public",
+          "\"public\".\"fertilizerPlan\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.fieldObservation.fieldObservation_deviceId_fkey",
+    "label": "Add foreign key \"fieldObservation_deviceId_fkey\" on \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "fieldObservation_deviceId_fkey",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"fieldObservation_deviceId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_deviceId_fkey",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"fieldObservation_deviceId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\"\nADD CONSTRAINT \"fieldObservation_deviceId_fkey\"\nFOREIGN KEY (\"deviceId\")\nREFERENCES \"public\".\"device\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"fieldObservation_deviceId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_deviceId_fkey",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.irrigationDecision.irrigationDecision_fieldId_fkey",
+    "label": "Add foreign key \"irrigationDecision_fieldId_fkey\" on \"irrigationDecision\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "irrigationDecision_fieldId_fkey",
+        "table": "irrigationDecision"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"irrigationDecision_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationDecision_fieldId_fkey",
+          "public",
+          "\"public\".\"irrigationDecision\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"irrigationDecision_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"irrigationDecision\"\nADD CONSTRAINT \"irrigationDecision_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"irrigationDecision_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationDecision_fieldId_fkey",
+          "public",
+          "\"public\".\"irrigationDecision\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.irrigationEvent.irrigationEvent_fieldId_fkey",
+    "label": "Add foreign key \"irrigationEvent_fieldId_fkey\" on \"irrigationEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "irrigationEvent_fieldId_fkey",
+        "table": "irrigationEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"irrigationEvent_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationEvent_fieldId_fkey",
+          "public",
+          "\"public\".\"irrigationEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"irrigationEvent_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"irrigationEvent\"\nADD CONSTRAINT \"irrigationEvent_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"irrigationEvent_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationEvent_fieldId_fkey",
+          "public",
+          "\"public\".\"irrigationEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.irrigationEvent.irrigationEvent_deviceId_fkey",
+    "label": "Add foreign key \"irrigationEvent_deviceId_fkey\" on \"irrigationEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "irrigationEvent_deviceId_fkey",
+        "table": "irrigationEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"irrigationEvent_deviceId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationEvent_deviceId_fkey",
+          "public",
+          "\"public\".\"irrigationEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"irrigationEvent_deviceId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"irrigationEvent\"\nADD CONSTRAINT \"irrigationEvent_deviceId_fkey\"\nFOREIGN KEY (\"deviceId\")\nREFERENCES \"public\".\"device\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"irrigationEvent_deviceId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "irrigationEvent_deviceId_fkey",
+          "public",
+          "\"public\".\"irrigationEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ndviSnapshot.ndviSnapshot_fieldId_fkey",
+    "label": "Add foreign key \"ndviSnapshot_fieldId_fkey\" on \"ndviSnapshot\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ndviSnapshot_fieldId_fkey",
+        "table": "ndviSnapshot"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ndviSnapshot_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ndviSnapshot_fieldId_fkey",
+          "public",
+          "\"public\".\"ndviSnapshot\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ndviSnapshot_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ndviSnapshot\"\nADD CONSTRAINT \"ndviSnapshot_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ndviSnapshot_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ndviSnapshot_fieldId_fkey",
+          "public",
+          "\"public\".\"ndviSnapshot\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.notification.notification_userId_fkey",
+    "label": "Add foreign key \"notification_userId_fkey\" on \"notification\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "notification_userId_fkey",
+        "table": "notification"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"notification_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notification_userId_fkey",
+          "public",
+          "\"public\".\"notification\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"notification_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"notification\"\nADD CONSTRAINT \"notification_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"notification_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "notification_userId_fkey",
+          "public",
+          "\"public\".\"notification\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.pumpSchedule.pumpSchedule_fieldId_fkey",
+    "label": "Add foreign key \"pumpSchedule_fieldId_fkey\" on \"pumpSchedule\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "pumpSchedule_fieldId_fkey",
+        "table": "pumpSchedule"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"pumpSchedule_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "pumpSchedule_fieldId_fkey",
+          "public",
+          "\"public\".\"pumpSchedule\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"pumpSchedule_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"pumpSchedule\"\nADD CONSTRAINT \"pumpSchedule_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"pumpSchedule_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "pumpSchedule_fieldId_fkey",
+          "public",
+          "\"public\".\"pumpSchedule\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.pushSubscription.pushSubscription_userId_fkey",
+    "label": "Add foreign key \"pushSubscription_userId_fkey\" on \"pushSubscription\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "pushSubscription_userId_fkey",
+        "table": "pushSubscription"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"pushSubscription_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "pushSubscription_userId_fkey",
+          "public",
+          "\"public\".\"pushSubscription\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"pushSubscription_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"pushSubscription\"\nADD CONSTRAINT \"pushSubscription_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"pushSubscription_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "pushSubscription_userId_fkey",
+          "public",
+          "\"public\".\"pushSubscription\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.recommendation.recommendation_authorId_fkey",
+    "label": "Add foreign key \"recommendation_authorId_fkey\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "recommendation_authorId_fkey",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"recommendation_authorId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_authorId_fkey",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"recommendation_authorId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\"\nADD CONSTRAINT \"recommendation_authorId_fkey\"\nFOREIGN KEY (\"authorId\")\nREFERENCES \"public\".\"user\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"recommendation_authorId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_authorId_fkey",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.recommendation.recommendation_fieldId_fkey",
+    "label": "Add foreign key \"recommendation_fieldId_fkey\" on \"recommendation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "recommendation_fieldId_fkey",
+        "table": "recommendation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"recommendation_fieldId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_fieldId_fkey",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"recommendation_fieldId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"recommendation\"\nADD CONSTRAINT \"recommendation_fieldId_fkey\"\nFOREIGN KEY (\"fieldId\")\nREFERENCES \"public\".\"field\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"recommendation_fieldId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "recommendation_fieldId_fkey",
+          "public",
+          "\"public\".\"recommendation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.trial.trial_farmId_fkey",
+    "label": "Add foreign key \"trial_farmId_fkey\" on \"trial\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "trial_farmId_fkey",
+        "table": "trial"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"trial_farmId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "trial_farmId_fkey",
+          "public",
+          "\"public\".\"trial\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"trial_farmId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"trial\"\nADD CONSTRAINT \"trial_farmId_fkey\"\nFOREIGN KEY (\"farmId\")\nREFERENCES \"public\".\"farm\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"trial_farmId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "trial_farmId_fkey",
+          "public",
+          "\"public\".\"trial\""
+        ]
+      }
+    ]
+  }
+]

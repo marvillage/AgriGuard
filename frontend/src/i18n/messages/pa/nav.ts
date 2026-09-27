@@ -1,0 +1,31 @@
+import type { PartialMessages } from "..";
+
+const nav: NonNullable<PartialMessages["nav"]> = {
+  overview: "ਝਲਕ",
+  intelligence: "ਸੂਝ",
+  impact: "ਅਸਰ",
+  advisorGroup: "ਸਲਾਹਕਾਰ",
+  account: "ਖਾਤਾ",
+  dashboard: "ਡੈਸ਼ਬੋਰਡ",
+  farms: "ਫਾਰਮ ਅਤੇ ਖੇਤ",
+  scan: "ਫ਼ਸਲ ਸਕੈਨ",
+  risk: "ਖ਼ਤਰਾ ਕੇਂਦਰ",
+  recommendations: "ਸਿਫ਼ਾਰਸ਼ਾਂ",
+  copilot: "AI ਸਹਾਇਕ",
+  sustainability: "ਟਿਕਾਊ ਖੇਤੀ",
+  trials: "ਖੇਤ ਤਜਰਬੇ",
+  advisor: "ਖੇਤੀ ਮਾਹਿਰ ਡੈਸਕ",
+  settings: "ਸੈਟਿੰਗਾਂ",
+  precisionFarming: "ਸਟੀਕ ਖੇਤੀ",
+  notifications: "ਸੂਚਨਾਵਾਂ",
+  noNotifications: "ਤੁਸੀਂ ਸਾਰੀਆਂ ਸੂਚਨਾਵਾਂ ਦੇਖ ਲਈਆਂ ਹਨ।",
+  markAllRead: "ਸਭ ਨੂੰ ਪੜ੍ਹਿਆ ਮਾਰਕ ਕਰੋ",
+  openNavigation: "ਮੀਨੂ ਖੋਲ੍ਹੋ",
+  nodesOnline: "{total} ਵਿੱਚੋਂ {online} ਫੀਲਡ ਡਿਵਾਈਸ ਆਨਲਾਈਨ",
+  noNodes: "ਅਜੇ ਕੋਈ ਫੀਲਡ ਡਿਵਾਈਸ ਨਹੀਂ",
+  role_FARMER: "ਕਿਸਾਨ",
+  role_AGRONOMIST: "ਖੇਤੀ ਮਾਹਿਰ",
+  role_ADMIN: "ਐਡਮਿਨ",
+};
+
+export default nav;

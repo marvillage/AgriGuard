@@ -1,0 +1,86 @@
+[
+  {
+    "id": "dropCheckConstraint.fieldObservation.fieldObservation_source_check_329757c6",
+    "label": "Drop check constraint \"fieldObservation_source_check_329757c6\" on \"fieldObservation\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "fieldObservation_source_check_329757c6",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"fieldObservation_source_check_329757c6\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_source_check_329757c6",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop check constraint \"fieldObservation_source_check_329757c6\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" DROP CONSTRAINT \"fieldObservation_source_check_329757c6\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"fieldObservation_source_check_329757c6\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_source_check_329757c6",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.fieldObservation.fieldObservation_source_check_aaa5d901",
+    "label": "Add check constraint \"fieldObservation_source_check_aaa5d901\" on \"fieldObservation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "fieldObservation_source_check_aaa5d901",
+        "table": "fieldObservation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"fieldObservation_source_check_aaa5d901\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_source_check_aaa5d901",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"fieldObservation_source_check_aaa5d901\"",
+        "sql": "ALTER TABLE \"public\".\"fieldObservation\" ADD CONSTRAINT \"fieldObservation_source_check_aaa5d901\" CHECK (\"source\" IN ('DEVICE', 'MANUAL', 'SIMULATOR', 'OPEN_METEO'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"fieldObservation_source_check_aaa5d901\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fieldObservation_source_check_aaa5d901",
+          "public",
+          "\"public\".\"fieldObservation\""
+        ]
+      }
+    ]
+  }
+]
