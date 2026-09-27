@@ -78,6 +78,22 @@ function weatherLine(o: Overview) {
 
 const indian = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 1 });
 
+function flowLine(field: Overview["field"], flowLpm: number) {
+  const test = flowTest(field.pumpFlowTest);
+  if (test) return `Pump flow ${test.lpm} L/min, measured by the farmer by timing ${test.seconds.length} fill(s) of a ${test.bucketLitres}-litre bucket`;
+  if (field.pumpFlowLpm) return `Pump flow ${field.pumpFlowLpm} L/min, typed in by the farmer (not measured in the app)`;
+  return `Pump flow not measured yet, so a typical ${flowLpm} L/min for this irrigation method is used and the run time is approximate`;
+}
+
+function flowTest(value: string | null) {
+  try {
+    const test = value ? (JSON.parse(value) as { lpm: number; bucketLitres: number; seconds: number[] }) : null;
+    return test && Array.isArray(test.seconds) ? test : null;
+  } catch {
+    return null;
+  }
+}
+
 function irrigationFacts(o: Overview): Line[] {
   const { decision, water, latest } = o;
   const plan = decision.plan;
@@ -94,10 +110,14 @@ function irrigationFacts(o: Overview): Line[] {
     latest?.soilMoisture != null
       ? `Soil moisture now ${round(latest.soilMoisture)}% (${sourceLabel(latest.source)}, ${readingAge(o.latestAgeMinutes)})`
       : "Soil moisture now: no recent reading",
+    decision.watering
+      ? `Watering logged since then: ${indian.format(decision.watering.litres)} litres, last one ended at ${localTime(decision.watering.endedAt)}. The weather model cannot see irrigation, so AgriGuard adds that water and subtracts what the crop has used since (FAO-56 water balance): soil moisture is about ${decision.watering.moisture}%`
+      : null,
     `Soil limits: field capacity ${water.fieldCapacity}%, refill point ${water.refillPoint}%, wilting point ${water.wiltingPoint}%`,
     `Water missing from the root zone: ${value(water.needMm, " mm")}`,
     `Decision: ${decision.message}${decision.critical ? " (critical: the crop is close to wilting)" : ""}`,
     `Water plan if irrigating: ${indian.format(plan.litres)} litres, about ${plan.duration} at ${plan.flowLpm} L/min by ${plan.method} irrigation (${Math.round(plan.efficiency * 100)}% efficient)`,
+    flowLine(o.field, plan.flowLpm),
     `Crop water use today (ETc) ${value(decision.etc, " mm")}, reference evapotranspiration (ET0) ${value(decision.et0, " mm")}`,
     weatherLine(o),
     o.solar?.start && o.solar.end ? `The farm's solar panels can run the pump from ${localTime(o.solar.start)} to ${localTime(o.solar.end)}` : null,

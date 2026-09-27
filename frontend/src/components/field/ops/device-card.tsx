@@ -13,6 +13,7 @@ import {
   RotateCw,
   Send,
   Signal,
+  Smartphone,
   Sun,
   Trash,
   Zap,
@@ -81,7 +82,7 @@ export function DeviceCard({
               device.online ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200" : "bg-slate-100 text-slate-500 ring-1 ring-slate-200"
             )}
           >
-            <Cpu className="h-5 w-5" aria-hidden="true" />
+            {device.kind === "PHONE" ? <Smartphone className="h-5 w-5" aria-hidden="true" /> : <Cpu className="h-5 w-5" aria-hidden="true" />}
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -91,6 +92,7 @@ export function DeviceCard({
                 {device.online ? t("common.online") : t("common.offlineShort")}
               </Badge>
               {device.simulated ? <Badge variant="info">{t("fieldOps.simulated")}</Badge> : null}
+              {device.kind === "PHONE" ? <Badge variant="navy">{t("fieldOps.phoneBadge")}</Badge> : null}
             </div>
             <p className="mt-0.5 text-sm text-slate-500">
               {device.lastSeenAt ? t("fieldOps.lastSeen", { ago: timeAgo(device.lastSeenAt, language) }) : t("fieldOps.neverSeen")}
@@ -113,35 +115,39 @@ export function DeviceCard({
           <Fact label={t("fieldOps.pumpMode")} value={codeLabel("mode", device.pumpMode)} />
         </dl>
 
-        <div className="flex flex-wrap gap-1.5" aria-label={t("fieldOps.capabilities")}>
-          {capabilities.map((capability) => {
-            const Icon = capability.icon;
-            return (
-              <span
-                key={capability.label}
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset",
-                  capability.on ? "bg-navy-50 text-navy-800 ring-navy-200" : "bg-white text-slate-400 ring-slate-200"
-                )}
-                title={capability.on ? t("fieldOps.capOn") : t("fieldOps.capOff")}
-              >
-                <Icon className="h-3 w-3" aria-hidden="true" />
-                {capability.label}
-                <span className="sr-only">{capability.on ? t("fieldOps.capOn") : t("fieldOps.capOff")}</span>
-              </span>
-            );
-          })}
-        </div>
+        {device.kind !== "PHONE" ? (
+          <>
+            <div className="flex flex-wrap gap-1.5" aria-label={t("fieldOps.capabilities")}>
+              {capabilities.map((capability) => {
+                const Icon = capability.icon;
+                return (
+                  <span
+                    key={capability.label}
+                    className={cn(
+                      "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset",
+                      capability.on ? "bg-navy-50 text-navy-800 ring-navy-200" : "bg-white text-slate-400 ring-slate-200"
+                    )}
+                    title={capability.on ? t("fieldOps.capOn") : t("fieldOps.capOff")}
+                  >
+                    <Icon className="h-3 w-3" aria-hidden="true" />
+                    {capability.label}
+                    <span className="sr-only">{capability.on ? t("fieldOps.capOn") : t("fieldOps.capOff")}</span>
+                  </span>
+                );
+              })}
+            </div>
 
-        <p className="text-xs text-slate-500">
-          {device.tankHeightCm || device.tankCapacityL
-            ? t("fieldOps.tankConfig", {
-                height: device.tankHeightCm ? number(device.tankHeightCm) : "–",
-                capacity: device.tankCapacityL ? number(device.tankCapacityL) : "–",
-                limit: number(device.dryRunLevelPct),
-              })
-            : t("fieldOps.tankConfigNone", { limit: number(device.dryRunLevelPct) })}
-        </p>
+            <p className="text-xs text-slate-500">
+              {device.tankHeightCm || device.tankCapacityL
+                ? t("fieldOps.tankConfig", {
+                    height: device.tankHeightCm ? number(device.tankHeightCm) : "–",
+                    capacity: device.tankCapacityL ? number(device.tankCapacityL) : "–",
+                    limit: number(device.dryRunLevelPct),
+                  })
+                : t("fieldOps.tankConfigNone", { limit: number(device.dryRunLevelPct) })}
+            </p>
+          </>
+        ) : null}
 
         <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2">
           <span className="text-xs text-slate-500">{t("fieldOps.deviceKey")}</span>
@@ -162,10 +168,12 @@ export function DeviceCard({
               <Pencil className="h-3.5 w-3.5" />
               {t("common.edit")}
             </Button>
-            <Button type="button" size="sm" variant={testing ? "dark" : "secondary"} onClick={() => setTesting((value) => !value)} aria-expanded={testing}>
-              <Send className="h-3.5 w-3.5" />
-              {t("fieldOps.testOpen")}
-            </Button>
+            {device.kind !== "PHONE" ? (
+              <Button type="button" size="sm" variant={testing ? "dark" : "secondary"} onClick={() => setTesting((value) => !value)} aria-expanded={testing}>
+                <Send className="h-3.5 w-3.5" />
+                {t("fieldOps.testOpen")}
+              </Button>
+            ) : null}
             <Button type="button" size="sm" variant="ghost" className="text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => setConfirm("delete")}>
               <Trash className="h-3.5 w-3.5" />
               {t("common.delete")}

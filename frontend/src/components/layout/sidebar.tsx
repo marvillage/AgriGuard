@@ -14,6 +14,7 @@ import {
   Lightbulb,
   LogOut,
   Settings,
+  Smartphone,
   Sprout,
   TriangleAlert,
 } from "lucide-react";
@@ -23,7 +24,7 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
 
-type NavKey = "dashboard" | "farms" | "scan" | "risk" | "recommendations" | "copilot" | "sustainability" | "trials" | "validation" | "advisor" | "settings";
+type NavKey = "dashboard" | "farms" | "phone" | "scan" | "risk" | "recommendations" | "copilot" | "sustainability" | "trials" | "validation" | "advisor" | "settings";
 
 const navGroups: Array<{ label: "overview" | "intelligence" | "impact" | "advisorGroup" | "account"; items: Array<{ href: string; key: NavKey; icon: typeof Sprout; roles?: string[] }> }> = [
   {
@@ -31,6 +32,7 @@ const navGroups: Array<{ label: "overview" | "intelligence" | "impact" | "adviso
     items: [
       { href: "/dashboard", key: "dashboard", icon: LayoutDashboard },
       { href: "/farms", key: "farms", icon: Sprout },
+      { href: "/phone", key: "phone", icon: Smartphone },
     ],
   },
   {
@@ -69,7 +71,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     queryFn: async () => (await api.devices()).devices,
     staleTime: 60_000,
   });
-  const devices = devicesQuery.data ?? [];
+  const devices = (devicesQuery.data ?? []).filter((device) => device.kind !== "PHONE");
   const online = devices.filter((device) => device.online).length;
   const lowestBattery = devices.reduce<number | null>((min, device) => (device.batteryPct === null ? min : min === null ? device.batteryPct : Math.min(min, device.batteryPct)), null);
   const initials = (user?.name ?? "F")

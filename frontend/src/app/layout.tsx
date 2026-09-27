@@ -26,10 +26,16 @@ export const metadata: Metadata = {
   },
   description:
     "AgriGuard connects soil sensors, weather data and AI to cut irrigation water, pump energy and fertilizer waste — with every litre, kWh and rupee measured.",
+  appleWebApp: {
+    capable: true,
+    title: "AgriGuard",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
   themeColor: "#0a1433",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

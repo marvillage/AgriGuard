@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Bot, CirclePlay, Cpu, LoaderCircle, Power, PowerOff, Timer } from "lucide-react";
+import { ArrowRight, Bot, CirclePlay, Cpu, LoaderCircle, Power, PowerOff, Smartphone, Timer } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -89,7 +90,7 @@ export function PumpControlCard({
         <div className="min-w-0">
           <CardTitle>{t("fieldOps.pumpTitle")}</CardTitle>
           <p className="mt-1 flex items-center gap-1.5 truncate text-sm text-slate-500">
-            <Cpu className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            {device.kind === "PHONE" ? <Smartphone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> : <Cpu className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />}
             <span className="truncate">{device.name}</span>
           </p>
         </div>
@@ -235,7 +236,13 @@ export function PumpControlCard({
               {device.pumpMode === "MANUAL_OFF" ? t("fieldOps.commandHeldOff") : t("fieldOps.commandNone")}
             </p>
           )}
-          <p className="mt-2 text-xs text-slate-500">{t("fieldOps.commandDelivery")}</p>
+          <p className="mt-2 text-xs text-slate-500">{device.kind === "PHONE" ? t("fieldOps.phoneDelivery") : t("fieldOps.commandDelivery")}</p>
+          {device.kind === "PHONE" && !readOnly ? (
+            <Link href={`/phone/pump?field=${fieldId}`} className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-navy-700 hover:text-navy-900">
+              {t("fieldOps.phoneController")}
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          ) : null}
         </div>
 
         {readOnly ? <Alert variant="info">{t("fieldOps.readOnlyPump")}</Alert> : null}
@@ -244,7 +251,7 @@ export function PumpControlCard({
   );
 }
 
-export function AdvisoryCard() {
+export function AdvisoryCard({ fieldId, readOnly }: { fieldId: number; readOnly: boolean }) {
   const { t } = useI18n();
   return (
     <Card>
@@ -275,6 +282,18 @@ export function AdvisoryCard() {
           <Cpu className="h-4 w-4 shrink-0" aria-hidden="true" />
           {t("fieldOps.advisoryDevicesHint")}
         </p>
+        {!readOnly ? (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+            <span className="flex items-center gap-2 text-slate-700">
+              <Smartphone className="h-4 w-4 shrink-0 text-navy-700" aria-hidden="true" />
+              {t("fieldOps.phoneHint")}
+            </span>
+            <Link href={`/phone/pump?field=${fieldId}`} className="inline-flex items-center gap-1 font-semibold text-navy-700 hover:text-navy-900">
+              {t("fieldOps.phoneSetup")}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

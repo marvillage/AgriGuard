@@ -49,7 +49,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="pointer-events-none fixed right-4 bottom-4 z-[60] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-2" aria-live="polite">
+      <div className="pointer-events-none fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-[60] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-2 lg:bottom-4" aria-live="polite">
         {toasts.map((item) => {
           const { icon: Icon, style } = tones[item.tone];
           const content = (

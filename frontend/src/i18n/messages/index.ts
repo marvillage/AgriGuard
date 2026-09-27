@@ -9,6 +9,7 @@ import fertilizer from "./en/fertilizer";
 import field from "./en/field";
 import fieldOps from "./en/fieldOps";
 import nav from "./en/nav";
+import phone from "./en/phone";
 import recommendations from "./en/recommendations";
 import risk from "./en/risk";
 import scan from "./en/scan";
@@ -38,6 +39,7 @@ export const en = {
   copilot,
   trials,
   validation,
+  phone,
   advisor,
   settings,
 };

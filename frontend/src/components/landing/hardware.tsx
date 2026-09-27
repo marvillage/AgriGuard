@@ -44,6 +44,9 @@ export function Hardware() {
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="aspect-square rounded-[2rem] shadow-lift"
           />
+          <span className="absolute bottom-4 right-4 rounded-full bg-navy-950/80 px-3 py-1 text-xs font-semibold text-white/90 backdrop-blur">
+            Concept design
+          </span>
           <div className="absolute -right-3 top-10 hidden animate-float rounded-2xl border border-white/15 bg-navy-900/80 px-4 py-3 shadow-lift backdrop-blur sm:block">
             <p className="text-xs text-white/50">Refresh rate</p>
             <p className="font-display font-semibold">Every 60 s</p>
@@ -66,6 +69,10 @@ export function Hardware() {
               A low-cost, solar-powered sensor box that lives in the field,
               talks to the cloud and can switch the pump. It&apos;s built from
               off-the-shelf parts, so it&apos;s easy to repair and cheap to scale.
+            </p>
+            <p className="mt-3 text-sm text-white/50">
+              Designed and ready to build: the parts list, wiring and firmware are published. Until a farm has one,
+              the AgriGuard phone app runs the pump, maps the field and measures the pump flow.
             </p>
           </Reveal>
 

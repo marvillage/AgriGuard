@@ -161,6 +161,11 @@ export const telemetrySchema = z.object({
   rainfall: z.number().min(0).max(1000).optional(),
 });
 
+export const flowTestSchema = z.object({
+  bucketLitres: z.number().positive().max(1000),
+  seconds: z.array(z.number().min(1).max(3600)).min(1).max(5),
+});
+
 export const pumpSchema = z.object({
   mode: z.enum(["AUTO", "MANUAL_ON", "MANUAL_OFF"]),
   minutes: z.number().int().min(1).max(180).optional(),
@@ -186,6 +191,7 @@ export const scheduleUpdateSchema = z.object(scheduleFields).partial();
 
 export const deviceSchema = z.object({
   name: z.string().trim().min(2).max(100),
+  kind: z.enum(["NODE", "PHONE"]).optional(),
   simulated: z.boolean().optional(),
   tankHeightCm: z.number().positive().max(5000).optional(),
   tankCapacityL: z.number().positive().max(10000000).optional(),

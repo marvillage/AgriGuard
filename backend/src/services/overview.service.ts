@@ -70,6 +70,7 @@ export async function fieldOverview(user: AuthUser, fieldId: number, languageInp
       critical: decision.critical,
       et0: decision.et0,
       etc: decision.etc,
+      watering: decision.watering,
     },
     risks,
     weather: decision.weather,

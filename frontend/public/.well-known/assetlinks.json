@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mavestorm.agriguard",
+      "sha256_cert_fingerprints": ["1D:5B:DA:38:F2:DC:08:FC:73:50:B7:36:FA:69:52:D7:12:0C:55:6C:C3:74:66:8A:24:42:2E:DD:F2:72:E8:91"]
+    }
+  }
+]

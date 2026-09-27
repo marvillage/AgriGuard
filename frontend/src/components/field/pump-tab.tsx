@@ -25,7 +25,7 @@ export function PumpTab({ overview }: { overview: FieldOverview }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {device ? <PumpControlCard fieldId={fieldId} device={device} events={events} readOnly={readOnly} /> : <AdvisoryCard />}
+        {device ? <PumpControlCard fieldId={fieldId} device={device} events={events} readOnly={readOnly} /> : <AdvisoryCard fieldId={fieldId} readOnly={readOnly} />}
         <DecisionCard overview={overview} />
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

@@ -5,7 +5,7 @@ const steps = [
   {
     icon: Radio,
     title: "Sense",
-    body: "A solar-powered field node reads soil moisture, temperature, humidity and NPK every minute.",
+    body: "Satellite images and the Open-Meteo soil model cover every field today. The solar field node, designed and ready to build, adds soil and NPK readings every minute.",
   },
   {
     icon: BrainCircuit,
@@ -15,7 +15,7 @@ const steps = [
   {
     icon: Power,
     title: "Act",
-    body: "The pump switches on or off automatically, or the farmer gets one clear, explained action.",
+    body: "Your phone says when to start and stop the pump and logs each watering. With the field node, the pump switches itself.",
   },
   {
     icon: ChartColumn,

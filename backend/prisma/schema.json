@@ -1164,6 +1164,13 @@
                   "kind": "scalar"
                 }
               },
+              "kind": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "lastEnergyTotalKwh": {
                 "nullable": true,
                 "type": {
@@ -1343,6 +1350,9 @@
                 },
                 "id": {
                   "column": "id"
+                },
+                "kind": {
+                  "column": "kind"
                 },
                 "lastEnergyTotalKwh": {
                   "column": "lastEnergyTotalKwh"
@@ -2214,6 +2224,13 @@
                   "kind": "scalar"
                 }
               },
+              "pumpFlowTest": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "pumpPowerKw": {
                 "nullable": true,
                 "type": {
@@ -2470,6 +2487,9 @@
                 },
                 "pumpFlowLpm": {
                   "column": "pumpFlowLpm"
+                },
+                "pumpFlowTest": {
+                  "column": "pumpFlowTest"
                 },
                 "pumpPowerKw": {
                   "column": "pumpPowerKw"
@@ -5684,6 +5704,15 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
+                "kind": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "NODE"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
                 "lastEnergyTotalKwh": {
                   "codecId": "pg/float8@1",
                   "nativeType": "float8",
@@ -6394,6 +6423,11 @@
                 "pumpFlowLpm": {
                   "codecId": "pg/float8@1",
                   "nativeType": "float8",
+                  "nullable": true
+                },
+                "pumpFlowTest": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
                   "nullable": true
                 },
                 "pumpPowerKw": {
@@ -8642,7 +8676,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "c84c9e272f92cb8a14410df6c58a6d0892cb696d221d390477f223b5fd7f92d8"
+    "storageHash": "0aacbc10756773b67b17f9d492283a0e4951abdfaf259f8d9dc2cdec3138d55b"
   },
   "execution": {
     "executionHash": "95ed4f25b3fb902ca6a27b0c5b163ede4802f5c67761bbe65c7f41fe4a164b15",

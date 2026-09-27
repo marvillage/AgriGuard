@@ -99,15 +99,28 @@ export const update = async (
   data: FieldInput
 ) => {
   await verifyFarmAccess(farmId, user, true);
-  await getById(farmId, fieldId, user);
+  const field = await getById(farmId, fieldId, user);
 
-  return updateField(fieldId, applyBoundary(data));
+  return updateField(fieldId, { ...applyBoundary(data), ...flowTestFor(field, data) });
 };
 
 export const updateById = async (user: AuthUser, fieldId: number, data: FieldInput) => {
   const { field } = await fieldAccess(user, fieldId, { write: true });
-  return updateField(field.id, applyBoundary(data));
+  return updateField(field.id, { ...applyBoundary(data), ...flowTestFor(field, data) });
 };
+
+// A flow typed in by hand is no longer the one the bucket test measured.
+const flowTestFor = (field: { pumpFlowLpm: number | null }, data: FieldInput) =>
+  data.pumpFlowLpm !== undefined && data.pumpFlowLpm !== field.pumpFlowLpm ? { pumpFlowTest: null } : {};
+
+export async function recordFlowTest(user: AuthUser, fieldId: number, input: { bucketLitres: number; seconds: number[] }) {
+  const { field } = await fieldAccess(user, fieldId, { write: true });
+  const rates = input.seconds.map((seconds) => (input.bucketLitres / seconds) * 60);
+  const lpm = Math.round((rates.reduce((sum, rate) => sum + rate, 0) / rates.length) * 10) / 10;
+  if (lpm > 10000) throw new AppError("That flow is too high for a bucket test. Check the bucket size and the times.", 400);
+  const test = { bucketLitres: input.bucketLitres, seconds: input.seconds, lpm, measuredAt: new Date().toISOString() };
+  return updateField(field.id, { pumpFlowLpm: lpm, pumpFlowTest: JSON.stringify(test) });
+}
 
 export const remove = async (
   farmId: number,

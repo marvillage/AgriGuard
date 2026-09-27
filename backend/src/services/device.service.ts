@@ -31,12 +31,13 @@ export async function listDevices(user: AuthUser, fieldId?: number) {
 export async function registerDevice(
   user: AuthUser,
   fieldId: number,
-  input: { name: string; simulated?: boolean; tankHeightCm?: number; tankCapacityL?: number; dryRunLevelPct?: number }
+  input: { name: string; kind?: "NODE" | "PHONE"; simulated?: boolean; tankHeightCm?: number; tankCapacityL?: number; dryRunLevelPct?: number }
 ) {
   await fieldAccess(user, fieldId, { write: true });
   const device = await db.orm.public.Device.create({
     fieldId,
     name: input.name,
+    kind: input.kind ?? "NODE",
     deviceKey: deviceKey(),
     simulated: input.simulated ?? false,
     tankHeightCm: input.tankHeightCm ?? null,

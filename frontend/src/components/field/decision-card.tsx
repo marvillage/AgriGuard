@@ -58,6 +58,15 @@ export function DecisionCard({ overview }: { overview: FieldOverview }) {
           <p className={cn("mt-3 font-display text-lg leading-snug font-semibold sm:text-xl", decision.critical ? "text-red-900" : "text-ink")}>
             {decision.message}
           </p>
+          {decision.watering ? (
+            <p className="mt-2 text-xs text-slate-600">
+              {t("fieldOps.wateringCredit", {
+                litres: formatLitres(decision.watering.litres, language),
+                time: formatTime(decision.watering.endedAt, language),
+                moisture: number(decision.watering.moisture, 1),
+              })}
+            </p>
+          ) : null}
           <div className="mt-4 flex flex-wrap gap-2">
             {decision.et0 !== null ? <Badge variant="secondary">{t("field.et0Chip", { value: number(decision.et0, 1) })}</Badge> : null}
             {decision.etc !== null ? <Badge variant="secondary">{t("field.etcChip", { value: number(decision.etc, 1) })}</Badge> : null}

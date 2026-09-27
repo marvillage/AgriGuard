@@ -1,5 +1,6 @@
 import db from "../config/database.js";
-import { getSoil } from "../data/soils.js";
+import { getSoil, irrigationEfficiency } from "../data/soils.js";
+import { squareMetresPerAcre } from "../lib/geo.js";
 import { publish } from "../lib/events.js";
 import { isFieldDeleting, withFieldLock } from "../lib/field-lock.js";
 import { dayKey, hoursAgo, localClock, parseTimestamp } from "../lib/time.js";
@@ -10,6 +11,7 @@ import {
   cropEtMm,
   cropStage,
   irrigationPlan,
+  methodFor,
   profileFor,
   round,
   waterStatus,
@@ -37,10 +39,18 @@ export interface FieldContext {
   latest: ObservationRow | null;
   latestAgeMinutes: number | null;
   recent: ObservationRow[];
+  watered: Watering[];
   schedules: ScheduleRow[];
   forecast: Forecast | null;
   weatherError: string | null;
   now: Date;
+}
+
+export interface Watering {
+  litres: number;
+  startedAt: string;
+  endedAt: string;
+  moistureBefore: number | null;
 }
 
 const staleAfterMinutes = 180;
@@ -69,6 +79,7 @@ export async function loadContext(fieldId: number, now = new Date()): Promise<Fi
       .orderBy((o) => o.observedAt.desc())
       .first());
   const latestAt = parseTimestamp(latest?.observedAt ?? null);
+  const watered = await unseenWatering(fieldId, latest, now);
   const schedules = await db.orm.public.PumpSchedule.where({ fieldId, enabled: true }).all();
 
   const lat = field.latitude ?? farm.latitude;
@@ -93,6 +104,7 @@ export async function loadContext(fieldId: number, now = new Date()): Promise<Fi
     latest,
     latestAgeMinutes: latestAt ? Math.round((now.getTime() - latestAt.getTime()) / 60000) : null,
     recent,
+    watered,
     schedules,
     forecast,
     weatherError,
@@ -100,18 +112,84 @@ export async function loadContext(fieldId: number, now = new Date()): Promise<Fi
   };
 }
 
+// Waterings the latest soil reading cannot show: all of them for the weather model, later ones for a sensor.
+async function unseenWatering(fieldId: number, latest: ObservationRow | null, now: Date): Promise<Watering[]> {
+  if (!latest || latest.soilMoisture === null) return [];
+  const readAt = parseTimestamp(latest.observedAt)?.getTime() ?? 0;
+  const live = latest.source === "DEVICE" || latest.source === "SIMULATOR";
+  const events = await db.orm.public.IrrigationEvent
+    .where({ fieldId })
+    .where((e) => e.startedAt.gte(hoursAgo(72, now).toISOString()))
+    .where((e) => e.startedAt.lte(now.toISOString()))
+    .orderBy((e) => e.startedAt.asc())
+    .limit(20)
+    .all();
+  const unseen = events.filter((event) => {
+    if ((event.litres ?? 0) <= 0) return false;
+    if (!event.endedAt) return !live;
+    const ended = parseTimestamp(event.endedAt)?.getTime() ?? 0;
+    return latest.source === "OPEN_METEO" || ended > readAt;
+  });
+  return Promise.all(
+    unseen.map(async (event) => {
+      const before = await db.orm.public.FieldObservation
+        .where({ fieldId, source: latest.source })
+        .where((o) => o.soilMoisture.isNotNull())
+        .where((o) => o.observedAt.lte(event.startedAt))
+        .orderBy((o) => o.observedAt.desc())
+        .first();
+      return { litres: event.litres ?? 0, startedAt: event.startedAt, endedAt: event.endedAt ?? now.toISOString(), moistureBefore: before?.soilMoisture ?? null };
+    })
+  );
+}
+
+// FAO-56 water balance: each watering refills the root zone, then the crop uses ETc every day until now.
+export function moistureAfterWatering(
+  reading: number,
+  watered: Watering[],
+  options: { field: FieldRow; farm: FarmRow; rootDepthM: number; fieldCapacity: number; etcMm: number | null; now: Date }
+) {
+  if (!watered.length || options.etcMm === null) return reading;
+  const rootMm = options.rootDepthM * 1000;
+  const areaM2 = options.field.area * squareMetresPerAcre;
+  const efficiency = irrigationEfficiency[methodFor(options.field, options.farm)];
+  const usePerDay = (options.etcMm / rootMm) * 100;
+  let level: number | null = null;
+  let at = 0;
+  for (const event of watered) {
+    const start = parseTimestamp(event.startedAt)?.getTime() ?? at;
+    const base = event.moistureBefore ?? reading;
+    const current = level === null ? base : Math.max(base, level - (usePerDay * (start - at)) / 86400000);
+    level = Math.min(options.fieldCapacity, current + ((event.litres * efficiency) / areaM2 / rootMm) * 100);
+    at = parseTimestamp(event.endedAt)?.getTime() ?? start;
+  }
+  if (level === null) return reading;
+  const today = level - (usePerDay * Math.max(0, options.now.getTime() - at)) / 86400000;
+  return round(Math.max(reading, Math.min(options.fieldCapacity, today)), 1);
+}
+
 export function decideIrrigation(context: FieldContext) {
   const { field, farm, crop, device, latest, latestAgeMinutes, forecast, now } = context;
   const profile = profileFor(crop);
   const stage = cropStage(crop, profile, now);
   const fresh = latest && latestAgeMinutes !== null && latestAgeMinutes <= staleAfterMinutes;
-  const moisture = fresh ? latest.soilMoisture : null;
-  const water = waterStatus(field, stage, moisture ?? null);
+  const reading = fresh ? latest.soilMoisture : null;
   const weather = forecast ? summarizeForecast(forecast, now) : null;
   const et0 = weather?.et0Today ?? null;
   const etc = et0 !== null ? cropEtMm(et0, stage.kc) : null;
+  const { fieldCapacity } = waterStatus(field, stage, null);
+  const moisture =
+    reading === null
+      ? null
+      : moistureAfterWatering(reading, context.watered, { field, farm, rootDepthM: stage.rootDepthM, fieldCapacity, etcMm: etc, now });
+  const water = waterStatus(field, stage, moisture);
   const plan = irrigationPlan(field, farm, Math.max(water.needMm ?? 0, 1));
   const tankLevel = fresh ? latest.tankLevel : null;
+  const lastWatering = context.watered.at(-1);
+  const watering =
+    reading !== null && moisture !== null && moisture > reading && lastWatering
+      ? { reading, moisture, litres: Math.round(context.watered.reduce((sum, event) => sum + event.litres, 0)), endedAt: lastWatering.endedAt }
+      : null;
 
   const base = {
     stage,
@@ -121,6 +199,7 @@ export function decideIrrigation(context: FieldContext) {
     etc,
     plan,
     moisture,
+    watering,
     tankLevel,
     solar: null as ReturnType<typeof solarWindow> | null,
     critical: false,

@@ -288,6 +288,14 @@ const fieldOps = {
   noteSend: "Send note",
   noteSent: "Note sent to the farmer",
   noteSentBody: "Added to the recommendations for {field}.",
+  wateringCredit: "Includes {litres} logged since this reading, the last ending at {time}. The weather model cannot see irrigation, so AgriGuard adds that water: about {moisture}% now.",
+  phoneController: "Phone controller",
+  phoneDelivery: "The phone shows each command. The farmer switches the pump and taps to confirm.",
+  phoneHint: "No sensor box? Your phone can be the pump controller.",
+  phoneSetup: "Use my phone",
+  phoneBadge: "Phone",
+  measureFlowLink: "Measure pump flow",
+  flowMeasuredShort: "measured with a bucket",
 };
 
 export default fieldOps;

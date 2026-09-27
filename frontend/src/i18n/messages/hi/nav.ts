@@ -27,6 +27,13 @@ const nav: NonNullable<PartialMessages["nav"]> = {
   role_FARMER: "किसान",
   role_AGRONOMIST: "कृषि विशेषज्ञ",
   role_ADMIN: "एडमिन",
+  phone: "फ़ोन टूल",
+  tabHome: "होम",
+  tabFields: "खेत",
+  tabScan: "स्कैन",
+  tabPhone: "फ़ोन",
+  tabMore: "और",
+  install: "ऐप इंस्टॉल करें",
 };
 
 export default nav;

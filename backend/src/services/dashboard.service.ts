@@ -113,8 +113,8 @@ export async function dashboard(user: AuthUser, language: Language) {
     stats: {
       farms: farms.length,
       fields: fields.length,
-      devices: devices.length,
-      devicesOnline: devices.filter((d) => d.online).length,
+      devices: devices.filter((d) => d.kind !== "PHONE").length,
+      devicesOnline: devices.filter((d) => d.kind !== "PHONE" && d.online).length,
       avgCropHealth: average(healthValues),
       openAlerts: openAlerts.count,
     },

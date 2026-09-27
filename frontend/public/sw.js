@@ -1,8 +1,8 @@
 // AgriGuard service worker: offline app shell, cached API reads, and web push alerts.
-const VERSION = "agriguard-v1";
+const VERSION = "agriguard-v2";
 const SHELL_CACHE = `${VERSION}-shell`;
 const API_CACHE = `${VERSION}-api`;
-const SHELL = ["/", "/dashboard", "/offline.html", "/manifest.webmanifest", "/icons/icon-192.png", "/brand/logo-mark.png"];
+const SHELL = ["/", "/dashboard", "/phone", "/offline.html", "/manifest.webmanifest", "/icons/icon-192.png", "/brand/logo-mark.png"];
 const DEV = new URL(self.location.href).searchParams.has("dev");
 
 self.addEventListener("install", (event) => {

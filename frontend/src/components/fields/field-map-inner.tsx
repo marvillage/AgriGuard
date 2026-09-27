@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Map as LeafletMap, point } from "leaflet";
-import { CircleMarker, ImageOverlay, MapContainer, Polygon, Polyline, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { Circle, CircleMarker, ImageOverlay, MapContainer, Polygon, Polyline, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import type { LatLng } from "@/lib/types";
 
 // React removes the map before its layers, and a layer removed afterwards asks the deleted pane for its position.
@@ -29,6 +29,8 @@ export interface FieldMapProps {
   drawing?: boolean;
   basemap?: Basemap;
   ndvi?: NdviLayer | null;
+  position?: { point: LatLng; accuracy: number } | null;
+  follow?: boolean;
   onAddPoint?: (point: LatLng) => void;
   className?: string;
 }
@@ -44,6 +46,8 @@ export function FieldMapInner({
   drawing = false,
   basemap = "satellite",
   ndvi = null,
+  position = null,
+  follow = false,
   onAddPoint,
   className,
 }: FieldMapProps) {
@@ -86,10 +90,30 @@ export function FieldMapInner({
             />
           ))
         : null}
+      {position ? (
+        <>
+          <Circle center={position.point} radius={position.accuracy} pathOptions={{ color: draftColor, weight: 1, fillColor: draftColor, fillOpacity: 0.12 }} />
+          <CircleMarker center={position.point} radius={7} pathOptions={{ color: "#ffffff", weight: 3, fillColor: draftColor, fillOpacity: 1 }} />
+        </>
+      ) : null}
       <FitToBoundary boundary={boundary} />
+      <FollowPosition point={follow ? (position?.point ?? null) : null} />
       <DrawHandler enabled={drawing} onAddPoint={onAddPoint} />
     </MapContainer>
   );
+}
+
+function FollowPosition({ point }: { point: LatLng | null }) {
+  const map = useMap();
+  const lat = point?.[0];
+  const lng = point?.[1];
+
+  useEffect(() => {
+    if (lat === undefined || lng === undefined) return;
+    map.setView([lat, lng], Math.max(map.getZoom(), 18), { animate: true });
+  }, [map, lat, lng]);
+
+  return null;
 }
 
 function FitToBoundary({ boundary }: { boundary: LatLng[] | null }) {

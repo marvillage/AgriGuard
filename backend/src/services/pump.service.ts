@@ -107,10 +107,12 @@ async function clearCommand(deviceId: number) {
 }
 
 // Opens an irrigation event when the relay turns on and closes it (with measured or estimated volume) when it turns off.
+type PumpReading = Pick<ObservationRow, "pumpOn" | "flowTotalL" | "energyTotalKwh">;
+
 export async function trackIrrigation(
   device: DeviceRow,
   field: FieldRow,
-  observation: ObservationRow,
+  observation: PumpReading,
   command: PumpCommand | null,
   now = new Date()
 ) {
@@ -158,7 +160,7 @@ async function usageForEvent(
   event: { id: number; startFlowTotalL: number | null; startEnergyTotalKwh: number | null; startedAt: string },
   device: DeviceRow,
   field: FieldRow,
-  observation: ObservationRow,
+  observation: PumpReading,
   minutes: number
 ) {
   const farm = await db.orm.public.Farm.first({ id: field.farmId });

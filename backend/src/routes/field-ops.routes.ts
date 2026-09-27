@@ -23,6 +23,7 @@ import { currentUser, idParam, languageOf, optionalNumber } from "../utils/reque
 import {
   cropSchema,
   deviceSchema,
+  flowTestSchema,
   harvestSchema,
   noteSchema,
   observationSchema,
@@ -47,6 +48,12 @@ router.patch("/:fieldId", validateBody(updateFieldSchema), async (req, res) => {
   const field = await fields.updateById(currentUser(req), fieldId(req), req.body);
   analyzeField(field!.id, { trigger: "settings" }).catch(() => undefined);
   sendSuccess(res, { field }, "Field updated");
+});
+
+router.post("/:fieldId/flow-test", validateBody(flowTestSchema), async (req, res) => {
+  const field = await fields.recordFlowTest(currentUser(req), fieldId(req), req.body);
+  analyzeField(field!.id, { trigger: "settings" }).catch(() => undefined);
+  sendSuccess(res, { field }, "Pump flow saved");
 });
 
 router.post("/:fieldId/analyze", async (req, res) => {

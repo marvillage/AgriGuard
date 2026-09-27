@@ -12,6 +12,7 @@ import type {
   Dashboard,
   Decision,
   Device,
+  DeviceKind,
   Farm,
   FarmWithFields,
   FertilizerPlan,
@@ -25,6 +26,7 @@ import type {
   MoistureForecast,
   NdviSnapshot,
   Observation,
+  PumpCommand,
   RawReading,
   Recommendation,
   Scan,
@@ -121,6 +123,23 @@ export async function download(path: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+// Sent with the phone's device key, like the ESP32 node, so a rejected key must not sign the user out.
+export async function phoneTelemetry(deviceKey: string, body: { pumpOn: boolean; firmware: string; uptimeSec: number }) {
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}/api/device/telemetry`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Device-Key": deviceKey },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new ApiRequestError("Cannot reach the AgriGuard server. Check your connection.", 0);
+  }
+  const payload = (await response.json().catch(() => ({ success: false, message: `HTTP ${response.status}` }))) as ApiSuccess<PumpCommand> | ApiError;
+  if (!response.ok || !payload.success) throw new ApiRequestError(payload.success ? "Request failed" : payload.message, response.status);
+  return payload.data;
+}
+
 export type FarmInput = Partial<Pick<Farm, "name" | "location" | "description" | "latitude" | "longitude" | "irrigationMethod" | "baselineDepthMm" | "baselineIntervalDays" | "electricityRate" | "solarCapacityKw">>;
 export type FieldInput = Partial<Omit<Field, "id" | "farmId" | "createdAt" | "updatedAt" | "boundary">> & { boundary?: LatLng[] | null };
 
@@ -170,6 +189,9 @@ export const api = {
 
   patchField: (fieldId: number, body: FieldInput) =>
     request<{ field: Field }>(`/api/fields/${fieldId}`, json("PATCH", body)),
+
+  flowTest: (fieldId: number, body: { bucketLitres: number; seconds: number[] }) =>
+    request<{ field: Field }>(`/api/fields/${fieldId}/flow-test`, json("POST", body)),
 
   analyzeField: (fieldId: number) =>
     request<{ action: string }>(`/api/fields/${fieldId}/analyze`, json("POST")),
@@ -222,7 +244,7 @@ export const api = {
 
   fieldDevices: (fieldId: number) => request<{ devices: Device[] }>(`/api/fields/${fieldId}/devices`),
 
-  registerDevice: (fieldId: number, body: { name: string; simulated?: boolean; tankHeightCm?: number; tankCapacityL?: number; dryRunLevelPct?: number }) =>
+  registerDevice: (fieldId: number, body: { name: string; kind?: DeviceKind; simulated?: boolean; tankHeightCm?: number; tankCapacityL?: number; dryRunLevelPct?: number }) =>
     request<{ device: Device }>(`/api/fields/${fieldId}/devices`, json("POST", body)),
 
   updateDevice: (deviceId: number, body: Partial<Pick<Device, "name" | "tankHeightCm" | "tankCapacityL" | "dryRunLevelPct" | "hasFlowMeter" | "hasEnergyMeter" | "hasTankSensor" | "hasSolar">>) =>

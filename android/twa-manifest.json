@@ -1,0 +1,71 @@
+{
+  "packageId": "com.mavestorm.agriguard",
+  "host": "mavestorm-agriguard.onrender.com",
+  "name": "AgriGuard",
+  "launcherName": "AgriGuard",
+  "display": "standalone",
+  "themeColor": "#0A1433",
+  "themeColorDark": "#0A1433",
+  "navigationColor": "#FFFFFF",
+  "navigationColorDark": "#0A1433",
+  "navigationDividerColor": "#E2E8F0",
+  "navigationDividerColorDark": "#0A1433",
+  "backgroundColor": "#FFFFFF",
+  "enableNotifications": true,
+  "startUrl": "/dashboard",
+  "iconUrl": "https://mavestorm-agriguard.onrender.com/icons/icon-512.png",
+  "maskableIconUrl": "https://mavestorm-agriguard.onrender.com/icons/maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "D:/android-tools/keys/agriguard.keystore",
+    "alias": "agriguard"
+  },
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Crop scan",
+      "shortName": "Scan",
+      "url": "/scan",
+      "chosenIconUrl": "https://mavestorm-agriguard.onrender.com/icons/icon-192.png"
+    },
+    {
+      "name": "Pump controller",
+      "shortName": "Pump",
+      "url": "/phone/pump",
+      "chosenIconUrl": "https://mavestorm-agriguard.onrender.com/icons/icon-192.png"
+    },
+    {
+      "name": "Walk your field",
+      "shortName": "Walk",
+      "url": "/phone/walk",
+      "chosenIconUrl": "https://mavestorm-agriguard.onrender.com/icons/icon-192.png"
+    },
+    {
+      "name": "Measure pump flow",
+      "shortName": "Flow",
+      "url": "/phone/flow",
+      "chosenIconUrl": "https://mavestorm-agriguard.onrender.com/icons/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://mavestorm-agriguard.onrender.com/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": true
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://mavestorm-agriguard.onrender.com/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1.0.0"
+}

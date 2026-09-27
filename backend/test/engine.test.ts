@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { assessRisks, decideIrrigation, levelOf, nutrientStatus } from "../src/services/engine.service.js";
-import { context, deviceRow, farmRow, fieldRow, forecast, observationRow, scheduleRow } from "./fixtures.js";
+import { assessRisks, decideIrrigation, levelOf, moistureAfterWatering, nutrientStatus } from "../src/services/engine.service.js";
+import { context, deviceRow, farmRow, fieldRow, forecast, now, observationRow, scheduleRow } from "./fixtures.js";
 
 // Wheat at day 60 on loam: refill point 17.3%, wilting point 11%, critical at or below 13.205%.
 // At 16% moisture the deficit is 108 mm, so rain only covers it at >= 54 mm with a >= 60% chance.
@@ -125,4 +125,27 @@ test("water stress stays low while the soil is above the refill point", () => {
   const ctx = context({ latest: observationRow({ soilMoisture: 20 }) });
   const risks = assessRisks(ctx, decideIrrigation(ctx), { recentDisease: null, ndvi: null });
   assert.ok(risks.waterStress !== null && risks.waterStress <= 34);
+});
+
+// 367,896 L on 1 acre (4,046.86 m²) is 90.9 mm gross, 50 mm net at 55% flood efficiency: +5% moisture in a 1 m root zone.
+// ETc of 4 mm/day takes 0.4% a day back out of that root zone.
+const hoursAgo = (hours: number) => new Date(now.getTime() - hours * 3600000).toISOString();
+const watering = (moistureBefore: number | null) => ({ litres: 367896, startedAt: hoursAgo(13), endedAt: hoursAgo(12), moistureBefore });
+const balance = { field: fieldRow(), farm: farmRow(), rootDepthM: 1, fieldCapacity: 25, etcMm: 4, now };
+
+test("a logged watering is added to a reading that cannot see it, minus the crop use since", () => {
+  assert.equal(moistureAfterWatering(16, [watering(16)], balance), 20.8);
+  assert.equal(moistureAfterWatering(16, [watering(22)], balance), 24.8);
+  assert.equal(moistureAfterWatering(24, [watering(16)], balance), 24);
+  assert.equal(moistureAfterWatering(16, [], balance), 16);
+  assert.equal(moistureAfterWatering(16, [watering(16)], { ...balance, etcMm: null }), 16);
+});
+
+test("after a logged watering the weather-model field is not irrigated again", () => {
+  const decision = decideIrrigation(context({ latest: observationRow({ soilMoisture: 16, source: "OPEN_METEO" }), watered: [watering(16)] }));
+  assert.equal(decision.action, "SKIP_WET");
+  assert.equal(decision.watering?.reading, 16);
+  assert.equal(decision.watering?.litres, 367896);
+  assert.ok(decision.moisture !== null && decision.moisture > 17.3);
+  assert.equal(decideIrrigation(context({ latest: observationRow({ soilMoisture: 16, source: "OPEN_METEO" }) })).action, "IRRIGATE");
 });

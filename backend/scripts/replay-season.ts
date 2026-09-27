@@ -360,6 +360,7 @@ async function replayField(field: FieldRow, farm: FarmRow, crop: CropRow, profil
       latest: simulatedReading(field.id, moisture, now),
       latestAgeMinutes: 0,
       recent: [],
+      watered: [],
       schedules: [],
       forecast: perfectForecast(now, date, rainMm, et0Mm, body),
       weatherError: null,

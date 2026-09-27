@@ -54,6 +54,7 @@ export interface Field {
   boundary: string | null;
   irrigationMethod: IrrigationMethod | null;
   pumpFlowLpm: number | null;
+  pumpFlowTest: string | null;
   pumpPowerKw: number | null;
   refillPoint: number | null;
   fieldCapacity: number | null;
@@ -119,6 +120,23 @@ export interface HourlyPoint {
   pumpOn: boolean;
 }
 
+export type DeviceKind = "NODE" | "PHONE";
+
+export interface PumpCommand {
+  pump: "ON" | "OFF";
+  runSeconds: number;
+  reason: string;
+  reportEverySeconds: number;
+  serverTime: string;
+}
+
+export interface FlowTest {
+  bucketLitres: number;
+  seconds: number[];
+  lpm: number;
+  measuredAt: string;
+}
+
 export interface Device {
   id: number;
   name: string;
@@ -142,6 +160,7 @@ export interface Device {
   tankCapacityL: number | null;
   dryRunLevelPct: number;
   simulated: boolean;
+  kind: DeviceKind;
   online: boolean;
   minutesSinceSeen: number | null;
   telemetryUrl: string;
@@ -286,6 +305,7 @@ export interface FieldOverview {
     critical: boolean;
     et0: number | null;
     etc: number | null;
+    watering: { reading: number; moisture: number; litres: number; endedAt: string } | null;
   };
   risks: Risks;
   weather: WeatherSummary | null;

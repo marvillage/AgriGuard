@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { LogoMark } from "@/components/brand/logo";
+import { BottomNav } from "./bottom-nav";
 import { Sidebar } from "./sidebar";
 import { TopBar } from "./top-bar";
 import { useAuth } from "@/providers/auth-provider";
@@ -67,12 +68,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar onMenu={() => setMenuOpen(true)} />
-        <main className="flex-1">
+        <main className="flex-1 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0">
           <div key={pathname} className="mx-auto max-w-7xl animate-fade-up p-5 lg:p-8">
             {children}
           </div>
         </main>
       </div>
+      <BottomNav onMore={() => setMenuOpen(true)} />
     </div>
   );
 }

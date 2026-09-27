@@ -290,6 +290,14 @@ const fieldOps: NonNullable<PartialMessages["fieldOps"]> = {
   noteSend: "నోట్ పంపండి",
   noteSent: "రైతుకు నోట్ పంపాం",
   noteSentBody: "{field} పొలం సలహాల్లో జోడించాం.",
+  wateringCredit: "ఈ రీడింగ్ తర్వాత నమోదైన {litres} నీరు కూడా ఇందులో ఉంది; చివరి విడత {time}కి ముగిసింది. వాతావరణ మోడల్ నీటి పారుదలను చూడలేదు, కాబట్టి AgriGuard ఆ నీటిని కలుపుతుంది: ఇప్పుడు సుమారు {moisture}%.",
+  phoneController: "ఫోన్ కంట్రోలర్",
+  phoneDelivery: "ఫోన్ ప్రతి ఆదేశాన్నీ చూపిస్తుంది. రైతు పంపును ఆన్/ఆఫ్ చేసి, నిర్ధారించడానికి నొక్కుతారు.",
+  phoneHint: "ఫీల్డ్ పరికరం లేదా? మీ ఫోన్‌నే పంపు కంట్రోలర్‌గా వాడవచ్చు.",
+  phoneSetup: "నా ఫోన్ వాడండి",
+  phoneBadge: "ఫోన్",
+  measureFlowLink: "పంపు ప్రవాహం కొలవండి",
+  flowMeasuredShort: "బకెట్‌తో కొలిచినది",
 };
 
 export default fieldOps;

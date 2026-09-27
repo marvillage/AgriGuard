@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Meter } from "@/components/ui/meter";
 import { useI18n } from "@/i18n/provider";
-import { formatLitres, timeAgo } from "@/lib/format";
+import { formatDate, formatLitres, timeAgo } from "@/lib/format";
 import type { FieldOverview } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { actionTone } from "./decision-log";
@@ -53,6 +53,15 @@ export function DecisionCard({ overview }: { overview: FieldOverview }) {
 
       <CardContent className="space-y-5">
         <p className="rounded-2xl bg-sun-50 px-4 py-3 text-sm font-medium text-sun-900 ring-1 ring-sun-300/60">{decision.message}</p>
+        {decision.watering ? (
+          <p className="rounded-xl bg-navy-50/70 px-3 py-2 text-xs text-navy-900 ring-1 ring-navy-100">
+            {t("fieldOps.wateringCredit", {
+              litres: formatLitres(decision.watering.litres, language),
+              time: formatDate(decision.watering.endedAt, language, { hour: "numeric", minute: "2-digit" }),
+              moisture: number(decision.watering.moisture, 1),
+            })}
+          </p>
+        ) : null}
 
         <div className="grid grid-cols-2 gap-3">
           <div className="min-w-0 rounded-2xl border border-slate-200/80 p-3.5">

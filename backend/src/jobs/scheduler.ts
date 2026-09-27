@@ -36,6 +36,8 @@ export async function analyzeAllFields() {
 export async function checkDevices() {
   const devices = await db.orm.public.Device.where((d) => d.lastSeenAt.isNotNull()).all();
   for (const device of devices) {
+    // A phone controller goes quiet whenever its page is closed, which is normal.
+    if (device.kind === "PHONE") continue;
     const seen = parseTimestamp(device.lastSeenAt);
     if (!seen || Date.now() - seen.getTime() < 30 * minute) continue;
     const field = await db.orm.public.Field.first({ id: device.fieldId });

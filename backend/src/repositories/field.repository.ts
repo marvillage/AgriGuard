@@ -6,6 +6,7 @@ export interface FieldSettings {
   boundary?: string | null;
   irrigationMethod?: string | null;
   pumpFlowLpm?: number | null;
+  pumpFlowTest?: string | null;
   pumpPowerKw?: number | null;
   refillPoint?: number | null;
   fieldCapacity?: number | null;

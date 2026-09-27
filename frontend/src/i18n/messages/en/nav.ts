@@ -25,6 +25,13 @@ const nav = {
   role_FARMER: "Farmer",
   role_AGRONOMIST: "Agronomist",
   role_ADMIN: "Admin",
+  phone: "Phone tools",
+  tabHome: "Home",
+  tabFields: "Fields",
+  tabScan: "Scan",
+  tabPhone: "Phone",
+  tabMore: "More",
+  install: "Install app",
 };
 
 export default nav;

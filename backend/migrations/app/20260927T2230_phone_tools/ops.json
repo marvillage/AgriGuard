@@ -1,0 +1,86 @@
+[
+  {
+    "id": "column.public.device.kind",
+    "label": "Add column \"kind\" to \"device\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "kind",
+        "table": "device"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"kind\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "device",
+          "kind"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"kind\"",
+        "sql": "ALTER TABLE \"public\".\"device\" ADD COLUMN \"kind\" text DEFAULT 'NODE' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"kind\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "device",
+          "kind"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.field.pumpFlowTest",
+    "label": "Add column \"pumpFlowTest\" to \"field\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pumpFlowTest",
+        "table": "field"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pumpFlowTest\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "pumpFlowTest"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pumpFlowTest\"",
+        "sql": "ALTER TABLE \"public\".\"field\" ADD COLUMN \"pumpFlowTest\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pumpFlowTest\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "field",
+          "pumpFlowTest"
+        ]
+      }
+    ]
+  }
+]

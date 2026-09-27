@@ -290,6 +290,14 @@ const fieldOps: NonNullable<PartialMessages["fieldOps"]> = {
   noteSend: "नोट भेजें",
   noteSent: "नोट किसान को भेज दिया गया",
   noteSentBody: "{field} की सलाह में जोड़ दिया गया।",
+  wateringCredit: "इसमें इस रीडिंग के बाद दर्ज {litres} पानी भी शामिल है; आखिरी सिंचाई {time} पर खत्म हुई। मौसम मॉडल सिंचाई नहीं देख सकता, इसलिए AgriGuard वह पानी जोड़ देता है: अभी लगभग {moisture}%।",
+  phoneController: "फ़ोन कंट्रोलर",
+  phoneDelivery: "फ़ोन हर आदेश दिखाता है। किसान पंप चालू-बंद करता है और पक्का करने के लिए टैप करता है।",
+  phoneHint: "फील्ड डिवाइस नहीं है? आपका फ़ोन पंप कंट्रोलर बन सकता है।",
+  phoneSetup: "मेरा फ़ोन इस्तेमाल करें",
+  phoneBadge: "फ़ोन",
+  measureFlowLink: "पंप का बहाव मापें",
+  flowMeasuredShort: "बाल्टी से मापा गया",
 };
 
 export default fieldOps;

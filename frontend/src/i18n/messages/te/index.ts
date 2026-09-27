@@ -9,6 +9,7 @@ import fertilizer from "./fertilizer";
 import field from "./field";
 import fieldOps from "./fieldOps";
 import nav from "./nav";
+import phone from "./phone";
 import recommendations from "./recommendations";
 import risk from "./risk";
 import scan from "./scan";
@@ -33,6 +34,7 @@ const messages: PartialMessages = {
   copilot,
   trials,
   validation,
+  phone,
   advisor,
   settings,
 };

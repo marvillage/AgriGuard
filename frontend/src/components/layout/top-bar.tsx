@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, Check, Languages, Menu, WifiOff } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo";
+import { InstallButton } from "@/components/pwa/install-button";
 import { languages } from "@/i18n/config";
 import { useI18n } from "@/i18n/provider";
 import { api } from "@/lib/api";
@@ -195,6 +196,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
             <span className={cn("h-1.5 w-1.5 rounded-full", connected ? "animate-pulse bg-emerald-500" : "bg-slate-400")} />
             {connected ? t("common.live") : t("common.offlineShort")}
           </span>
+          <InstallButton />
           <LanguageMenu />
           <NotificationBell />
         </div>

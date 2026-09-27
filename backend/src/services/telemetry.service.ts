@@ -33,6 +33,26 @@ export interface TelemetryInput {
   rainfall?: number;
 }
 
+const measuredKeys = [
+  "soilMoisture",
+  "soilTemperature",
+  "temperature",
+  "humidity",
+  "rainfall",
+  "nitrogen",
+  "phosphorus",
+  "potassium",
+  "flowTotalL",
+  "flowRateLpm",
+  "energyTotalKwh",
+  "powerW",
+  "tankDistanceCm",
+  "tankLevel",
+  "solarW",
+  "batteryPct",
+  "rssi",
+] as const;
+
 const analysisEveryMs = 15 * 60 * 1000;
 const lastAnalysis = new Map<number, number>();
 
@@ -49,10 +69,10 @@ export async function ingestTelemetry(deviceKey: string | undefined, input: Tele
       ? Math.max(0, Math.min(100, ((device.tankHeightCm - input.tankDistanceCm) / device.tankHeightCm) * 100))
       : undefined);
 
-  const observation = await db.orm.public.FieldObservation.create({
+  const reading = {
     fieldId: field.id,
     deviceId: device.id,
-    source: device.simulated ? "SIMULATOR" : "DEVICE",
+    source: device.simulated ? ("SIMULATOR" as const) : ("DEVICE" as const),
     soilMoisture: input.soilMoisture ?? null,
     soilTemperature: input.soilTemp ?? null,
     temperature: input.airTemp ?? null,
@@ -72,7 +92,10 @@ export async function ingestTelemetry(deviceKey: string | undefined, input: Tele
     rssi: input.rssi === undefined ? null : Math.round(input.rssi),
     pumpOn: input.pumpOn ?? device.pumpOn,
     observedAt: now.toISOString(),
-  });
+  };
+  // A phone used as the pump controller sends only the pump state, which the device and its irrigation events keep.
+  const measured = measuredKeys.some((key) => reading[key] !== null);
+  const observation = measured ? await db.orm.public.FieldObservation.create(reading) : reading;
 
   const updatedDevice = await db.orm.public.Device.where({ id: device.id }).update({
     lastSeenAt: now.toISOString(),
@@ -89,6 +112,9 @@ export async function ingestTelemetry(deviceKey: string | undefined, input: Tele
   });
   const liveDevice = updatedDevice ?? device;
 
+  // A watering that just ended is closed first, so the decision below already counts its water.
+  if (!observation.pumpOn) await trackIrrigation(liveDevice, field, observation, null, now);
+
   const context = await loadContext(field.id, now);
   let command = await commandFor(context, liveDevice, now);
 
@@ -98,7 +124,7 @@ export async function ingestTelemetry(deviceKey: string | undefined, input: Tele
     command = { ...command, pump: "OFF", runSeconds: 0, reason: "NO_FLOW" };
   }
 
-  await trackIrrigation(liveDevice, field, observation, command, now);
+  if (observation.pumpOn) await trackIrrigation(liveDevice, field, observation, command, now);
 
   const members = await farmMemberIds(field.farmId);
   publish(members, "telemetry", {
