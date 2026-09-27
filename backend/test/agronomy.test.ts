@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { getCrop } from "../src/data/crops.js";
+import { getSoil } from "../src/data/soils.js";
 import { cropEtMm, cropStage, formatDuration, irrigationPlan, waterStatus } from "../src/services/agronomy.service.js";
 import { cropRow, daysBefore, farmRow, fieldRow, now } from "./fixtures.js";
 
@@ -93,6 +94,16 @@ test("drip applies at most 12 mm net at 90% efficiency with the field's own pump
 
 test("unknown irrigation methods fall back to flood", () => {
   assert.equal(irrigationPlan(fieldRow({ irrigationMethod: "bucket" }), farmRow({ irrigationMethod: "bucket" }), 10).method, "flood");
+});
+
+test("soil types resolve by exact name before partial matches", () => {
+  assert.equal(getSoil("Red (sandy loam)").key, "red");
+  assert.equal(getSoil("Black (regur)").key, "black");
+  assert.equal(getSoil("alluvial").key, "alluvial");
+  assert.equal(getSoil("black cotton soil").key, "black");
+  assert.equal(getSoil("Sandy").key, "sandy");
+  assert.equal(getSoil(null).key, "loam");
+  assert.equal(getSoil("something else").key, "loam");
 });
 
 test("crop water use is Kc x ET0", () => {

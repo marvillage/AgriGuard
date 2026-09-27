@@ -14,6 +14,7 @@ const nav: NonNullable<PartialMessages["nav"]> = {
   copilot: "AI सहायक",
   sustainability: "शाश्वतता",
   trials: "शेत चाचण्या",
+  validation: "चाचणी व निकाल",
   advisor: "कृषितज्ज्ञ डेस्क",
   settings: "सेटिंग्ज",
   precisionFarming: "अचूक शेती",

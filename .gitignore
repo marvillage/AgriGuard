@@ -3,3 +3,6 @@ ChatGPT Image*.png
 .DS_Store
 Thumbs.db
 *.log
+
+# App screenshots for the pitch deck (kept local)
+docs/slides/

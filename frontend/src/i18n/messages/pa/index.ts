@@ -15,6 +15,7 @@ import scan from "./scan";
 import settings from "./settings";
 import sustainability from "./sustainability";
 import trials from "./trials";
+import validation from "./validation";
 
 const messages: PartialMessages = {
   common,
@@ -31,6 +32,7 @@ const messages: PartialMessages = {
   sustainability,
   copilot,
   trials,
+  validation,
   advisor,
   settings,
 };

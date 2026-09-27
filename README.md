@@ -23,8 +23,9 @@ npm install
 npm run db            # starts a local PostgreSQL (data in backend/.pgdata) using DATABASE_URL from .env — keep it running
 npm run db:migrate    # applies all migrations (use `npm run db:init` instead on an empty database)
 npm run dev           # API on http://localhost:5000
-npm run seed:demo     # optional: demo farmer + agronomist, 2 real-location farms, 21 days of history
+npm run seed:demo     # optional: 6 demo accounts on real farm locations with real weather and satellite data
 npm run simulate      # optional: virtual field nodes streaming live telemetry (same API as the ESP32)
+npm test              # unit tests for the irrigation, risk, fertilizer and AI-fallback logic
 
 # 2. Frontend
 cd ../frontend
@@ -33,8 +34,12 @@ npm run dev -- -p 3100   # http://localhost:3100
 ```
 
 `backend/.env` needs `DATABASE_URL` and `JWT_SECRET`; everything else is optional (see
-`backend/.env.example`). Demo accounts after seeding: `demo@agriguard.in` (farmer) and
-`advisor@agriguard.in` (agronomist), password `agriguard123`.
+`backend/.env.example`). Demo accounts after seeding (password `agriguard123`): farmers
+`demo@` (English), `sunita@` (Hindi), `anil@` (Marathi) and `lakshmi@agriguard.in` (Telugu),
+agronomist `advisor@agriguard.in` and FPO admin `fpo@agriguard.in`.
+
+The full platform guide (features, decision logic, data sources, API, data model, results) is
+[`docs/AgriGuard-Platform-Guide.pdf`](docs/AgriGuard-Platform-Guide.pdf).
 
 ## Features
 
@@ -71,7 +76,11 @@ falls back to built-in rules when none is reachable.
 | `OPENROUTER_API_KEY` | openrouter.ai → Keys (uses `:free` models) |
 | `OLLAMA_URL` | ollama.com (local, offline), e.g. `ollama pull gemma3:4b` or `qwen2.5vl:7b` |
 
-Model names are discovered automatically; set `GEMINI_MODEL` etc. to pin one.
+Model names are discovered automatically; set `GEMINI_MODEL` etc. to pin one. With a Gemini key the
+app rotates through every stable Flash and Flash-Lite model the key can use, because each has its own
+free-tier quota (about 20 requests a day for the newest Flash model); a model that hits its daily limit
+is paused until the midnight-Pacific reset. AI only explains and reads: every number comes from the
+formulas and verified sources, and "Why?" explanations may not add numbers, products or doses.
 
 ## Alerts
 
@@ -87,12 +96,30 @@ Register the node under **Field → Devices** to get its key; the Devices tab sh
 
 ## How impact is measured
 
-* **Baseline** = the farm's usual practice (e.g. flood 70 mm every 7 days), editable per farm.
+* **Baseline** = the farm's usual practice, editable per farm. The defaults (e.g. flood 70 mm every
+  7 days) are not yet verified against a published source, so farms should enter their own.
 * **Water used** = flow meter readings (or pump run-time × rated flow when no meter is fitted).
 * **Saved** = baseline − used, per baseline period, written to a hash-chained ledger.
 * **Energy** from the PZEM meter, else pump rating, else 30 m head at 30 % efficiency (0.27 kWh / 1,000 L, BEE AgDSM);
   **CO₂** at 0.675 kg/kWh (India grid, CEA v22.0, FY 2025-26); **₹** at the farm's tariff.
 * **Field trials** compare an AgriGuard plot against a control plot; control plots are excluded from savings totals.
+
+## Testing & validation
+
+The **Testing & results** page in the app shows these, read from `backend/data/validation/`:
+
+| Check | Result | Reproduce |
+|---|---|---|
+| Unit tests | 38 of 38 pass | `npm test` (`npm run test:report` refreshes the page) |
+| Disease model on 236 real field photos (PlantDoc test split) | 60.6% right first time with the crop selected, 88.1% in the top 3 (published baseline: 15.08%) | `npx tsx scripts/validate-disease-model.ts` |
+| Past-season replay on real 2025 weather (simulated) | 47.4% less water than a rain-blind weekly FAO-56 schedule on the 5 fields that needed irrigation | `npx tsx scripts/replay-season.ts` |
+
+## Deploy on Render
+
+`render.yaml` is a Render Blueprint: **New → Blueprint** → pick this repository → enter `GEMINI_API_KEY`.
+It creates a PostgreSQL database, the API (migrations run on start with
+`prisma db migrate --to production`) and the web app on the free plan. Load demo data once with
+`DATABASE_URL=<external database URL> npm run seed:demo` from `backend/`. Pushes to `main` redeploy.
 
 ## Project layout
 
@@ -100,5 +127,7 @@ Register the node under **Field → Devices** to get its key; the Devices tab sh
 backend/     Express 5 API, Prisma 8 contract (prisma/schema.prisma), services, jobs, scripts
 frontend/    Next.js 16 app (landing page, dashboard, field pages, PWA, i18n)
 firmware/    ESP32 field node sketch and hardware guide
+docs/        platform guide (PDF)
+render.yaml  Render Blueprint (database, API, web app)
 IMAGE_PROMPTS.md   prompts used to generate the site imagery
 ```

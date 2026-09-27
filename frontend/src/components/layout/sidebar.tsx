@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
+  BadgeCheck,
   Bot,
   BriefcaseBusiness,
   Camera,
@@ -22,7 +23,7 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/auth-provider";
 
-type NavKey = "dashboard" | "farms" | "scan" | "risk" | "recommendations" | "copilot" | "sustainability" | "trials" | "advisor" | "settings";
+type NavKey = "dashboard" | "farms" | "scan" | "risk" | "recommendations" | "copilot" | "sustainability" | "trials" | "validation" | "advisor" | "settings";
 
 const navGroups: Array<{ label: "overview" | "intelligence" | "impact" | "advisorGroup" | "account"; items: Array<{ href: string; key: NavKey; icon: typeof Sprout; roles?: string[] }> }> = [
   {
@@ -46,6 +47,7 @@ const navGroups: Array<{ label: "overview" | "intelligence" | "impact" | "adviso
     items: [
       { href: "/sustainability", key: "sustainability", icon: Leaf },
       { href: "/trials", key: "trials", icon: FlaskConical },
+      { href: "/validation", key: "validation", icon: BadgeCheck },
     ],
   },
   {

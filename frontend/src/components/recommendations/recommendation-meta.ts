@@ -10,6 +10,7 @@ import {
   TriangleAlert,
   type LucideIcon,
 } from "lucide-react";
+import { providerText } from "@/components/copilot/provider-label";
 import type { Priority, RecType, Recommendation } from "@/lib/types";
 
 export type RecStatus = Recommendation["status"];
@@ -38,6 +39,5 @@ export const priorityMeta: Record<
 
 export function providerLabel(provider: string, rulesLabel: string) {
   if (provider === "rules") return rulesLabel;
-  const [name, ...model] = provider.replace(/:cache$/, "").split(":");
-  return model.length ? `${name} · ${model.join(":")}` : name;
+  return providerText(provider.replace(/:cache$/, ""));
 }

@@ -3,7 +3,7 @@ import multer from "multer";
 import db from "../config/database.js";
 import { crops } from "../data/crops.js";
 import { soils } from "../data/soils.js";
-import { asLanguage, localCropName, type Language } from "../i18n/index.js";
+import { asLanguage, cropDisplayName, type Language } from "../i18n/index.js";
 import { soilLabel } from "../i18n/soils.js";
 import { aiStatus } from "../lib/ai/index.js";
 import { addClient } from "../lib/events.js";
@@ -18,6 +18,7 @@ import { dailyBriefing, explainRecommendation, translateText } from "../services
 import * as copilot from "../services/copilot.service.js";
 import { dashboard } from "../services/dashboard.service.js";
 import { explainScan } from "../services/explain.service.js";
+import { validationSummary } from "../services/validation.service.js";
 import { cropOptions } from "../services/fertilizer.service.js";
 import { impactCsv, impactPdf, impactSummary } from "../services/impact.service.js";
 import * as notifications from "../services/notification.service.js";
@@ -69,12 +70,16 @@ router.get("/stream", (req, res) => {
 
 router.get("/meta/crops", (req, res) => {
   const lang = languageOf(req) ?? "en";
-  const localize = <T extends { key: string; name: string }>(crop: T) => ({ ...crop, name: localCropName(lang, crop.key) ?? crop.name });
+  const localize = <T extends { key: string; name: string }>(crop: T) => ({ ...crop, name: cropDisplayName(lang, crop.key, crop.name) });
   sendSuccess(res, { crops: cropOptions().map(localize), scanCrops: scanCrops().map(localize), soils: soils.map((soil) => ({ ...soil, label: soilLabel(lang, soil) })) });
 });
 
 router.get("/push/public-key", (_req, res) => {
   sendSuccess(res, { publicKey: vapidKeys().publicKey });
+});
+
+router.get("/validation", (_req, res) => {
+  sendSuccess(res, validationSummary());
 });
 
 router.use(authMiddleware);

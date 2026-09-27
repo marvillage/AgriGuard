@@ -28,5 +28,6 @@ export interface AiProvider {
   name: string;
   configured(): boolean;
   pickModel(vision: boolean): Promise<string | null>;
+  models?(vision: boolean): Promise<string[]>;
   generate(request: AiRequest, model: string): Promise<string>;
 }

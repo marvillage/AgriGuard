@@ -39,3 +39,9 @@ export function localCropName(language: Language, value: string | null | undefin
   const entry = cropNames.find((crop) => crop.key === normalized || crop.en.some((name) => name.toLowerCase() === normalized));
   return entry ? entry.names[language] : value;
 }
+
+// For a crop key: the translated name, else the English display name (localCropName would echo the key).
+export function cropDisplayName(language: Language, key: string, englishName: string) {
+  const local = localCropName(language, key);
+  return local && local !== key ? local : englishName;
+}

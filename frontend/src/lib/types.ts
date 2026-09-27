@@ -587,3 +587,77 @@ export interface AuthResponse {
   user: User;
   token: string;
 }
+
+export interface ValidationRatio {
+  correct: number;
+  n: number;
+  pct: number | null;
+  ci95?: [number, number];
+}
+
+export interface ReplaySide {
+  irrigations: number;
+  litres: number;
+  kwh: number;
+  rupees: number;
+  co2Kg: number;
+  stressDays?: number;
+  stressFieldDays?: number;
+  actualEtPctOfEtc: number;
+}
+
+export interface ReplaySaved {
+  litres: number;
+  pct: number;
+  kwh: number;
+  rupees: number;
+  co2Kg: number;
+}
+
+export interface ReplayTotal {
+  fields: string[];
+  agriguard: ReplaySide;
+  rainBlindWeekly: ReplaySide;
+  saved: ReplaySaved;
+  excludedFields: Array<{ fieldId: number; field: string; reason: string }>;
+}
+
+export interface SeasonReplay {
+  generatedAt: string;
+  label: string;
+  source: { dataset: string; model: string; attribution: string };
+  fields: Array<{
+    fieldId: number;
+    field: string;
+    farm: string;
+    trialControl: boolean;
+    includedInTotals: boolean;
+    inConservativeHeadline: boolean;
+    crop: { name: string; key: string };
+    irrigation: { method: string };
+    season: { year: number; planted: string; lastDay: string };
+    agriguard: ReplaySide;
+    rainBlindWeekly: ReplaySide;
+    saved: ReplaySaved;
+  }>;
+  totals: { conservative: ReplayTotal; allFields: ReplayTotal };
+}
+
+export interface ValidationSummary {
+  tests: { ranAt: string; total: number; passed: number; failed: number; suites: string[] } | null;
+  diseaseModel: {
+    generatedAt: string;
+    dataset: { name: string; citation: string; url: string; license: string; split: string; imagesEvaluated: number; classesEvaluated: number; labelConflicts: number };
+    model: { id: string; dtype: string };
+    metrics: {
+      noCrop: { top1: ValidationRatio; top3: ValidationRatio };
+      cropFiltered: { top1: ValidationRatio; top3: ValidationRatio };
+      multiLabelCrops: { images: number; top1: ValidationRatio; top3: ValidationRatio } | null;
+      lowConfidence: { confident: ValidationRatio; flagged: ValidationRatio; shareFlaggedLow: number };
+    };
+    perCrop: Array<{ crop: string; cropKey: string; n: number; labels: number; noCropTop1: ValidationRatio; cropFilteredTop1: ValidationRatio; cropFilteredTop3: ValidationRatio }>;
+    gemini: { model: string; imagesEvaluated: number; stoppedEarly: string | null };
+    notes: string[];
+  } | null;
+  seasonReplay: SeasonReplay | null;
+}

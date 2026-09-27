@@ -5,7 +5,7 @@ const steps = [
   {
     icon: Radio,
     title: "Sense",
-    body: "A solar-powered field node reads soil moisture, temperature, humidity and NPK every 15 minutes.",
+    body: "A solar-powered field node reads soil moisture, temperature, humidity and NPK every minute.",
   },
   {
     icon: BrainCircuit,

@@ -1,6 +1,6 @@
 import db from "../config/database.js";
 import { getSoil } from "../data/soils.js";
-import { asLanguage, localCropName, t, type Language } from "../i18n/index.js";
+import { asLanguage, cropDisplayName, localCropName, t, type Language } from "../i18n/index.js";
 import { parseTimestamp, hoursAgo } from "../lib/time.js";
 import type { AuthUser } from "../utils/auth.types.js";
 import type { DecisionRow, ObservationRow } from "../types/models.js";
@@ -57,7 +57,7 @@ export async function fieldOverview(user: AuthUser, fieldId: number, languageInp
       rootDepthM: decision.stage.rootDepthM,
       expectedHarvest: decision.stage.expectedHarvest,
       stages: decision.stage.profile?.stages ?? null,
-      profile: decision.stage.profile ? { key: decision.stage.profile.key, name: localCropName(language, decision.stage.profile.key) ?? decision.stage.profile.name } : null,
+      profile: decision.stage.profile ? { key: decision.stage.profile.key, name: cropDisplayName(language, decision.stage.profile.key, decision.stage.profile.name) } : null,
     },
     latest,
     latestAgeMinutes: context.latestAgeMinutes,

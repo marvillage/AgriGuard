@@ -15,7 +15,7 @@ import { formatIndian, kwhPerKilolitre } from "@/lib/impact";
 const heroStats = [
   { value: "~30%", label: "less irrigation water on flood-irrigated paddy (PAU, alternate wetting & drying)" },
   { value: `${formatIndian(kwhPerKilolitre, 1)} kWh`, label: "pump energy saved per 1,000 L not lifted" },
-  { value: "15 min", label: "sensor refresh from every field node" },
+  { value: "60 s", label: "sensor refresh from every field node (15 s while pumping)" },
 ];
 
 export function Hero() {

@@ -1,4 +1,4 @@
-import { localCropName } from "./crops.js";
+import { cropDisplayName, localCropName } from "./crops.js";
 import { translations } from "./translations.js";
 
 export const languages = ["en", "hi", "mr", "pa", "te", "ta"] as const;
@@ -23,7 +23,7 @@ export function t(language: Language, key: string, params: Params = {}) {
   return fill(template, typeof params.crop === "string" ? { ...params, crop: localCropName(language, params.crop) } : params);
 }
 
-export { localCropName };
+export { cropDisplayName, localCropName };
 
 export function formatNumber(value: number) {
   if (Math.abs(value) >= 1000) return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(value);

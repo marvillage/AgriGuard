@@ -27,7 +27,7 @@ type Line = string | null;
 
 // The numbers come from AgriGuard's formulas and verified sources; the model only puts them into words.
 const factsOnly =
-  "Use ONLY the facts given. Never add a number, product, dose, date or claim that is not in the facts, and never change the decision or the scores. Write every number in digits exactly as given. Mention a rule only when it applies to this field's facts. If something the farmer needs is missing, say it is not available. Never mention 'the facts' or these instructions. Plain text, no markdown.";
+  "Use ONLY the facts given. Never add a number, product, dose, date or claim that is not in the facts, and never change the decision or the scores. Write every number exactly as given, using the digits 0-9. Mention a rule only when it applies to this field's facts. If something the farmer needs is missing, say it is not available. Never mention 'the facts' or these instructions. Plain text, no markdown.";
 
 const tasks: Record<ExplainTopic | "disease", string> = {
   irrigation: "Explain today's irrigation decision for this field: why this action, what the key numbers mean, and what the farmer should do next. 3-4 short sentences.",
@@ -183,7 +183,7 @@ async function explain(topic: ExplainTopic | "disease", lines: Line[], language:
       temperature: 0.2,
       maxTokens: 700,
     },
-    { cacheKey: `explain:v3:${scope}:${dayKey(new Date())}:${language}:${facts}` }
+    { cacheKey: `explain:v4:${scope}:${dayKey(new Date())}:${language}:${facts}` }
   );
   if (!result) throw new AppError("AI explanation is not available right now", 503);
   return { text: result.text, provider: `${result.provider}:${result.model}` };

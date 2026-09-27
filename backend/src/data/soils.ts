@@ -17,9 +17,15 @@ export const soils: SoilProfile[] = [
   { key: "black", name: "Black (regur)", fieldCapacity: 40, wiltingPoint: 22 },
 ];
 
+// Exact key or display name first: "Red (sandy loam)" contains "sandy", which a substring match would pick.
 export function getSoil(value: string | null | undefined) {
-  const normalized = (value ?? "").toLowerCase();
-  return soils.find((soil) => normalized.includes(soil.key)) ?? soils.find((soil) => soil.key === "loam")!;
+  const normalized = (value ?? "").trim().toLowerCase();
+  return (
+    soils.find((soil) => soil.key === normalized || soil.name.toLowerCase() === normalized) ??
+    soils.find((soil) => normalized.startsWith(soil.key)) ??
+    soils.find((soil) => normalized.includes(soil.key)) ??
+    soils.find((soil) => soil.key === "loam")!
+  );
 }
 
 // Application efficiency when AgriGuard stops irrigation at field capacity (less deep percolation and runoff).

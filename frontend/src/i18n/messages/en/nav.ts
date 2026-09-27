@@ -12,6 +12,7 @@ const nav = {
   copilot: "AI Copilot",
   sustainability: "Sustainability",
   trials: "Field Trials",
+  validation: "Testing & results",
   advisor: "Agronomist Desk",
   settings: "Settings",
   precisionFarming: "Precision farming",

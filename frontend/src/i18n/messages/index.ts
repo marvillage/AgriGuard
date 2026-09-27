@@ -15,6 +15,7 @@ import scan from "./en/scan";
 import settings from "./en/settings";
 import sustainability from "./en/sustainability";
 import trials from "./en/trials";
+import validation from "./en/validation";
 import hi from "./hi";
 import mr from "./mr";
 import pa from "./pa";
@@ -36,6 +37,7 @@ export const en = {
   sustainability,
   copilot,
   trials,
+  validation,
   advisor,
   settings,
 };

@@ -32,6 +32,7 @@ import type {
   SoilCard,
   Trial,
   User,
+  ValidationSummary,
   WeatherDay,
   WeatherSummary,
 } from "./types";
@@ -284,6 +285,8 @@ export const api = {
   explainScan: (id: number) => request<{ explanation: { text: string; provider: string } }>(`/api/scans/${id}/explain`),
 
   impact: (farmId?: number) => request<ImpactSummary>(`/api/impact${farmId ? `?farmId=${farmId}` : ""}`),
+
+  validation: () => request<ValidationSummary>("/api/validation"),
 
   scans: (fieldId?: number) => request<{ scans: Scan[] }>(`/api/scans${fieldId ? `?fieldId=${fieldId}` : ""}`),
 

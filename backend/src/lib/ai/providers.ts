@@ -9,7 +9,8 @@ async function http(url: string, init: RequestInit, timeoutMs: number) {
   try {
     const response = await fetch(url, { ...init, signal: controller.signal });
     const text = await response.text();
-    if (!response.ok) throw new Error(`HTTP ${response.status}: ${text.slice(0, 300)}`);
+    // Long enough to keep Gemini's quotaId (per-day vs per-minute), which follows the message text.
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${text.slice(0, 1500)}`);
     return text ? JSON.parse(text) : {};
   } finally {
     clearTimeout(timer);
@@ -39,18 +40,16 @@ const geminiModels = cached(async () => {
   return (body.models ?? []) as Array<{ name: string; supportedGenerationMethods?: string[] }>;
 });
 
+// Stable, versioned Flash models, newest first. Each has its own free-tier quota, so the chain moves to the
+// next one when a model is rate-limited. "-latest" aliases share a versioned model's quota and are skipped.
 async function geminiCandidates() {
   const models = await geminiModels();
   return models
     .filter((m) => m.supportedGenerationMethods?.includes("generateContent"))
     .map((m) => m.name.replace(/^models\//, ""))
-    .filter((name) => name.startsWith("gemini") && name.includes("flash"))
-    .filter((name) => !/tts|image|embedding|live|audio|thinking|exp/.test(name))
-    .sort((a, b) => {
-      const preview = Number(a.includes("preview")) - Number(b.includes("preview"));
-      if (preview !== 0) return preview;
-      return versionScore(b) - versionScore(a);
-    });
+    .filter((name) => /^gemini-\d/.test(name) && name.includes("flash"))
+    .filter((name) => !/tts|image|embedding|live|audio|thinking|exp|preview|latest/.test(name))
+    .sort((a, b) => versionScore(b) - versionScore(a));
 }
 
 // Flash-Lite models reject thinkingConfig with HTTP 400; they don't think by default, so they're sent without it.
@@ -65,7 +64,8 @@ async function geminiGenerate(request: AiRequest, model: string) {
     ],
   }));
   const maxTokens = request.maxTokens ?? 1024;
-  // Thinking tokens count against maxOutputTokens, so a thinking model would cut the visible answer short.
+  // Thinking tokens count against maxOutputTokens, and some models (gemini-3.7-flash) accept thinkingBudget 0
+  // but still think, so every request keeps headroom; answer length is set by the prompt.
   const send = (thinkingOff: boolean) =>
     http(
       `${geminiBase}/models/${model}:generateContent?key=${env.ai.geminiApiKey}`,
@@ -77,7 +77,7 @@ async function geminiGenerate(request: AiRequest, model: string) {
           contents,
           generationConfig: {
             temperature: request.temperature ?? 0.4,
-            maxOutputTokens: thinkingOff ? maxTokens : maxTokens + 2048,
+            maxOutputTokens: maxTokens + 2048,
             ...(thinkingOff ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
             ...(request.json ? { responseMimeType: "application/json" } : {}),
           },
@@ -97,7 +97,10 @@ async function geminiGenerate(request: AiRequest, model: string) {
       noThinkingConfig.add(model);
     }
   }
-  const parts = body.candidates?.[0]?.content?.parts ?? [];
+  const candidate = body.candidates?.[0];
+  // A cut-off answer must not be returned or cached; the chain moves on to the next model instead.
+  if (candidate?.finishReason && candidate.finishReason !== "STOP") throw new Error(`incomplete answer (${candidate.finishReason})`);
+  const parts = candidate?.content?.parts ?? [];
   return parts
     .filter((part: { thought?: boolean }) => !part.thought)
     .map((part: { text?: string }) => part.text ?? "")
@@ -105,16 +108,20 @@ async function geminiGenerate(request: AiRequest, model: string) {
     .trim();
 }
 
-// Two Gemini entries so a rate limit or overload on the main Flash model falls through to Flash-Lite
-// (a separate free-tier quota) before the chain reaches the local Ollama model.
+// Flash models are tried before Flash-Lite ones; a rate limit or overload falls through model by model
+// before the chain reaches the local Ollama model.
 function geminiProvider(name: string, lite: boolean): AiProvider {
+  const models = async () => {
+    if (!lite && env.ai.geminiModel) return [env.ai.geminiModel.replace(/^models\//, "")];
+    const names = (await geminiCandidates()).filter((candidate) => candidate.includes("lite") === lite);
+    return names.length || lite ? names : ["gemini-flash-latest"];
+  };
   return {
     name,
     configured: () => Boolean(env.ai.geminiApiKey),
+    models,
     async pickModel() {
-      if (!lite && env.ai.geminiModel) return env.ai.geminiModel.replace(/^models\//, "");
-      const names = (await geminiCandidates()).filter((candidate) => candidate.includes("lite") === lite);
-      return names[0] ?? (lite ? null : "gemini-flash-latest");
+      return (await models())[0] ?? null;
     },
     generate: geminiGenerate,
   };

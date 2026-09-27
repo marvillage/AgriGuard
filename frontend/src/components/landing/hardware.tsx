@@ -19,14 +19,16 @@ const parts = [
   { icon: Power, name: "Pump relay", detail: "Switches the starter on the AI's decision" },
 ];
 
+// Indian retail price ranges from the itemised bill of materials in firmware/agriguard-node/README.md (2026).
 const billOfMaterials = [
-  { item: "ESP32 board + enclosure", cost: 800 },
-  { item: "Moisture, temp & humidity sensors", cost: 550 },
-  { item: "Solar panel, charger & battery", cost: 550 },
-  { item: "Relay module & wiring", cost: 250 },
+  { item: "ESP32 board, IP65 box, wiring & small parts", low: 1010, high: 1630 },
+  { item: "Soil, air, flow & tank sensors", low: 1030, high: 1620 },
+  { item: "6 W solar panel, MPPT charger, 2 × 18650 cells", low: 1110, high: 2170 },
+  { item: "Pump relay module", low: 60, high: 100 },
 ];
 
-const coreTotal = billOfMaterials.reduce((sum, row) => sum + row.cost, 0);
+const rupees = (value: number) => `₹${value.toLocaleString("en-IN")}`;
+const typicalTotal = `${rupees(4000)}–${rupees(4500).slice(1)}`;
 
 export function Hardware() {
   return (
@@ -44,11 +46,11 @@ export function Hardware() {
           />
           <div className="absolute -right-3 top-10 hidden animate-float rounded-2xl border border-white/15 bg-navy-900/80 px-4 py-3 shadow-lift backdrop-blur sm:block">
             <p className="text-xs text-white/50">Refresh rate</p>
-            <p className="font-display font-semibold">Every 15 min</p>
+            <p className="font-display font-semibold">Every 60 s</p>
           </div>
           <div className="absolute bottom-10 -left-3 hidden animate-float rounded-2xl bg-sun-400 px-4 py-3 text-ink shadow-glow [animation-delay:1.5s] sm:block">
             <p className="text-xs font-medium opacity-70">Core build cost</p>
-            <p className="font-display font-bold">≈ ₹{coreTotal.toLocaleString("en-IN")}</p>
+            <p className="font-display font-bold">≈ {typicalTotal}</p>
           </div>
         </Reveal>
 
@@ -88,16 +90,16 @@ export function Hardware() {
                 {billOfMaterials.map((row) => (
                   <div key={row.item} className="flex justify-between gap-4">
                     <dt className="text-white/55">{row.item}</dt>
-                    <dd className="tabular-nums">₹{row.cost.toLocaleString("en-IN")}</dd>
+                    <dd className="shrink-0 tabular-nums">{rupees(row.low)}–{rupees(row.high).slice(1)}</dd>
                   </div>
                 ))}
                 <div className="flex justify-between gap-4 border-t border-white/10 pt-2 font-semibold">
-                  <dt>Core node</dt>
-                  <dd className="text-sun-400 tabular-nums">₹{coreTotal.toLocaleString("en-IN")}</dd>
+                  <dt>Core node, typical</dt>
+                  <dd className="shrink-0 text-sun-400 tabular-nums">{typicalTotal}</dd>
                 </div>
                 <div className="flex justify-between gap-4 text-white/55">
                   <dt>Optional NPK probe</dt>
-                  <dd className="tabular-nums">+ ₹3,500</dd>
+                  <dd className="shrink-0 tabular-nums">+ {rupees(3500)}–{rupees(6500).slice(1)}</dd>
                 </div>
               </dl>
             </div>

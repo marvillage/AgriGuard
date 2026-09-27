@@ -14,7 +14,8 @@
     "db:migrate": "prisma db migrate",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "simulate": "tsx scripts/simulate-device.ts",
-    "test": "node --import tsx --import ./test/setup-env.ts --test \"test/**/*.test.ts\""
+    "test": "node --import tsx --import ./test/setup-env.ts --test \"test/**/*.test.ts\"",
+    "test:report": "tsx scripts/test-report.ts"
   },
   "keywords": [],
   "author": "",
