@@ -6,6 +6,7 @@ import { AlertsCard } from "@/components/settings/alerts-card";
 import { InstallCard } from "@/components/settings/install-card";
 import { LanguageCard } from "@/components/settings/language-card";
 import { ProfileCard } from "@/components/settings/profile-card";
+import { ThemeCard } from "@/components/settings/theme-card";
 import { useI18n } from "@/i18n/provider";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -26,6 +27,9 @@ export default function SettingsPage() {
           <div className="order-2 lg:order-none">
             <LanguageCard />
           </div>
+          <div className="order-3 lg:order-none">
+            <ThemeCard />
+          </div>
           <div className="order-5 lg:order-none">
             <InstallCard />
           </div>
@@ -34,7 +38,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <div className="contents lg:flex lg:flex-col lg:gap-6">
-          <div className="order-3 lg:order-none">
+          <div className="order-4 lg:order-none">
             <AlertsCard user={user} />
           </div>
         </div>

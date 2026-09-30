@@ -77,19 +77,19 @@ export function MoistureChart({ series, refillPoint }: { series: HourlyPoint[]; 
               />
               <ReferenceLine
                 y={refillPoint}
-                stroke="#64748b"
+                stroke="var(--chart-text)"
                 strokeDasharray="4 4"
                 strokeWidth={1}
                 ifOverflow="extendDomain"
                 label={{
                   value: t("dashboard.refillLine", { value: number(refillPoint, 1) }),
                   position: "insideBottomRight",
-                  fill: "#475569",
+                  fill: "var(--chart-strong)",
                   fontSize: 11,
                 }}
               />
               <Tooltip
-                cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+                cursor={{ stroke: "var(--chart-muted)", strokeWidth: 1 }}
                 content={(props) => (
                   <ChartTooltip active={props.active} payload={props.payload} label={props.label} unit="%" />
                 )}

@@ -72,6 +72,10 @@ const common: NonNullable<PartialMessages["common"]> = {
   viewAs: "चार्ट या टेबल में देखें",
   chartView: "चार्ट में देखें",
   tableView: "टेबल में देखें",
+  themeToggle: "लाइट और डार्क मोड बदलें",
+  themeLight: "लाइट",
+  themeDark: "डार्क",
+  themeSystem: "सिस्टम",
 };
 
 export default common;

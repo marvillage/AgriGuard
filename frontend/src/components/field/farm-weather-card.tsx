@@ -12,15 +12,16 @@ import { formatDate, formatTime } from "@/lib/format";
 import { SectionTitle, errorMessage } from "./field-ui";
 import { WeatherStrip, upcomingDays } from "./weather-strip";
 
-export function FarmWeatherCard({ farmId, onSetLocation }: { farmId: number; onSetLocation?: () => void }) {
+export function FarmWeatherCard({ farmId, hasLocation, onSetLocation }: { farmId: number; hasLocation: boolean; onSetLocation?: () => void }) {
   const { t, language, number } = useI18n();
   const query = useQuery({
     queryKey: ["farm", farmId, "weather"],
     queryFn: () => api.farmWeather(farmId),
+    enabled: hasLocation,
     retry: (count, error) => !(error instanceof ApiRequestError && error.status === 400) && count < 2,
     staleTime: 10 * 60_000,
   });
-  const needsLocation = query.error instanceof ApiRequestError && query.error.status === 400;
+  const needsLocation = !hasLocation || (query.error instanceof ApiRequestError && query.error.status === 400);
   const summary = query.data?.summary;
   const solar = query.data?.solar;
   const days = upcomingDays(query.data?.daily ?? []);

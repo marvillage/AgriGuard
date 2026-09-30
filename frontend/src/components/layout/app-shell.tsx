@@ -32,7 +32,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="bg-canvas flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="relative mx-auto h-14 w-14">
             <span className="absolute inset-0 animate-ping-slow rounded-2xl bg-sun-300" />
@@ -49,7 +49,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="bg-canvas flex min-h-screen">
       <div className="sticky top-0 hidden h-screen shrink-0 lg:block">
         <Sidebar />
       </div>

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-sun-50: #fffaeb;
   --color-sun-100: #fff2c6;
@@ -147,23 +149,41 @@
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@utility bg-grid {
+@utility bg-aurora {
   background-image:
-    linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
-  background-size: 40px 40px;
+    radial-gradient(55% 60% at 12% 0%, rgb(255 199 44 / 0.14), transparent 70%),
+    radial-gradient(50% 55% at 100% 100%, rgb(53 99 224 / 0.24), transparent 72%);
 }
 
-@utility bg-grid-light {
+@utility bg-aurora-light {
   background-image:
-    linear-gradient(to right, rgb(15 31 77 / 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(15 31 77 / 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
+    radial-gradient(45% 55% at 15% 10%, rgb(255 199 44 / 0.16), transparent 70%),
+    radial-gradient(45% 55% at 90% 90%, rgb(53 99 224 / 0.10), transparent 72%);
 }
 
-@utility bg-dots {
-  background-image: radial-gradient(rgb(15 31 77 / 0.12) 1px, transparent 1px);
-  background-size: 18px 18px;
+@utility bg-mist {
+  background-image:
+    radial-gradient(60% 70% at 20% 0%, rgb(255 199 44 / 0.14), transparent 72%),
+    radial-gradient(60% 70% at 100% 100%, rgb(53 99 224 / 0.08), transparent 72%);
+}
+
+/* Frosted surface for cards, menus, dialogs and bars. */
+@utility glass {
+  background-color: rgb(255 255 255 / 0.7);
+  border-color: rgb(15 31 77 / 0.08);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.65);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+}
+
+/* The app's page background: soft sun and navy light behind the glass. */
+@utility bg-canvas {
+  background-color: #f4f6fb;
+  background-image:
+    radial-gradient(42rem 32rem at 100% -8%, rgb(255 199 44 / 0.2), transparent 70%),
+    radial-gradient(48rem 36rem at -12% 22%, rgb(53 99 224 / 0.12), transparent 72%),
+    radial-gradient(44rem 34rem at 60% 112%, rgb(255 199 44 / 0.1), transparent 72%);
+  background-attachment: fixed;
 }
 
 @utility text-balance-safe {
@@ -232,4 +252,200 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Dark theme. Neutral and status scales swap their light and deep ends, so every existing class
+   follows; white surfaces, ink text and the navy and sun tints are mapped class by class,
+   because their deep shades also paint the sidebar, the hero and the buttons in both themes. */
+.dark {
+  color-scheme: dark;
+  --background: #060b19;
+  --foreground: #e8edf7;
+
+  --color-slate-50: #0a1122;
+  --color-slate-100: #111a31;
+  --color-slate-200: #1d2742;
+  --color-slate-300: #2c3756;
+  --color-slate-400: #6b7794;
+  --color-slate-500: #909cb6;
+  --color-slate-600: #aab5cb;
+  --color-slate-700: #c5cddd;
+  --color-slate-800: #dde3ee;
+  --color-slate-900: #eef2f8;
+  --color-slate-950: #f8fafc;
+
+  --color-emerald-50: #062a20;
+  --color-emerald-100: #064e3b;
+  --color-emerald-200: #065f46;
+  --color-emerald-300: #047857;
+  --color-emerald-700: #6ee7b7;
+  --color-emerald-800: #a7f3d0;
+  --color-emerald-900: #d1fae5;
+
+  --color-red-50: #3b0d0d;
+  --color-red-100: #5c1515;
+  --color-red-200: #7f1d1d;
+  --color-red-300: #991b1b;
+  --color-red-700: #fca5a5;
+  --color-red-800: #fecaca;
+  --color-red-900: #fee2e2;
+
+  --color-amber-50: #3a1d05;
+  --color-amber-100: #5a2c07;
+  --color-amber-200: #78350f;
+  --color-amber-300: #92400e;
+  --color-amber-700: #fcd34d;
+  --color-amber-800: #fde68a;
+  --color-amber-900: #fef3c7;
+
+  --color-sky-50: #082f49;
+  --color-sky-100: #0c4a6e;
+  --color-sky-200: #075985;
+  --color-sky-700: #7dd3fc;
+  --color-sky-800: #bae6fd;
+
+  --chart-grid: rgb(255 255 255 / 0.08);
+  --chart-text: #909cb6;
+  --chart-muted: #3a4666;
+  --chart-axis: #6b7794;
+  --chart-strong: #c5cddd;
+  --chart-cursor: rgb(255 255 255 / 0.05);
+  --chart-surface: #0f1830;
+}
+
+:root {
+  --chart-grid: #eef0f3;
+  --chart-text: #64748b;
+  --chart-muted: #cbd5e1;
+  --chart-axis: #94a3b8;
+  --chart-strong: #475569;
+  --chart-cursor: #f1f5f9;
+  --chart-surface: #ffffff;
+}
+
+.dark .bg-canvas {
+  background-color: #060b19;
+  background-image:
+    radial-gradient(42rem 32rem at 100% -8%, rgb(255 199 44 / 0.1), transparent 70%),
+    radial-gradient(48rem 36rem at -12% 22%, rgb(53 99 224 / 0.22), transparent 72%),
+    radial-gradient(44rem 34rem at 60% 112%, rgb(255 199 44 / 0.06), transparent 72%);
+}
+
+.dark .glass {
+  background-color: rgb(16 26 52 / 0.62);
+  border-color: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+}
+
+.dark .bg-white {
+  background-color: #0f1830;
+}
+.dark .bg-white\/95 {
+  background-color: rgb(15 24 48 / 0.95);
+}
+.dark .bg-white\/90 {
+  background-color: rgb(15 24 48 / 0.9);
+}
+.dark .bg-white\/85 {
+  background-color: rgb(15 24 48 / 0.85);
+}
+.dark .bg-white\/80 {
+  background-color: rgb(15 24 48 / 0.8);
+}
+.dark .bg-white\/70 {
+  background-color: rgb(15 24 48 / 0.7);
+}
+.dark .via-white {
+  --tw-gradient-via: #0f1830;
+}
+.dark .to-white {
+  --tw-gradient-to: #0f1830;
+}
+.dark .ring-white {
+  --tw-ring-color: #0f1830;
+}
+.dark .border-white {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+.dark .text-ink,
+.dark .hover\:text-ink:hover {
+  color: #e8edf7;
+}
+.dark :is(.bg-sun-200, .bg-sun-300, .bg-sun-400, .bg-sun-500):is(.text-ink, .hover\:text-ink),
+.dark :is(.bg-sun-200, .bg-sun-300, .bg-sun-400, .bg-sun-500) :is(.text-ink, .text-ink\/75) {
+  color: #0b0c0f;
+}
+
+.dark .text-navy-600,
+.dark .text-navy-700,
+.dark .hover\:text-navy-700:hover {
+  color: #8fb3ff;
+}
+.dark .text-navy-800,
+.dark .text-navy-800\/90,
+.dark .hover\:text-navy-800:hover {
+  color: #b3cbff;
+}
+.dark .text-navy-900,
+.dark .text-navy-900\/60,
+.dark .hover\:text-navy-900:hover {
+  color: #d6e2ff;
+}
+.dark .bg-navy-50,
+.dark .hover\:bg-navy-50:hover {
+  background-color: rgb(53 99 224 / 0.14);
+}
+.dark :is(.bg-navy-50\/70, .bg-navy-50\/60, .bg-navy-50\/50, .hover\:bg-navy-50\/60:hover) {
+  background-color: rgb(53 99 224 / 0.11);
+}
+.dark :is(.bg-navy-100, .bg-navy-100\/70) {
+  background-color: rgb(53 99 224 / 0.22);
+}
+.dark :is(.border-navy-100, .border-navy-200, .hover\:border-navy-200:hover) {
+  border-color: rgb(143 179 255 / 0.2);
+}
+.dark :is(.ring-navy-100, .ring-navy-200) {
+  --tw-ring-color: rgb(143 179 255 / 0.2);
+}
+.dark .from-navy-50 {
+  --tw-gradient-from: rgb(53 99 224 / 0.12);
+}
+
+.dark .text-sun-600,
+.dark .hover\:text-sun-600:hover {
+  color: #ffc72c;
+}
+.dark .text-sun-700 {
+  color: #ffd54a;
+}
+.dark :is(.text-sun-800, .text-sun-900) {
+  color: #ffe588;
+}
+.dark :is(.bg-sun-50, .bg-sun-50\/60, .bg-sun-50\/70, .hover\:bg-sun-50:hover, .hover\:bg-sun-50\/50:hover, .hover\:bg-sun-50\/40:hover) {
+  background-color: rgb(255 199 44 / 0.09);
+}
+.dark :is(.bg-sun-100, .bg-sun-200\/50) {
+  background-color: rgb(255 199 44 / 0.15);
+}
+.dark :is(.border-sun-200, .border-sun-300, .border-sun-300\/70, .border-sun-300\/60, .hover\:border-sun-300:hover) {
+  border-color: rgb(255 199 44 / 0.28);
+}
+.dark :is(.ring-sun-300, .ring-sun-300\/60, .ring-sun-300\/70, .ring-sun-300\/40) {
+  --tw-ring-color: rgb(255 199 44 / 0.3);
+}
+.dark .from-sun-50 {
+  --tw-gradient-from: rgb(255 199 44 / 0.08);
+}
+.dark .to-sun-50 {
+  --tw-gradient-to: rgb(255 199 44 / 0.08);
+}
+
+.dark .leaflet-container {
+  background: #0a1122;
+}
+.dark .leaflet-control-zoom a,
+.dark .leaflet-control-attribution {
+  background: rgb(15 24 48 / 0.9);
+  color: #c5cddd;
 }

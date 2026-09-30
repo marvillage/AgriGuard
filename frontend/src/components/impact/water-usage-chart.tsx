@@ -104,7 +104,7 @@ export function WaterUsageChart({
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
               <CartesianGrid stroke={chartColors.grid} vertical={false} />
-              <XAxis dataKey="label" stroke={chartColors.axis} fontSize={12} tickLine={false} axisLine={{ stroke: "#cbd5e1" }} />
+              <XAxis dataKey="label" stroke={chartColors.axis} fontSize={12} tickLine={false} axisLine={{ stroke: "var(--chart-muted)" }} />
               <YAxis
                 stroke={chartColors.axis}
                 fontSize={12}
@@ -114,7 +114,7 @@ export function WaterUsageChart({
                 tickFormatter={(value: number) => formatNumber(value, 0, language)}
               />
               <Tooltip
-                cursor={{ fill: "#f1f5f9" }}
+                cursor={{ fill: "var(--chart-cursor)" }}
                 content={(props) => (
                   <ChartTooltip
                     active={props.active}

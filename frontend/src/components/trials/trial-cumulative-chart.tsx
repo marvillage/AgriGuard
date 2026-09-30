@@ -92,7 +92,7 @@ export function TrialCumulativeChart({ trial, asOf, className }: { trial: Trial;
                 stroke={chartColors.axis}
                 fontSize={12}
                 tickLine={false}
-                axisLine={{ stroke: "#cbd5e1" }}
+                axisLine={{ stroke: "var(--chart-muted)" }}
               />
               <YAxis
                 stroke={chartColors.axis}
@@ -103,7 +103,7 @@ export function TrialCumulativeChart({ trial, asOf, className }: { trial: Trial;
                 tickFormatter={(value: number) => formatNumber(value, 0, language)}
               />
               <Tooltip
-                cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+                cursor={{ stroke: "var(--chart-muted)", strokeWidth: 1 }}
                 content={(props) => (
                   <ChartTooltip
                     active={props.active}

@@ -16,7 +16,7 @@ export function FarmerNotice() {
 
   return (
     <Card className="relative overflow-hidden">
-      <div className="bg-dots pointer-events-none absolute inset-y-0 right-0 w-1/2 opacity-60 [mask-image:linear-gradient(to_left,black,transparent)]" aria-hidden="true" />
+      <div className="bg-mist pointer-events-none absolute inset-y-0 right-0 w-1/2 opacity-60 [mask-image:linear-gradient(to_left,black,transparent)]" aria-hidden="true" />
       <div className="relative grid gap-6 p-6 sm:p-8 md:grid-cols-[auto_1fr] md:items-start">
         <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-navy-950 text-sun-400 shadow-lift">
           <BriefcaseBusiness className="h-7 w-7" aria-hidden="true" />

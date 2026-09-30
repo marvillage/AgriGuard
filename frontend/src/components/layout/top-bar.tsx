@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell, Check, Languages, Menu, WifiOff } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo";
 import { InstallButton } from "@/components/pwa/install-button";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { languages } from "@/i18n/config";
 import { useI18n } from "@/i18n/provider";
 import { api } from "@/lib/api";
@@ -71,7 +72,7 @@ function LanguageMenu() {
         <span className="hidden sm:inline">{current?.native}</span>
       </button>
       {open ? (
-        <div className="absolute right-0 z-40 mt-2 w-44 animate-scale-in overflow-hidden rounded-2xl border border-slate-200 bg-white py-1 shadow-lift">
+        <div className="glass absolute right-0 z-40 mt-2 w-44 animate-scale-in overflow-hidden rounded-2xl border py-1 shadow-lift">
           {languages.map((item) => (
             <button
               key={item.code}
@@ -122,7 +123,7 @@ function NotificationBell() {
         ) : null}
       </button>
       {open ? (
-        <div className="absolute right-0 z-40 mt-2 w-[min(22rem,calc(100vw-2rem))] animate-scale-in overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lift">
+        <div className="glass absolute right-0 z-40 mt-2 w-[min(22rem,calc(100vw-2rem))] animate-scale-in overflow-hidden rounded-2xl border shadow-lift">
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
             <p className="font-display font-semibold text-ink">{t("nav.notifications")}</p>
             {unread > 0 ? (
@@ -165,7 +166,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
   const today = new Intl.DateTimeFormat(language === "en" ? "en-IN" : `${language}-IN-u-nu-latn`, { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+    <header className="glass sticky top-0 z-30 border-b">
       {!online ? (
         <div className="flex items-center justify-center gap-2 bg-navy-950 px-4 py-1.5 text-xs font-medium text-white">
           <WifiOff className="h-3.5 w-3.5 text-sun-400" /> {t("common.offline")}
@@ -197,6 +198,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
             {connected ? t("common.live") : t("common.offlineShort")}
           </span>
           <InstallButton />
+          <ThemeToggle />
           <LanguageMenu />
           <NotificationBell />
         </div>

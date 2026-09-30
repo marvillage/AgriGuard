@@ -20,7 +20,7 @@ export function BottomNav({ onMore }: { onMore: () => void }) {
   return (
     <nav
       aria-label={t("nav.openNavigation")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/80 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
+      className="glass fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <div className="mx-auto grid h-16 max-w-md grid-cols-5">
         {items.map(({ href, label, icon: Icon, active, primary }) => (
@@ -33,7 +33,7 @@ export function BottomNav({ onMore }: { onMore: () => void }) {
             <span
               className={cn(
                 "flex items-center justify-center rounded-full transition-all",
-                primary ? "-mt-5 h-12 w-12 bg-sun-400 text-ink shadow-glow ring-4 ring-white" : "h-7 w-12",
+                primary ? "-mt-5 h-12 w-12 bg-sun-400 text-ink shadow-glow ring-4 ring-white/80" : "h-7 w-12",
                 !primary && active && "bg-sun-100 text-sun-800"
               )}
             >

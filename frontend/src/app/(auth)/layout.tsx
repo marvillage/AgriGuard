@@ -54,7 +54,7 @@ export default function AuthLayout({
       </ImageSlot>
 
       <div className="relative flex min-w-0 flex-col px-5 py-6 sm:px-10 sm:py-8">
-        <div className="bg-dots absolute inset-x-0 top-0 h-64 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
+        <div className="bg-mist absolute inset-x-0 top-0 h-64 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
         <div className="relative flex items-center gap-2">
           <Link href="/" className="mr-auto lg:hidden" aria-label={t("auth.homeLabel")}>
             <Logo />

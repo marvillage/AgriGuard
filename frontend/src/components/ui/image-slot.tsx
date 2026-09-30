@@ -47,7 +47,7 @@ export function ImageSlot({
       <div
         className={cn(
           "absolute inset-0",
-          tone === "navy" ? "bg-grid" : "bg-dots opacity-60"
+          tone === "navy" ? "bg-aurora" : "bg-mist opacity-60"
         )}
         aria-hidden="true"
       />

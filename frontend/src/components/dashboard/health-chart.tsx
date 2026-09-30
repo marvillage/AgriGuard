@@ -48,7 +48,7 @@ export function HealthChart({ trend }: { trend: Dashboard["healthTrend"] }) {
   const endLabel = (props: { x?: number | string; y?: number | string; index?: number; value?: unknown }) => {
     if (props.index !== lastIndex || props.value === null || props.value === undefined) return null;
     return (
-      <text x={Number(props.x) + 8} y={Number(props.y)} dy={4} fontSize={12} fontWeight={600} fill="#475569">
+      <text x={Number(props.x) + 8} y={Number(props.y)} dy={4} fontSize={12} fontWeight={600} fill="var(--chart-strong)">
         {String(props.value)}
       </text>
     );
@@ -73,7 +73,7 @@ export function HealthChart({ trend }: { trend: Dashboard["healthTrend"] }) {
               stroke={chartColors.axis}
               fontSize={12}
               tickLine={false}
-              axisLine={{ stroke: "#cbd5e1" }}
+              axisLine={{ stroke: "var(--chart-muted)" }}
               interval="preserveStartEnd"
               minTickGap={24}
             />
@@ -86,7 +86,7 @@ export function HealthChart({ trend }: { trend: Dashboard["healthTrend"] }) {
               axisLine={false}
             />
             <Tooltip
-              cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+              cursor={{ stroke: "var(--chart-muted)", strokeWidth: 1 }}
               content={(props) => <ChartTooltip active={props.active} payload={props.payload} label={props.label} />}
             />
             {series.map((item) => (

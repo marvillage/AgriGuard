@@ -29,7 +29,8 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { t } = useI18n();
   const query = useDashboard();
-  const firstName = user?.name?.trim().split(/\s+/)[0] || t("dashboard.fallbackName");
+  // Titles such as "Dr." are skipped, so "Dr. Meera Patil" is greeted as Meera.
+  const firstName = user?.name?.trim().split(/\s+/).find((word) => !/^(dr|mr|mrs|ms|shri|smt|prof)\.?$/i.test(word)) || t("dashboard.fallbackName");
 
   return (
     <div>

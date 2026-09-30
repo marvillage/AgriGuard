@@ -12,7 +12,7 @@ import type { FieldOverview } from "@/lib/types";
 import { useNow } from "./shared";
 
 const hoursShown = 24;
-const idleBar = "#cbd5e1";
+const idleBar = "var(--chart-muted)";
 
 export function SolarWindowCard({ overview }: { overview: FieldOverview }) {
   const { t, number, language } = useI18n();
@@ -70,7 +70,7 @@ export function SolarWindowCard({ overview }: { overview: FieldOverview }) {
       legend={[
         { label: predictedName, color: idleBar, shape: "square" },
         { label: t("fieldOps.solarUsable"), color: chartColors.series4, shape: "square" },
-        ...(pumpKw ? [{ label: t("fieldOps.solarPumpLine", { kw: number(pumpKw, 1) }), color: "#64748b" }] : []),
+        ...(pumpKw ? [{ label: t("fieldOps.solarPumpLine", { kw: number(pumpKw, 1) }), color: "var(--chart-text)" }] : []),
       ]}
       table={{
         columns: [t("common.time"), t("fieldOps.solarPredictedKw"), t("fieldOps.solarUsable")],
@@ -98,10 +98,10 @@ export function SolarWindowCard({ overview }: { overview: FieldOverview }) {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 16, right: 8, bottom: 0, left: -20 }} barCategoryGap={2}>
             <CartesianGrid stroke={chartColors.grid} vertical={false} />
-            <XAxis dataKey="label" stroke={chartColors.axis} fontSize={11} tickLine={false} axisLine={{ stroke: "#cbd5e1" }} interval={3} />
+            <XAxis dataKey="label" stroke={chartColors.axis} fontSize={11} tickLine={false} axisLine={{ stroke: "var(--chart-muted)" }} interval={3} />
             <YAxis stroke={chartColors.axis} fontSize={11} tickLine={false} axisLine={false} domain={[0, ticks[ticks.length - 1]]} ticks={ticks} />
             <Tooltip
-              cursor={{ fill: "#f1f5f9" }}
+              cursor={{ fill: "var(--chart-cursor)" }}
               content={(props) => (
                 <ChartTooltip
                   active={props.active}
@@ -114,7 +114,7 @@ export function SolarWindowCard({ overview }: { overview: FieldOverview }) {
             {pumpKw ? (
               <ReferenceLine
                 y={pumpKw}
-                stroke="#64748b"
+                stroke="var(--chart-text)"
                 strokeWidth={1}
                 ifOverflow="extendDomain"
               />

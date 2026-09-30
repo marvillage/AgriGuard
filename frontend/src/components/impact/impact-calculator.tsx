@@ -160,7 +160,7 @@ export function ImpactCalculator({ className }: { className?: string }) {
       </div>
 
       <div className="relative bg-navy-950 p-6 text-white sm:p-8">
-        <div className="bg-grid absolute inset-0" aria-hidden="true" />
+        <div className="bg-aurora absolute inset-0" aria-hidden="true" />
         <div className="relative">
           <p className="text-xs font-semibold tracking-widest text-sun-400 uppercase">
             {t("sustainability.calcResultsTitle")}

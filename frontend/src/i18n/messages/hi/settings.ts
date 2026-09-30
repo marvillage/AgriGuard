@@ -101,6 +101,8 @@ const settings: NonNullable<PartialMessages["settings"]> = {
   email: "ईमेल",
   role: "भूमिका",
   signOutBody: "इस डिवाइस पर AgriGuard से लॉग आउट करें।",
+  themeTitle: "रूप-रंग",
+  themeBody: "लाइट, डार्क, या अपने डिवाइस की सेटिंग के अनुसार।",
 };
 
 export default settings;

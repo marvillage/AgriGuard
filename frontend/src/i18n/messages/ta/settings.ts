@@ -101,6 +101,8 @@ const settings: NonNullable<PartialMessages["settings"]> = {
   email: "மின்னஞ்சல்",
   role: "பங்கு",
   signOutBody: "இந்தச் சாதனத்தில் AgriGuard-இலிருந்து வெளியேறுங்கள்.",
+  themeTitle: "தோற்றம்",
+  themeBody: "ஒளி, இருள் அல்லது உங்கள் சாதனத்தின் அமைப்பைப் பின்பற்று.",
 };
 
 export default settings;

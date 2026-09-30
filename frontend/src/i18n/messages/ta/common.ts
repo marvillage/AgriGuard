@@ -72,6 +72,10 @@ const common: NonNullable<PartialMessages["common"]> = {
   viewAs: "விளக்கப்படமாக அல்லது அட்டவணையாகக் காட்டு",
   chartView: "விளக்கப்படக் காட்சி",
   tableView: "அட்டவணைக் காட்சி",
+  themeToggle: "ஒளி, இருள் பயன்முறையை மாற்று",
+  themeLight: "ஒளி",
+  themeDark: "இருள்",
+  themeSystem: "சாதன அமைப்பு",
 };
 
 export default common;

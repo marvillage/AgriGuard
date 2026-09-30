@@ -49,7 +49,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative w-full max-w-md animate-scale-in rounded-2xl bg-white p-6 shadow-lift"
+        className="glass relative w-full max-w-md animate-scale-in rounded-2xl border p-6 shadow-lift"
       >
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>

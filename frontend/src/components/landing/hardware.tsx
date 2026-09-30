@@ -33,7 +33,7 @@ const typicalTotal = `${rupees(4000)}–${rupees(4500).slice(1)}`;
 export function Hardware() {
   return (
     <section id="hardware" className="relative scroll-mt-20 overflow-hidden bg-navy-950 py-24 text-white lg:py-32">
-      <div className="bg-grid absolute inset-0" aria-hidden="true" />
+      <div className="bg-aurora absolute inset-0" aria-hidden="true" />
       <div className="absolute -bottom-40 -left-40 h-[30rem] w-[30rem] rounded-full bg-sun-400/10 blur-3xl" aria-hidden="true" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 lg:grid-cols-2 lg:px-8">

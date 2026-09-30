@@ -43,7 +43,7 @@ export const chartColors = {
   series2: "#eb6834",
   series3: "#1baf7a",
   series4: "#eda100",
-  grid: "#eef0f3",
-  axis: "#94a3b8",
-  surface: "#ffffff",
+  grid: "var(--chart-grid)",
+  axis: "var(--chart-axis)",
+  surface: "var(--chart-surface)",
 };

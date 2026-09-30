@@ -72,6 +72,10 @@ const common: NonNullable<PartialMessages["common"]> = {
   viewAs: "చార్ట్ లేదా పట్టికగా చూపండి",
   chartView: "చార్ట్ రూపం",
   tableView: "పట్టిక రూపం",
+  themeToggle: "లైట్, డార్క్ మోడ్ మార్చండి",
+  themeLight: "లైట్",
+  themeDark: "డార్క్",
+  themeSystem: "సిస్టమ్",
 };
 
 export default common;

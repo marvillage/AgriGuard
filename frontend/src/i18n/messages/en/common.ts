@@ -70,6 +70,10 @@ const common = {
   viewAs: "Show as chart or table",
   chartView: "Chart view",
   tableView: "Table view",
+  themeToggle: "Switch between light and dark",
+  themeLight: "Light",
+  themeDark: "Dark",
+  themeSystem: "System",
 };
 
 export default common;

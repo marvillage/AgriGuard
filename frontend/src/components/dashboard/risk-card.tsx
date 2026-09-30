@@ -160,7 +160,7 @@ function ScoreRing({ score }: { score: number | null }) {
     <div className="flex w-20 shrink-0 flex-col items-center">
       <div className="relative h-20 w-20" role="img" aria-label={score === null ? t("risk.healthUnknown") : t("risk.healthAria", { value: number(score) })}>
         <svg viewBox="0 0 80 80" className="h-20 w-20 -rotate-90" aria-hidden="true">
-          <circle cx="40" cy="40" r={radius} fill="none" stroke="#eef0f3" strokeWidth="7" />
+          <circle cx="40" cy="40" r={radius} fill="none" stroke="var(--chart-grid)" strokeWidth="7" />
           {score !== null && style ? (
             <circle
               cx="40"

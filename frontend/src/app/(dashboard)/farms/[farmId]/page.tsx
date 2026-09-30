@@ -197,7 +197,11 @@ export default function FarmDetailsPage() {
 
       <div className="mb-8 grid gap-5 lg:grid-cols-3">
         <div className="min-w-0 lg:col-span-2">
-          <FarmWeatherCard farmId={farm.id} onSetLocation={isOwner ? () => setEditingFarm(true) : undefined} />
+          <FarmWeatherCard
+            farmId={farm.id}
+            hasLocation={farm.latitude !== null && farm.longitude !== null}
+            onSetLocation={isOwner ? () => setEditingFarm(true) : undefined}
+          />
         </div>
         <FarmSettingsCard farm={farm} />
       </div>

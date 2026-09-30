@@ -19,7 +19,7 @@ import { ScanUploader, type ScanRequest } from "./scan-uploader";
 
 function Placeholder({ title, body, busy = false }: { title: string; body?: string; busy?: boolean }) {
   return (
-    <div className="flex min-h-80 flex-col items-center justify-center rounded-2xl bg-dots px-6 text-center lg:min-h-[28rem]">
+    <div className="flex min-h-80 flex-col items-center justify-center rounded-2xl bg-mist px-6 text-center lg:min-h-[28rem]">
       <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-soft">
         {busy ? <LoaderCircle className="h-7 w-7 animate-spin text-sun-500" /> : <Camera className="h-7 w-7 text-slate-300" />}
       </span>

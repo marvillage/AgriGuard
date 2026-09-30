@@ -124,21 +124,21 @@ export function MoistureForecastChart({ overview, className }: { overview: Field
               <YAxis domain={[scale.low, scale.high]} ticks={scale.ticks} stroke={chartColors.axis} fontSize={11} tickLine={false} axisLine={false} />
               <ReferenceLine
                 y={capacity}
-                stroke="#94a3b8"
+                stroke="var(--chart-axis)"
                 strokeDasharray="4 4"
-                label={{ value: t("field.capacityLine", { value: number(capacity, 1) }), position: "insideTopLeft", fill: "#475569", fontSize: 11 }}
+                label={{ value: t("field.capacityLine", { value: number(capacity, 1) }), position: "insideTopLeft", fill: "var(--chart-strong)", fontSize: 11 }}
               />
               <ReferenceLine
                 y={refill}
-                stroke="#64748b"
+                stroke="var(--chart-text)"
                 strokeDasharray="4 4"
-                label={{ value: t("field.refillLine", { value: number(refill, 1) }), position: "insideBottomLeft", fill: "#475569", fontSize: 11 }}
+                label={{ value: t("field.refillLine", { value: number(refill, 1) }), position: "insideBottomLeft", fill: "var(--chart-strong)", fontSize: 11 }}
               />
               {now ? (
-                <ReferenceLine x={now} stroke="#cbd5e1" label={{ value: t("field.nowLine"), position: "insideTopLeft", fill: "#64748b", fontSize: 11 }} />
+                <ReferenceLine x={now} stroke="var(--chart-muted)" label={{ value: t("field.nowLine"), position: "insideTopLeft", fill: "var(--chart-text)", fontSize: 11 }} />
               ) : null}
               <Tooltip
-                cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+                cursor={{ stroke: "var(--chart-muted)", strokeWidth: 1 }}
                 content={(props) => (
                   <ChartTooltip
                     active={props.active}

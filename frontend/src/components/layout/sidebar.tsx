@@ -83,7 +83,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <aside className="relative flex h-full w-72 flex-col overflow-hidden bg-navy-950 text-white">
-      <div className="bg-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+      <div className="bg-aurora pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
       <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-sun-400/10 blur-3xl" aria-hidden="true" />
 
       <div className="relative px-6 pt-6 pb-5">

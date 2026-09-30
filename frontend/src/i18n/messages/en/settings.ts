@@ -99,6 +99,8 @@ const settings = {
   email: "Email",
   role: "Role",
   signOutBody: "Sign out of AgriGuard on this device.",
+  themeTitle: "Appearance",
+  themeBody: "Light, dark, or follow your device's setting.",
 };
 
 export default settings;

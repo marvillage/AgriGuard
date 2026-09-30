@@ -186,7 +186,7 @@ export function ReportTab({ overview }: { overview: FieldOverview }) {
                 description={t("fieldOps.reportDailySubtitle")}
                 legend={[
                   { label: dailyName, color: chartColors.series1, shape: "square" },
-                  { label: t("fieldOps.refillLine", { value: number(overview.water.refillPoint, 1) }), color: "#64748b" },
+                  { label: t("fieldOps.refillLine", { value: number(overview.water.refillPoint, 1) }), color: "var(--chart-text)" },
                 ]}
                 table={{
                   columns: [t("common.date"), dailyName],
@@ -197,15 +197,15 @@ export function ReportTab({ overview }: { overview: FieldOverview }) {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyRows} margin={{ top: 16, right: 8, bottom: 0, left: -20 }}>
                       <CartesianGrid stroke={chartColors.grid} vertical={false} />
-                      <XAxis dataKey="label" stroke={chartColors.axis} fontSize={11} tickLine={false} axisLine={{ stroke: "#cbd5e1" }} interval="preserveStartEnd" />
+                      <XAxis dataKey="label" stroke={chartColors.axis} fontSize={11} tickLine={false} axisLine={{ stroke: "var(--chart-muted)" }} interval="preserveStartEnd" />
                       <YAxis stroke={chartColors.axis} fontSize={11} tickLine={false} axisLine={false} domain={[0, dailyTop]} ticks={dailyTicks} />
                       <Tooltip
-                        cursor={{ fill: "#f1f5f9" }}
+                        cursor={{ fill: "var(--chart-cursor)" }}
                         content={(props) => <ChartTooltip active={props.active} payload={props.payload} label={props.label} unit="%" />}
                       />
                       <ReferenceLine
                         y={overview.water.refillPoint}
-                        stroke="#64748b"
+                        stroke="var(--chart-text)"
                         strokeWidth={1}
                         ifOverflow="extendDomain"
                       />

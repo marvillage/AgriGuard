@@ -167,7 +167,7 @@ function SmallMultiple({
             />
             <YAxis domain={["auto", "auto"]} stroke={chartColors.axis} fontSize={10} tickLine={false} axisLine={false} tickCount={4} allowDecimals={false} />
             <Tooltip
-              cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+              cursor={{ stroke: "var(--chart-muted)", strokeWidth: 1 }}
               content={(props) => (
                 <ChartTooltip
                   active={props.active}

@@ -27,7 +27,7 @@ const steps = [
 export function HowItWorks() {
   return (
     <section id="how" className="relative scroll-mt-20 overflow-hidden bg-slate-50 py-24 lg:py-32">
-      <div className="bg-grid-light absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" aria-hidden="true" />
+      <div className="bg-aurora-light absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" aria-hidden="true" />
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold tracking-widest text-sun-600 uppercase">

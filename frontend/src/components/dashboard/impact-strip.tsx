@@ -21,7 +21,7 @@ export function ImpactStrip({ totals }: { totals: ImpactTotals }) {
 
   return (
     <section className="relative overflow-hidden rounded-3xl bg-navy-950 p-5 text-white shadow-lift sm:p-7">
-      <div className="bg-grid absolute inset-0" aria-hidden="true" />
+      <div className="bg-aurora absolute inset-0" aria-hidden="true" />
       <div className="absolute -top-24 -right-16 h-64 w-64 rounded-full bg-sun-400/20 blur-3xl" aria-hidden="true" />
 
       <div className="relative flex flex-wrap items-end justify-between gap-3">
