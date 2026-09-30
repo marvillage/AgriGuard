@@ -1,7 +1,7 @@
 const settings = {
   eyebrow: "Account",
   title: "Settings",
-  description: "Your profile, language, alerts, AI providers and the installable app.",
+  description: "Your profile, language, alerts and the installable app.",
   loadError: "Could not load this section.",
   saved: "Saved",
   saveFailed: "Could not save",
@@ -10,7 +10,7 @@ const settings = {
   name: "Name",
   phone: "Phone",
   phonePlaceholder: "98765 43210",
-  phoneHint: "Used for SMS and WhatsApp alerts. 10-digit Indian numbers get +91 automatically.",
+  phoneHint: "A contact number. 10-digit Indian numbers get +91 automatically.",
   saveProfile: "Save profile",
   profileSaved: "Profile saved",
   nameTooShort: "Name needs at least 2 characters.",

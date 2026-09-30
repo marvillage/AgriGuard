@@ -3,7 +3,7 @@ import type { PartialMessages } from "..";
 const settings: NonNullable<PartialMessages["settings"]> = {
   eyebrow: "கணக்கு",
   title: "அமைப்புகள்",
-  description: "உங்கள் சுயவிவரம், மொழி, எச்சரிக்கைகள், AI வழங்குநர்கள், நிறுவக்கூடிய ஆப்.",
+  description: "உங்கள் சுயவிவரம், மொழி, எச்சரிக்கைகள், நிறுவக்கூடிய ஆப்.",
   loadError: "இந்தப் பகுதியை ஏற்ற முடியவில்லை.",
   saved: "சேமிக்கப்பட்டது",
   saveFailed: "சேமிக்க முடியவில்லை",
@@ -12,7 +12,7 @@ const settings: NonNullable<PartialMessages["settings"]> = {
   name: "பெயர்",
   phone: "மொபைல் எண்",
   phonePlaceholder: "98765 43210",
-  phoneHint: "SMS, WhatsApp எச்சரிக்கைகளுக்குப் பயன்படும். 10 இலக்க இந்திய எண்களுக்கு +91 தானாகச் சேர்க்கப்படும்.",
+  phoneHint: "தொடர்பு எண். 10 இலக்க இந்திய எண்களுக்கு +91 தானாகச் சேர்க்கப்படும்.",
   saveProfile: "சுயவிவரத்தைச் சேமி",
   profileSaved: "சுயவிவரம் சேமிக்கப்பட்டது",
   nameTooShort: "பெயரில் குறைந்தது 2 எழுத்துகள் வேண்டும்.",

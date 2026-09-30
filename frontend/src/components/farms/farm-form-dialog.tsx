@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { CircleCheck, LoaderCircle, MapPin, Search } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { Camera, CircleCheck, ImagePlus, LoaderCircle, MapPin, Search, Trash2 } from "lucide-react";
 import { errorMessage } from "@/components/field/field-ui";
 import { Alert } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/i18n/provider";
 import { api, type FarmInput } from "@/lib/api";
+import { farmImage } from "@/lib/site-images";
 import type { Farm, IrrigationMethod } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -24,10 +26,27 @@ export const typicalBaseline: Record<IrrigationMethod, { depth: number; interval
 
 type GeocodeResult = Awaited<ReturnType<typeof api.geocode>>["results"][number];
 
+// A new file, null to remove the current photo, or undefined to leave it as it is.
+export type FarmPhoto = File | null | undefined;
+
 interface FarmFormDialogProps {
   initial?: Farm;
-  onSubmit: (values: FarmInput & { name: string }) => Promise<void>;
+  onSubmit: (values: FarmInput & { name: string }, photo: FarmPhoto) => Promise<void>;
   onCancel: () => void;
+}
+
+const maxPhotoBytes = 10 * 1024 * 1024;
+
+// Returns false when the farm was saved but its photo was not, so the farm is never created twice.
+export async function applyFarmPhoto(farmId: number, photo: FarmPhoto) {
+  if (photo === undefined) return true;
+  try {
+    if (photo === null) await api.deleteFarmPhoto(farmId);
+    else await api.uploadFarmPhoto(farmId, photo);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 const text = (value: number | null | undefined) => (value === null || value === undefined ? "" : String(value));
@@ -52,7 +71,39 @@ export function FarmFormDialog({ initial, onSubmit, onCancel }: FarmFormDialogPr
   const [solar, setSolar] = useState(text(initial?.solarCapacityKw));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<FarmPhoto>(undefined);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const typical = typicalBaseline[method];
+  const savedPhoto = initial?.photoKey ? farmImage(initial).src : null;
+  const shownPhoto = photo === undefined ? savedPhoto : photo === null ? null : photoPreview;
+
+  useEffect(() => () => {
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+  }, [photoPreview]);
+
+  const pickPhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setPhotoError(t("farms.photoNotImage"));
+      return;
+    }
+    if (file.size > maxPhotoBytes) {
+      setPhotoError(t("farms.photoTooBig"));
+      return;
+    }
+    setPhotoError(null);
+    setPhoto(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
+
+  const removePhoto = () => {
+    setPhotoError(null);
+    setPhoto(initial?.photoKey ? null : undefined);
+    setPhotoPreview(null);
+  };
 
   const findPlace = async () => {
     if (location.trim().length < 2) {
@@ -106,7 +157,7 @@ export function FarmFormDialog({ initial, onSubmit, onCancel }: FarmFormDialogPr
         baselineIntervalDays: optionalNumber(intervalDays),
         electricityRate: rate.trim() === "" ? undefined : Number(rate),
         solarCapacityKw: optionalNumber(solar),
-      });
+      }, photo);
     } catch (requestError) {
       setError(errorMessage(requestError, t("farms.saveError")));
     } finally {
@@ -131,6 +182,35 @@ export function FarmFormDialog({ initial, onSubmit, onCancel }: FarmFormDialogPr
               autoFocus
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-slate-700">
+              {t("farms.photo")} <span className="font-normal text-slate-400">({t("common.optional")})</span>
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="relative flex h-20 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+                {shownPhoto ? (
+                  <Image src={shownPhoto} alt={t("farms.photo")} fill unoptimized sizes="112px" className="object-cover" />
+                ) : (
+                  <ImagePlus className="h-6 w-6 text-slate-400" aria-hidden="true" />
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <label className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "cursor-pointer")}>
+                  <Camera className="h-3.5 w-3.5" />
+                  {shownPhoto ? t("farms.photoChange") : t("farms.photoAdd")}
+                  <input type="file" accept="image/*" className="sr-only" onChange={pickPhoto} />
+                </label>
+                {shownPhoto ? (
+                  <Button type="button" size="sm" variant="ghost" onClick={removePhoto}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                    {t("farms.photoRemove")}
+                  </Button>
+                ) : null}
+              </div>
+            </div>
+            <p className={cn("text-xs", photoError ? "text-red-700" : "text-slate-500")}>{photoError ?? t("farms.photoHint")}</p>
           </div>
 
           <fieldset className="min-w-0 space-y-2">

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "column.public.farm.photoKey",
+    "label": "Add column \"photoKey\" to \"farm\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "photoKey",
+        "table": "farm"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"photoKey\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "photoKey"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"photoKey\"",
+        "sql": "ALTER TABLE \"public\".\"farm\" ADD COLUMN \"photoKey\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"photoKey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "farm",
+          "photoKey"
+        ]
+      }
+    ]
+  }
+]

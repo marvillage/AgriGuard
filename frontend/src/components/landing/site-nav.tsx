@@ -11,7 +11,7 @@ import { useAuth } from "@/providers/auth-provider";
 const links = [
   { href: "#how", label: "How it works" },
   { href: "#features", label: "Features" },
-  { href: "#hardware", label: "Hardware" },
+  { href: "#hardware", label: "Hardware concept" },
   { href: "#impact", label: "Impact" },
 ];
 

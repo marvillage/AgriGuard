@@ -3,7 +3,7 @@ import type { PartialMessages } from "..";
 const settings: NonNullable<PartialMessages["settings"]> = {
   eyebrow: "खाते",
   title: "सेटिंग्ज",
-  description: "तुमचे प्रोफाइल, भाषा, अलर्ट, AI सेवा आणि इंस्टॉल करता येणारे ॲप.",
+  description: "तुमचे प्रोफाइल, भाषा, अलर्ट आणि इंस्टॉल करता येणारे ॲप.",
   loadError: "हा विभाग लोड करता आला नाही.",
   saved: "सेव्ह झाले",
   saveFailed: "सेव्ह करता आले नाही",
@@ -12,7 +12,7 @@ const settings: NonNullable<PartialMessages["settings"]> = {
   name: "नाव",
   phone: "मोबाईल नंबर",
   phonePlaceholder: "98765 43210",
-  phoneHint: "SMS आणि WhatsApp अलर्टसाठी वापरला जातो. 10 अंकी भारतीय नंबरला +91 आपोआप जोडला जातो.",
+  phoneHint: "संपर्क क्रमांक. 10 अंकी भारतीय नंबरला +91 आपोआप जोडला जातो.",
   saveProfile: "प्रोफाइल सेव्ह करा",
   profileSaved: "प्रोफाइल सेव्ह झाले",
   nameTooShort: "नाव किमान 2 अक्षरांचे हवे.",

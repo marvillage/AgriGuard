@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s · AgriGuard",
   },
   description:
-    "AgriGuard connects soil sensors, weather data and AI to cut irrigation water, pump energy and fertilizer waste — with every litre, kWh and rupee measured.",
+    "AgriGuard uses satellite images, weather and soil data and AI to cut irrigation water, pump energy and fertilizer waste — with every litre, kWh and rupee counted.",
   appleWebApp: {
     capable: true,
     title: "AgriGuard",

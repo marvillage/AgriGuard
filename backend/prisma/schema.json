@@ -1619,6 +1619,13 @@
                   "kind": "scalar"
                 }
               },
+              "photoKey": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "shareCode": {
                 "nullable": true,
                 "type": {
@@ -1741,6 +1748,9 @@
                 },
                 "ownerId": {
                   "column": "ownerId"
+                },
+                "photoKey": {
+                  "column": "photoKey"
                 },
                 "shareCode": {
                   "column": "shareCode"
@@ -6013,6 +6023,11 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
+                "photoKey": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "shareCode": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -8676,7 +8691,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "0aacbc10756773b67b17f9d492283a0e4951abdfaf259f8d9dc2cdec3138d55b"
+    "storageHash": "b415eff0b3678b1503714523606db17e2a3111a4a0bb4d8063e12e8ac32a8fdf"
   },
   "execution": {
     "executionHash": "95ed4f25b3fb902ca6a27b0c5b163ede4802f5c67761bbe65c7f41fe4a164b15",

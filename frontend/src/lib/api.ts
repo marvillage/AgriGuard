@@ -169,6 +169,15 @@ export const api = {
   deleteFarm: (farmId: number) =>
     request<null>(`/api/farms/${farmId}`, { method: "DELETE" }),
 
+  uploadFarmPhoto: (farmId: number, photo: File) => {
+    const form = new FormData();
+    form.append("photo", photo);
+    return request<{ farm: Farm }>(`/api/farms/${farmId}/photo`, { method: "POST", body: form });
+  },
+
+  deleteFarmPhoto: (farmId: number) =>
+    request<{ farm: Farm }>(`/api/farms/${farmId}/photo`, { method: "DELETE" }),
+
   listFields: (farmId: number) =>
     request<{ fields: Field[] }>(`/api/farms/${farmId}/fields`),
 

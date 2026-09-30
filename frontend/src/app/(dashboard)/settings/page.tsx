@@ -2,7 +2,6 @@
 
 import { PageHeader } from "@/components/layout/page-header";
 import { AccountCard } from "@/components/settings/account-card";
-import { AiCard } from "@/components/settings/ai-card";
 import { AlertsCard } from "@/components/settings/alerts-card";
 import { InstallCard } from "@/components/settings/install-card";
 import { LanguageCard } from "@/components/settings/language-card";
@@ -37,9 +36,6 @@ export default function SettingsPage() {
         <div className="contents lg:flex lg:flex-col lg:gap-6">
           <div className="order-3 lg:order-none">
             <AlertsCard user={user} />
-          </div>
-          <div className="order-4 lg:order-none">
-            <AiCard />
           </div>
         </div>
       </div>

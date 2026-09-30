@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 
 import {
   createFarm,
@@ -6,6 +7,8 @@ import {
   getFarm,
   updateFarm,
   deleteFarm,
+  setFarmPhoto,
+  removeFarmPhoto,
 } from "../controllers/farm.controller.js";
 
 import {
@@ -28,6 +31,7 @@ import {
 } from "../utils/validation.schemas.js";
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 router.use(authMiddleware);
 
@@ -61,6 +65,19 @@ router.delete(
   "/:farmId",
   requireRole("FARMER", "ADMIN"),
   deleteFarm
+);
+
+router.post(
+  "/:farmId/photo",
+  requireRole("FARMER", "ADMIN"),
+  upload.single("photo"),
+  setFarmPhoto
+);
+
+router.delete(
+  "/:farmId/photo",
+  requireRole("FARMER", "ADMIN"),
+  removeFarmPhoto
 );
 
 /*

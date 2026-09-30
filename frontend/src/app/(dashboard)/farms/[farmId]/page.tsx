@@ -21,12 +21,14 @@ import {
   Trash,
   type LucideIcon,
 } from "lucide-react";
-import { FarmFormDialog, typicalBaseline } from "@/components/farms/farm-form-dialog";
+import { applyFarmPhoto, FarmFormDialog, typicalBaseline, type FarmPhoto } from "@/components/farms/farm-form-dialog";
 import { FieldFormDialog } from "@/components/farms/field-form-dialog";
 import { ShareFarm } from "@/components/farms/share-farm";
 import { FarmWeatherCard } from "@/components/field/farm-weather-card";
 import { clientErrorMessage, errorMessage } from "@/components/field/field-ui";
 import { PageHeader } from "@/components/layout/page-header";
+import { ImageSlot } from "@/components/ui/image-slot";
+import { farmImage } from "@/lib/site-images";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -81,9 +83,13 @@ export default function FarmDetailsPage() {
     onError: (requestError) => setError(clientErrorMessage(requestError, t("farms.deleteRetry"))),
   });
   const updateFarm = useMutation({
-    mutationFn: (values: FarmInput) => api.updateFarm(farmId, values),
-    onSuccess: async ({ farm }) => {
+    mutationFn: async ({ values, photo }: { values: FarmInput; photo: FarmPhoto }) => {
+      const { farm } = await api.updateFarm(farmId, values);
+      return { farm, photoSaved: await applyFarmPhoto(farm.id, photo) };
+    },
+    onSuccess: async ({ farm, photoSaved }) => {
       toast({ title: t("farms.farmUpdated", { name: farm.name }), tone: "success" });
+      if (!photoSaved) toast({ title: t("farms.photoFailed"), tone: "warning" });
       setEditingFarm(false);
       await refresh();
     },
@@ -138,6 +144,9 @@ export default function FarmDetailsPage() {
         <ArrowLeft className="h-4 w-4" />
         {t("farms.backToFarms")}
       </Link>
+      {farm.photoKey ? (
+        <ImageSlot image={farmImage(farm)} unoptimized sizes="(min-width: 1280px) 1216px, 100vw" className="mb-6 h-44 rounded-2xl sm:h-56" />
+      ) : null}
       <PageHeader
         eyebrow={t("common.farm")}
         title={farm.name}
@@ -257,8 +266,8 @@ export default function FarmDetailsPage() {
         <FarmFormDialog
           initial={farm}
           onCancel={() => setEditingFarm(false)}
-          onSubmit={async (values) => {
-            await updateFarm.mutateAsync(values);
+          onSubmit={async (values, photo) => {
+            await updateFarm.mutateAsync({ values, photo });
           }}
         />
       ) : null}

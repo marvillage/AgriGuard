@@ -118,6 +118,7 @@ model Farm {
   baselineIntervalDays Float?
   electricityRate      Float                      @default(7)
   solarCapacityKw      Float?
+  photoKey             String?
 
   owner                User                       @relation(fields:[ownerId], references:[id])
   ownerId              Int

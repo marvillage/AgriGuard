@@ -1,3 +1,5 @@
+import { API_URL } from "./api";
+
 // Every photo slot on the site. Drop a file at the matching path in /public and it
 // replaces the gradient placeholder automatically. See IMAGE_PROMPTS.md at the repo root.
 export interface SiteImage {
@@ -81,4 +83,10 @@ export const siteImages = {
 export function farmCover(farmId: number) {
   const covers = siteImages.farmCovers;
   return covers[Math.abs(farmId) % covers.length];
+}
+
+// The farmer's own photo when there is one, otherwise a stock cover.
+export function farmImage(farm: { id: number; name: string; photoKey: string | null }): SiteImage & { uploaded: boolean } {
+  if (farm.photoKey) return { src: `${API_URL}/uploads/${farm.photoKey}`, alt: farm.name, uploaded: true };
+  return { ...farmCover(farm.id), uploaded: false };
 }

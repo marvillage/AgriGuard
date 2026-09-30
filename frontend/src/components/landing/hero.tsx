@@ -29,7 +29,7 @@ export function Hero() {
         <div className="animate-fade-up">
           <span className="inline-flex items-center gap-2 rounded-full border border-sun-400/30 bg-sun-400/10 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-sun-300">
             <Sprout className="h-3.5 w-3.5" />
-            Smart Agriculture · IoT sensors + AI
+            Smart Agriculture · AI + satellite
           </span>
 
           <h1 className="mt-6 max-w-2xl font-display text-4xl leading-[1.08] font-bold tracking-tight text-balance-safe text-white sm:text-5xl lg:text-6xl">
@@ -39,8 +39,9 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
-            AgriGuard reads soil moisture, weather and crop health in real
-            time, then tells your pump exactly when to run — and when to wait.
+            AgriGuard combines satellite images, the local weather and a soil
+            model for every field, then tells you exactly when to run the pump —
+            and when to wait.
             Less water, less power and less fertilizer, with every saving
             counted in litres, kWh and rupees.
           </p>

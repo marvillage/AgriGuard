@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     id: "/dashboard",
     name: "AgriGuard: Smart irrigation & crop intelligence",
     short_name: "AgriGuard",
-    description: "Soil sensors, weather and AI that save water, energy and fertilizer on every field.",
+    description: "Satellite, weather and AI that save water, energy and fertilizer on every field.",
     start_url: "/dashboard",
     scope: "/",
     display: "standalone",

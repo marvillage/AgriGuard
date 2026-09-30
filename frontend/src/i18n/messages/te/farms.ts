@@ -139,6 +139,14 @@ const farms: NonNullable<PartialMessages["farms"]> = {
   auto: "ఆటో",
   refillBelowCapacity: "నీరు పెట్టాల్సిన స్థాయి గరిష్ఠ తేమ కంటే తక్కువగా ఉండాలి.",
   saveField: "పొలం సేవ్ చేయండి",
+  photo: "ఫారం ఫోటో",
+  photoAdd: "ఫోటో జోడించండి",
+  photoChange: "ఫోటో మార్చండి",
+  photoRemove: "తీసివేయండి",
+  photoHint: "ఫోటో వల్ల మీకు, మీ వ్యవసాయ నిపుణుడికి ఫారంను గుర్తించడం సులభం. JPG లేదా PNG, 10 MB వరకు.",
+  photoNotImage: "దయచేసి ఒక ఫోటోను ఎంచుకోండి (JPG లేదా PNG).",
+  photoTooBig: "10 MB కంటే చిన్న ఫోటోను ఎంచుకోండి.",
+  photoFailed: "ఫారం సేవ్ అయింది, కానీ దాని ఫోటో అప్‌లోడ్ కాలేదు. \"ఫారం సవరించండి\" నుండి మళ్లీ ప్రయత్నించండి.",
 };
 
 export default farms;

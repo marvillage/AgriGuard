@@ -48,11 +48,11 @@ export function Hardware() {
             Concept design
           </span>
           <div className="absolute -right-3 top-10 hidden animate-float rounded-2xl border border-white/15 bg-navy-900/80 px-4 py-3 shadow-lift backdrop-blur sm:block">
-            <p className="text-xs text-white/50">Refresh rate</p>
+            <p className="text-xs text-white/50">Planned refresh</p>
             <p className="font-display font-semibold">Every 60 s</p>
           </div>
           <div className="absolute bottom-10 -left-3 hidden animate-float rounded-2xl bg-sun-400 px-4 py-3 text-ink shadow-glow [animation-delay:1.5s] sm:block">
-            <p className="text-xs font-medium opacity-70">Core build cost</p>
+            <p className="text-xs font-medium opacity-70">Estimated build cost</p>
             <p className="font-display font-bold">≈ {typicalTotal}</p>
           </div>
         </Reveal>
@@ -60,19 +60,19 @@ export function Hardware() {
         <div>
           <Reveal>
             <p className="text-sm font-semibold tracking-widest text-sun-400 uppercase">
-              Hardware
+              Hardware concept
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              The AgriGuard Field Node
+              The AgriGuard Field Node <span className="text-sun-400">(concept)</span>
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-white/65">
-              A low-cost, solar-powered sensor box that lives in the field,
-              talks to the cloud and can switch the pump. It&apos;s built from
-              off-the-shelf parts, so it&apos;s easy to repair and cheap to scale.
+              A planned low-cost, solar-powered sensor box that would live in the
+              field, talk to the cloud and switch the pump. It is designed around
+              off-the-shelf parts, so it would be easy to repair and cheap to scale.
             </p>
             <p className="mt-3 text-sm text-white/50">
-              Designed and ready to build: the parts list, wiring and firmware are published. Until a farm has one,
-              the AgriGuard phone app runs the pump, maps the field and measures the pump flow.
+              This is a concept that has not been built yet. The parts list, wiring and firmware are published. Today the
+              AgriGuard phone app does these jobs: it guides the pump, maps the field and measures the pump flow.
             </p>
           </Reveal>
 
@@ -92,7 +92,7 @@ export function Hardware() {
 
           <Reveal delay={120}>
             <div className="mt-6 rounded-2xl border border-white/10 bg-ink/40 p-5">
-              <p className="text-sm font-semibold text-white/80">Indicative bill of materials</p>
+              <p className="text-sm font-semibold text-white/80">Estimated bill of materials</p>
               <dl className="mt-3 space-y-2 text-sm">
                 {billOfMaterials.map((row) => (
                   <div key={row.item} className="flex justify-between gap-4">
@@ -101,7 +101,7 @@ export function Hardware() {
                   </div>
                 ))}
                 <div className="flex justify-between gap-4 border-t border-white/10 pt-2 font-semibold">
-                  <dt>Core node, typical</dt>
+                  <dt>Core node, estimated</dt>
                   <dd className="shrink-0 text-sun-400 tabular-nums">{typicalTotal}</dd>
                 </div>
                 <div className="flex justify-between gap-4 text-white/55">

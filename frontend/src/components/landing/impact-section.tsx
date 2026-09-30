@@ -16,8 +16,8 @@ export function ImpactSection() {
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             Move the slider. Every number comes from an explicit, open
-            assumption, and in the dashboard the same maths runs on your live
-            sensor data.
+            assumption, and in the dashboard the same maths runs on your
+            field&apos;s live soil and weather data.
           </p>
           <ul className="mt-6 flex flex-wrap justify-center gap-2">
             {units.map((unit) => (

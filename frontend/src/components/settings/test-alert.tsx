@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BellRing, CircleCheck, CircleMinus, CircleX, LoaderCircle, MessageCircle, MessageSquare, Send, Smartphone } from "lucide-react";
+import { BellRing, CircleCheck, CircleMinus, CircleX, LoaderCircle, Send, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toaster";
 import { useI18n } from "@/i18n/provider";
@@ -14,8 +14,6 @@ type ChannelResult = { status: ChannelStatus; detail?: string };
 const channels = [
   { key: "inApp", icon: Smartphone },
   { key: "push", icon: BellRing },
-  { key: "sms", icon: MessageSquare },
-  { key: "whatsapp", icon: MessageCircle },
 ] as const;
 
 const statusStyle: Record<ChannelStatus, { icon: typeof CircleCheck; text: string }> = {

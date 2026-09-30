@@ -94,6 +94,43 @@ export const getFarm = async (
   }
 };
 
+export const setFarmPhoto = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = getUser(req);
+    const farmId = getFarmId(req);
+    if (!req.file) {
+      throw new AppError("Choose a photo to upload", 400);
+    }
+
+    const farm = await farmService.setPhoto(farmId, user, {
+      buffer: req.file.buffer,
+      mimeType: req.file.mimetype,
+    });
+
+    return sendSuccess(res, { farm }, "Farm photo saved");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const removeFarmPhoto = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const farm = await farmService.setPhoto(getFarmId(req), getUser(req), null);
+
+    return sendSuccess(res, { farm }, "Farm photo removed");
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateFarm = async (
   req: Request,
   res: Response,

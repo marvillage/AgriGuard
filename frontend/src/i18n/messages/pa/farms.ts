@@ -139,6 +139,14 @@ const farms: NonNullable<PartialMessages["farms"]> = {
   auto: "ਆਟੋ",
   refillBelowCapacity: "ਸਿੰਚਾਈ ਹੱਦ ਖੇਤ ਸਮਰੱਥਾ ਤੋਂ ਘੱਟ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।",
   saveField: "ਖੇਤ ਸੇਵ ਕਰੋ",
+  photo: "ਫਾਰਮ ਦੀ ਫੋਟੋ",
+  photoAdd: "ਫੋਟੋ ਜੋੜੋ",
+  photoChange: "ਫੋਟੋ ਬਦਲੋ",
+  photoRemove: "ਹਟਾਓ",
+  photoHint: "ਫੋਟੋ ਨਾਲ ਤੁਹਾਨੂੰ ਅਤੇ ਤੁਹਾਡੇ ਖੇਤੀ ਮਾਹਿਰ ਨੂੰ ਫਾਰਮ ਪਛਾਣਨ ਵਿੱਚ ਮਦਦ ਮਿਲਦੀ ਹੈ। JPG ਜਾਂ PNG, 10 MB ਤੱਕ।",
+  photoNotImage: "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਫੋਟੋ ਚੁਣੋ (JPG ਜਾਂ PNG)।",
+  photoTooBig: "10 MB ਤੋਂ ਛੋਟੀ ਫੋਟੋ ਚੁਣੋ।",
+  photoFailed: "ਫਾਰਮ ਸੇਵ ਹੋ ਗਿਆ, ਪਰ ਉਸਦੀ ਫੋਟੋ ਅੱਪਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ। 'ਫਾਰਮ ਸੋਧੋ' ਤੋਂ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
 };
 
 export default farms;

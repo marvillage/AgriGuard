@@ -21,8 +21,8 @@ export function CtaBand() {
               Start measuring what your farm saves.
             </h2>
             <p className="mt-4 max-w-lg text-lg text-ink/75">
-              Add your farm and fields in two minutes. Connect a field node
-              whenever you&apos;re ready.
+              Add your farm and fields in two minutes. Your phone does the
+              rest: no hardware needed.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/register" className={buttonVariants({ variant: "dark", size: "lg" })}>

@@ -52,7 +52,7 @@ const auth = {
   roleAdvisorHint: "I advise farmers who share a farm",
   phone: "Phone",
   phonePlaceholder: "98765 43210",
-  phoneHint: "For SMS and WhatsApp alerts. You can add it later in Settings.",
+  phoneHint: "A contact number. You can add it later in Settings.",
   preferredLanguage: "Preferred language",
   preferredLanguageHint: "Menus, alerts and the AI copilot use this language.",
   errorInvalid: "Wrong email or password.",

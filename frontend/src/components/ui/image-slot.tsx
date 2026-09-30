@@ -19,6 +19,7 @@ export function ImageSlot({
   tone = "navy",
   sizes = "100vw",
   eager = false,
+  unoptimized = false,
   children,
 }: {
   image: SiteImage;
@@ -26,6 +27,7 @@ export function ImageSlot({
   tone?: keyof typeof tones;
   sizes?: string;
   eager?: boolean;
+  unoptimized?: boolean;
   children?: React.ReactNode;
 }) {
   const [status, setStatus] = useState<Status>("loading");
@@ -68,6 +70,7 @@ export function ImageSlot({
           src={image.src}
           alt=""
           fill
+          unoptimized={unoptimized}
           sizes={sizes}
           loading={eager ? "eager" : "lazy"}
           fetchPriority={eager ? "high" : undefined}

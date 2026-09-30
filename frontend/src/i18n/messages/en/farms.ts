@@ -137,6 +137,14 @@ const farms = {
   auto: "Auto",
   refillBelowCapacity: "The refill point must be lower than field capacity.",
   saveField: "Save field",
+  photo: "Farm photo",
+  photoAdd: "Add photo",
+  photoChange: "Change photo",
+  photoRemove: "Remove",
+  photoHint: "A photo helps you and your agronomist recognise the farm. JPG or PNG, up to 10 MB.",
+  photoNotImage: "Please choose a photo (JPG or PNG).",
+  photoTooBig: "Choose a photo smaller than 10 MB.",
+  photoFailed: "The farm was saved, but its photo could not be uploaded. Try again from Edit farm.",
 };
 
 export default farms;

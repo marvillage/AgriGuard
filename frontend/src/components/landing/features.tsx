@@ -21,14 +21,14 @@ const features: {
   {
     icon: Droplets,
     title: "Smart irrigation",
-    body: "Moisture-triggered, rain-aware pump control. Water only when the root zone needs it, and skip the cycle when the forecast will do it for free.",
+    body: "Rain-aware watering advice. Water only when the root zone needs it, and skip the cycle when the forecast will do it for free. Your phone tells you when to start and stop the pump.",
     image: siteImages.irrigation,
     wide: true,
   },
   {
     icon: Thermometer,
     title: "Soil monitoring",
-    body: "Live moisture, temperature and NPK from every field.",
+    body: "Soil moisture and temperature for every field from the Open-Meteo soil model, and NPK from your Soil Health Card.",
     image: siteImages.soil,
   },
   {

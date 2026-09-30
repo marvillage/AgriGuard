@@ -1,32 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Bell, MessageCircle, MessageSquare, Sunrise } from "lucide-react";
-import { Alert } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import { Bell, Sunrise } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toaster";
 import { useI18n } from "@/i18n/provider";
 import { api } from "@/lib/api";
 import type { User } from "@/lib/types";
 import { useAuth } from "@/providers/auth-provider";
-import { EnvList } from "./env-list";
 import { PushControl } from "./push-control";
 import { SectionIcon } from "./section-icon";
 import { SwitchRow } from "./switch-row";
 import { TestAlert } from "./test-alert";
 
-type Preference = "smsAlerts" | "whatsappAlerts" | "dailyBriefing";
-
-const twilioVars = ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_SMS_FROM", "TWILIO_WHATSAPP_FROM"];
+type Preference = "dailyBriefing";
 
 export function AlertsCard({ user }: { user: User }) {
   const { t } = useI18n();
   const { setUser } = useAuth();
   const toast = useToast();
   const [saving, setSaving] = useState<Preference | null>(null);
-  const channels = useQuery({ queryKey: ["notifications", "channels"], queryFn: api.notificationChannels, staleTime: 60_000 });
 
   const save = async (key: Preference, value: boolean) => {
     setSaving(key);
@@ -39,16 +32,6 @@ export function AlertsCard({ user }: { user: User }) {
       setSaving(null);
     }
   };
-
-  const channelBadge = (ready: boolean | undefined) =>
-    ready === undefined ? null : ready ? (
-      <Badge variant="success">{t("settings.channelReady")}</Badge>
-    ) : (
-      <Badge variant="warning">{t("settings.channelNotConfigured")}</Badge>
-    );
-
-  const twilioMissing = channels.data ? !channels.data.sms || !channels.data.whatsapp : false;
-  const needsPhone = (user.smsAlerts || user.whatsappAlerts) && !user.phone;
 
   return (
     <Card>
@@ -63,24 +46,6 @@ export function AlertsCard({ user }: { user: User }) {
         <div className="divide-y divide-slate-100">
           <PushControl user={user} />
           <SwitchRow
-            icon={MessageSquare}
-            title={t("settings.smsTitle")}
-            description={t("settings.smsBody")}
-            checked={Boolean(user.smsAlerts)}
-            onChange={(value) => save("smsAlerts", value)}
-            busy={saving === "smsAlerts"}
-            status={channelBadge(channels.data?.sms)}
-          />
-          <SwitchRow
-            icon={MessageCircle}
-            title={t("settings.whatsappTitle")}
-            description={t("settings.whatsappBody")}
-            checked={Boolean(user.whatsappAlerts)}
-            onChange={(value) => save("whatsappAlerts", value)}
-            busy={saving === "whatsappAlerts"}
-            status={channelBadge(channels.data?.whatsapp)}
-          />
-          <SwitchRow
             icon={Sunrise}
             title={t("settings.briefingTitle")}
             description={t("settings.briefingBody")}
@@ -91,14 +56,6 @@ export function AlertsCard({ user }: { user: User }) {
         </div>
 
         <div className="mt-2 space-y-3">
-          {needsPhone ? <Alert variant="default">{t("settings.needsPhone")}</Alert> : null}
-          {twilioMissing ? (
-            <Alert variant="info">
-              <p className="font-semibold">{t("settings.twilioTitle")}</p>
-              <p className="mt-0.5">{t("settings.twilioBody")}</p>
-              <EnvList items={twilioVars.map((name) => ({ name }))} />
-            </Alert>
-          ) : null}
           <TestAlert />
         </div>
       </CardContent>

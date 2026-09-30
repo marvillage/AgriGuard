@@ -1,4 +1,7 @@
+import { randomUUID } from "node:crypto";
+import sharp from "sharp";
 import db from "../config/database.js";
+import { deleteUploads, saveUpload } from "../lib/uploads.js";
 import { AppError } from "../utils/AppError.js";
 import type { AuthUser } from "../utils/auth.types.js";
 import {
@@ -100,6 +103,34 @@ export const remove = async (
   }
   await db.orm.public.Trial.where({ farmId }).deleteAndCount();
   await db.orm.public.FarmAdvisor.where({ farmId }).deleteAndCount();
+  if (farm.photoKey) await deleteUploads([farm.photoKey]);
 
   return deleteFarm(farmId);
+};
+
+// A new photo replaces the old one; null removes it.
+export const setPhoto = async (farmId: number, user: AuthUser, upload: { buffer: Buffer; mimeType: string } | null) => {
+  const farm = await getById(farmId, user);
+  if (farm.access === "advisor") {
+    throw new AppError("Only the farm owner can change the farm photo", 403);
+  }
+
+  let photoKey: string | null = null;
+  if (upload) {
+    if (!upload.mimeType.startsWith("image/")) throw new AppError("Please upload an image file", 400);
+    const jpeg = await sharp(upload.buffer)
+      .rotate()
+      .resize(1600, 1600, { fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 82 })
+      .toBuffer()
+      .catch(() => {
+        throw new AppError("This file could not be read as a photo", 400);
+      });
+    photoKey = `farms/${randomUUID()}.jpg`;
+    await saveUpload(photoKey, jpeg, "image/jpeg");
+  }
+
+  const updated = await updateFarm(farmId, { photoKey });
+  if (farm.photoKey) await deleteUploads([farm.photoKey]);
+  return updated;
 };

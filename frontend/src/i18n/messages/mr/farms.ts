@@ -139,6 +139,14 @@ const farms: NonNullable<PartialMessages["farms"]> = {
   auto: "ऑटो",
   refillBelowCapacity: "सिंचन पातळी जलधारण क्षमतेपेक्षा कमी असायला हवी.",
   saveField: "शेत सेव्ह करा",
+  photo: "फार्मचा फोटो",
+  photoAdd: "फोटो जोडा",
+  photoChange: "फोटो बदला",
+  photoRemove: "काढा",
+  photoHint: "फोटोमुळे तुम्हाला आणि तुमच्या कृषितज्ज्ञांना फार्म ओळखायला मदत होते. JPG किंवा PNG, 10 MB पर्यंत.",
+  photoNotImage: "कृपया एक फोटो निवडा (JPG किंवा PNG).",
+  photoTooBig: "10 MB पेक्षा लहान फोटो निवडा.",
+  photoFailed: "फार्म सेव्ह झाला, पण त्याचा फोटो अपलोड होऊ शकला नाही. \"फार्म संपादित करा\" मधून पुन्हा प्रयत्न करा.",
 };
 
 export default farms;

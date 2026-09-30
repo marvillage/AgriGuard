@@ -54,7 +54,7 @@ const auth: NonNullable<PartialMessages["auth"]> = {
   roleAdvisorHint: "फार्म शेअर करणाऱ्या शेतकऱ्यांना सल्ला देण्यासाठी",
   phone: "मोबाईल नंबर",
   phonePlaceholder: "98765 43210",
-  phoneHint: "SMS आणि WhatsApp अलर्टसाठी. तुम्ही तो नंतर सेटिंग्जमध्ये जोडू शकता.",
+  phoneHint: "संपर्क क्रमांक. तुम्ही तो नंतर सेटिंग्जमध्ये जोडू शकता.",
   preferredLanguage: "पसंतीची भाषा",
   preferredLanguageHint: "मेनू, अलर्ट आणि AI सहायक ही भाषा वापरतील.",
   errorInvalid: "ईमेल किंवा पासवर्ड चुकीचा आहे.",

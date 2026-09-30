@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Droplets, Eye, MapPin, Pencil, Plus, Ruler, Sprout, Trash, UserRound } from "lucide-react";
 import { clientErrorMessage, errorMessage } from "@/components/field/field-ui";
-import { FarmFormDialog } from "@/components/farms/farm-form-dialog";
+import { applyFarmPhoto, FarmFormDialog, type FarmPhoto } from "@/components/farms/farm-form-dialog";
 import { PageHeader } from "@/components/layout/page-header";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import { ImageSlot } from "@/components/ui/image-slot";
 import { useToast } from "@/components/ui/toaster";
 import { useI18n } from "@/i18n/provider";
 import { api, type FarmInput } from "@/lib/api";
-import { farmCover, siteImages } from "@/lib/site-images";
+import { farmImage, siteImages } from "@/lib/site-images";
 import type { Farm } from "@/lib/types";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -41,17 +41,25 @@ export default function FarmsPage() {
     if (farmId) await queryClient.invalidateQueries({ queryKey: ["farm", farmId] });
   };
   const createMutation = useMutation({
-    mutationFn: (values: FarmInput & { name: string }) => api.createFarm(values),
-    onSuccess: async ({ farm }) => {
+    mutationFn: async ({ values, photo }: { values: FarmInput & { name: string }; photo: FarmPhoto }) => {
+      const { farm } = await api.createFarm(values);
+      return { farm, photoSaved: await applyFarmPhoto(farm.id, photo) };
+    },
+    onSuccess: async ({ farm, photoSaved }) => {
       toast({ title: t("farms.farmCreated", { name: farm.name }), tone: "success" });
+      if (!photoSaved) toast({ title: t("farms.photoFailed"), tone: "warning" });
       setShowForm(false);
       await refresh();
     },
   });
   const updateMutation = useMutation({
-    mutationFn: ({ farmId, values }: { farmId: number; values: FarmInput }) => api.updateFarm(farmId, values),
-    onSuccess: async ({ farm }) => {
+    mutationFn: async ({ farmId, values, photo }: { farmId: number; values: FarmInput; photo: FarmPhoto }) => {
+      const { farm } = await api.updateFarm(farmId, values);
+      return { farm, photoSaved: await applyFarmPhoto(farm.id, photo) };
+    },
+    onSuccess: async ({ farm, photoSaved }) => {
       toast({ title: t("farms.farmUpdated", { name: farm.name }), tone: "success" });
+      if (!photoSaved) toast({ title: t("farms.photoFailed"), tone: "warning" });
       setEditingFarm(null);
       setShowForm(false);
       await refresh(farm.id);
@@ -140,7 +148,8 @@ export default function FarmsPage() {
               >
                 <Link href={`/farms/${farm.id}`} className="block" tabIndex={-1} aria-hidden="true">
                   <ImageSlot
-                    image={farmCover(farm.id)}
+                    image={farmImage(farm)}
+                    unoptimized={farmImage(farm).uploaded}
                     sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
                     eager={index < 3}
                     className="h-40"
@@ -229,9 +238,9 @@ export default function FarmsPage() {
             setShowForm(false);
             setEditingFarm(null);
           }}
-          onSubmit={async (values) => {
-            if (editingFarm) await updateMutation.mutateAsync({ farmId: editingFarm.id, values });
-            else await createMutation.mutateAsync(values);
+          onSubmit={async (values, photo) => {
+            if (editingFarm) await updateMutation.mutateAsync({ farmId: editingFarm.id, values, photo });
+            else await createMutation.mutateAsync({ values, photo });
           }}
         />
       ) : null}

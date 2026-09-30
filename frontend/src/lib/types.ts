@@ -35,6 +35,7 @@ export interface Farm {
   baselineIntervalDays: number | null;
   electricityRate: number;
   solarCapacityKw: number | null;
+  photoKey: string | null;
   createdAt: string;
   updatedAt: string;
   access?: Access;

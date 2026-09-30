@@ -21,6 +21,7 @@ export interface UpdateFarmData extends FarmSettings {
   name?: string;
   location?: string;
   description?: string;
+  photoKey?: string | null;
 }
 
 export const createFarm = async (data: CreateFarmData) => {
